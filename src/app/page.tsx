@@ -1,58 +1,30 @@
-'use client';
-import { useEffect, useState } from 'react';
+import Section from "@/components/sections";
 
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-export default function UsersList() {
-  
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await fetch('/api/users', {
-          method: 'GET',
-          headers: API_KEY ? { 'x-api-key': API_KEY } : {},
-        });
-
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || err.message || 'Gagal fetch users');
-        }
-
-        const data = await res.json();
-        setUsers(data.users);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-
+export default function HomePage() {
   return (
-    <div>
-      <h2>Users</h2>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            {user.name} ({user.email})
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <Section id="hero" className="text-center text-white">
+        <h1 className="text-4xl font-bold mb-4">Selamat Datang di Trainity</h1>
+        <p className="text-gray-400 text-lg">
+          Belajar skill digital modern dengan cara paling efisien.
+        </p>
+      </Section>
+
+      <Section id="kursus" bg="bg-black/30" className="rounded-2xl backdrop-blur-md">
+        <h2 className="text-3xl font-semibold text-white mb-6 text-center">Kursus Unggulan</h2>
+      </Section>
+
+      <Section id="about">
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 className="text-3xl font-semibold text-white mb-4">Tentang Kami</h2>
+            <p className="text-gray-400 leading-relaxed">
+              Trainity adalah platform belajar coding modern dengan pendekatan praktikal.
+            </p>
+          </div>
+          <img src="/images/about.svg" alt="About" className="rounded-xl" />
+        </div>
+      </Section>
+    </>
   );
 }
