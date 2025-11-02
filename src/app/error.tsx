@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 
 export default function RootError({ error, reset }: { error: Error; reset: () => void }) {
   useEffect(() => {
-    // Bisa log ke console atau service eksternal seperti Sentry
     console.error('Global error caught:', error);
   }, [error]);
 

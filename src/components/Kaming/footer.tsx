@@ -1,7 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+
+    const path = usePathname();
+    const isPageForbid = path.startsWith("/auth");
+
+    if(isPageForbid) return null;
+
   return (
     <footer className="w-[90%] lg:w-[80%] mx-auto mt-20 mb-6 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl shadow-lg overflow-hidden">
       <div className="px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-300">

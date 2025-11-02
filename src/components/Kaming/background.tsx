@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import Providers from "./sessionProviders";
 
 export default function Background({ children }: { children: ReactNode }) {
   return (
@@ -10,7 +11,11 @@ export default function Background({ children }: { children: ReactNode }) {
 
       <div className="absolute inset-0 opacity-[0.06] bg-[url('/textures/noise.png')] mix-blend-overlay pointer-events-none" />
 
-      <main className="relative z-10 pt-24">{children}</main>
+      <div className="relative">
+        <Providers>
+            {children}
+        </Providers>
+      </div>
     </div>
   );
 }
