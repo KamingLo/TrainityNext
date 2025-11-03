@@ -64,7 +64,7 @@ export default function FAQSection() {
     useEffect(() => {
         if (!scriptLoaded.current) {
             const script = document.createElement('script');
-            script.src = '/js/joe/guidance.js';
+            script.src = '/js/joe/panduan.js';
             script.async = true;
             document.body.appendChild(script);
             scriptLoaded.current = true;
