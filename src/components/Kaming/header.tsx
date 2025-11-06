@@ -28,7 +28,7 @@ export default function NavigationBar() {
         <div className="hidden lg:flex items-center gap-6 text-white font-medium">
           <Link href="/" className="hover:text-blue-400 transition">Home</Link>
           <Link href="/kursus" className="hover:text-blue-400 transition">Kursus</Link>
-          <Link href="/lainnya" className="hover:text-blue-400 transition">Lainnya</Link>
+          <Link href="/panduan" className="hover:text-blue-400 transition">Panduan</Link>
           {isLoggedIn && (
             <Link href="/pembayaran" className="hover:text-blue-400 transition">Pembayaran</Link>
           )}
@@ -86,7 +86,7 @@ export default function NavigationBar() {
       >
         <Link href="/" className="hover:bg-white/20 rounded-md px-2 py-1 transition">Home</Link>
         <Link href="/kursus" className="hover:bg-white/20 rounded-md px-2 py-1 transition">Kursus</Link>
-        <Link href="/lainnya" className="hover:bg-white/20 rounded-md px-2 py-1 transition">Lainnya</Link>
+        <Link href="/panduan" className="hover:bg-white/20 rounded-md px-2 py-1 transition">Panduan</Link>
         {isLoggedIn && (
           <>
             <Link href="/pembayaran" className="hover:bg-white/20 rounded-md px-2 py-1 transition">Pembayaran</Link>
