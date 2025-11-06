@@ -1,10 +1,10 @@
-import NextAuth from "next-auth";
+import NextAuth, { type AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { connectDB } from "@/lib/db";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
 
-const handler = NextAuth({
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -13,49 +13,58 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.password || !credentials?.email) throw new Error("Isi semua field form");
+        // ✅ tambahkan pengecekan aman biar nggak error 'possibly undefined'
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Isi semua field form");
+        }
 
         await connectDB();
 
-        const user = await User.findOne({ email: credentials?.email }).select("+password");
+        const user = await User.findOne({ email: credentials.email }).select("+password");
         if (!user) throw new Error("User tidak ditemukan");
 
-        const valid = await bcrypt.compare(credentials!.password, user.password);
+        const valid = await bcrypt.compare(credentials.password, user.password);
         if (!valid) throw new Error("Password salah");
 
-        return { id: user._id, name: user.username, email: user.email, role: user.role };
+        return {
+          id: user._id.toString(),
+          name: user.username,
+          email: user.email,
+          role: user.role,
+        };
       },
     }),
   ],
+
   pages: {
     signIn: "/auth/login",
   },
+
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const, // ✅ fix: pastikan ini 'as const' biar sesuai tipe
   },
+
   secret: process.env.NEXTAUTH_SECRET,
 
-  // ✅ ini tempat callbacks
   callbacks: {
-    jwt: async ({ token, user }) => {
+    // ✅ tambahkan tipe parameter biar nggak implicit any
+    async jwt({ token, user }: { token: any; user?: any }) {
       if (user) {
-        const u = user as any;
-        (token as any).id = u.id;
-        (token as any).role = u.role;
+        token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
-    session: async ({ session, token }) => {
+    async session({ session, token }: { session: any; token: any }) {
       if (token) {
-        const t = token as any;
-        // ensure session.user exists and then assign custom properties
-        (session.user as any) = (session.user as any) || {};
-        (session.user as any).id = t.id as string;
-        (session.user as any).role = t.role as string;
+        session.user = session.user || {};
+        session.user.id = token.id;
+        session.user.role = token.role;
       }
       return session;
     },
   },
-});
+};
 
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
