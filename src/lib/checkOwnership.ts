@@ -18,20 +18,16 @@ export async function ownershipCheck(req: Request, options: CheckOptions) {
   const userId = (session.user as any).id;
   const role = (session.user as any).role;
 
-  // kalau admin, langsung lolos
   if (role === "admin") return null;
 
-  // ambil model mongoose
   const Model = mongoose.models[model];
   if (!Model)
     return NextResponse.json({ message: `Model ${model} not found` }, { status: 500 });
 
-  // ambil resource dan populate relasi user kalau ada
   const resource = await Model.findById(resourceId).populate(userPath.split(".")[0]);
   if (!resource)
     return NextResponse.json({ message: "Resource not found" }, { status: 404 });
 
-  // ambil id pemilik (support nested path)
   const pathParts = userPath.split(".");
   let ownerId: any = resource;
   for (const part of pathParts) {
@@ -41,9 +37,8 @@ export async function ownershipCheck(req: Request, options: CheckOptions) {
   if (!ownerId)
     return NextResponse.json({ message: "Owner not found" }, { status: 400 });
 
-  // cek apakah user adalah pemilik
   if (String(ownerId) !== String(userId))
     return NextResponse.json({ message: "Forbidden: not owner" }, { status: 403 });
 
-  return null; // lolos cek
+  return null;
 }

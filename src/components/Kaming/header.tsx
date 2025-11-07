@@ -81,7 +81,7 @@ export default function NavigationBar() {
         className={`lg:hidden flex flex-col fixed right-4 top-20 min-w-[180px] bg-black/90 border border-gray-700 rounded-lg shadow-lg px-3 py-4 space-y-3 transform origin-top-right transition-all duration-300 ease-in-out ${
           isOpen
             ? "opacity-100 scale-100 translate-y-0"
-            : "opacity-0 scale-95 -translate-y-2"
+            : "hidden opacity-0 scale-95 -translate-y-2"
         }`}
       >
         <Link href="/" className="hover:bg-white/20 rounded-md px-2 py-1 transition">Home</Link>

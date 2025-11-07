@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
-    const { username, email, password, confirm} = await req.json();
+    const { username, email, password, confirm, role} = await req.json();
 
     if (!username || !email || !password || !confirm) {
       return NextResponse.json({ error: "Semua field wajib diisi." }, { status: 400 });
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       username,
       email,
       password: hashedPassword,
-      role: "user",
+      role: role || "user",
     });
 
     await newUser.save();

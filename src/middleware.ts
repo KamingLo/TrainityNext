@@ -21,7 +21,6 @@ export async function middleware(req: NextRequest) {
           const url = req.nextUrl.clone();
           url.pathname = "/user/dashboard";
           return NextResponse.redirect(url);
-          console.log("berhasil")
     }
 
   }
