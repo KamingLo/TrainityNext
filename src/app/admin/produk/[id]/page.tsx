@@ -248,7 +248,7 @@ export default function EditProductPage() {
                   {/* Form Tambah Video (Style Sub-card) */}
                   <div className="bg-black/40 p-5 rounded-xl border border-gray-700 space-y-3">
                     <h3 className="font-semibold text-lg">Tambah Video</h3>
-                    <div className="flex flex-col md:flex-row gap-3">
+                    <div className="flex flex-col gap-3">
                       <input
                         type="text"
                         placeholder="Nama Pelajaran"

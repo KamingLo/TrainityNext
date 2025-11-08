@@ -9,6 +9,20 @@ interface CheckOptions {
   userPath: string; // contoh: "userId" atau "userProduct.userId"
 }
 
+// ROLE-BASED ACCESS CHECK
+export async function canAccess(req: Request, roles: string[] = []) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user)
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+  const role = (session.user as any).role;
+  if (role === "admin") return null;
+
+  if (roles.includes(role)) return null;
+  return NextResponse.json({ message: "Forbidden: insufficient role" }, { status: 403 });
+}
+
+// OWNERSHIP CHECK TANPA CEK ROLE
 export async function ownershipCheck(req: Request, options: CheckOptions) {
   const session = await getServerSession(authOptions);
   if (!session?.user)
@@ -16,9 +30,6 @@ export async function ownershipCheck(req: Request, options: CheckOptions) {
 
   const { model, resourceId, userPath } = options;
   const userId = (session.user as any).id;
-  const role = (session.user as any).role;
-
-  if (role === "admin") return null;
 
   const Model = mongoose.models[model];
   if (!Model)
