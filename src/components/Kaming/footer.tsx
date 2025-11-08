@@ -13,10 +13,12 @@ export default function Footer() {
   const isLoggedIn = status === "authenticated";
   const userRole = (session?.user as { role?: string })?.role;
 
-  const dashboardPath =
-    userRole === "admin" ? "/admin/dashboard" : "/dashboard";
-  const pembayaranPath =
-    userRole === "admin" ? "/admin/pembayaran" : "/pembayaran";
+    const dashboardPath =
+        userRole === "admin" ? "/admin/dashboard" : "/user/dashboard";
+    const pembayaranPath =
+        userRole === "admin" ? "/admin/pembayaran" : "/user/pembayaran";
+    const produkPath = 
+        userRole === "admin" ? "/admin/produk" : "/produk";
 
   if (isPageForbid) return null;
 
@@ -51,8 +53,8 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/kursus" className="hover:text-blue-400 transition">
-                Kursus
+              <Link href={produkPath} className="hover:text-blue-400 transition">
+                Produk
               </Link>
             </li>
             <li>

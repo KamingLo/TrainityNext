@@ -12,11 +12,14 @@ export default function NavigationBar() {
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
 
-  const userRole = (session?.user as { role?: string })?.role;
-  const dashboardPath =
-    userRole === "admin" ? "/admin/dashboard" : "/dashboard";
-  const pembayaranPath =
-    userRole === "admin" ? "/admin/pembayaran" : "/pembayaran";
+    const userRole = (session?.user as { role?: string })?.role;
+    const dashboardPath =
+        userRole === "admin" ? "/admin/dashboard" : "/user/dashboard";
+    const pembayaranPath =
+        userRole === "admin" ? "/admin/pembayaran" : "/user/pembayaran";
+    const produkPath = 
+        userRole === "admin" ? "/admin/produk" : "/produk";
+
 
   return (
     <header
@@ -38,8 +41,8 @@ export default function NavigationBar() {
           <Link href="/" className="hover:text-blue-400 transition">
             Home
           </Link>
-          <Link href="/kursus" className="hover:text-blue-400 transition">
-            Kursus
+          <Link href={produkPath} className="hover:text-blue-400 transition">
+            Produk
           </Link>
           <Link href="/panduan" className="hover:text-blue-400 transition">
             Panduan
@@ -116,11 +119,11 @@ export default function NavigationBar() {
               Home
             </Link>
             <Link
-              href="/kursus"
+              href={produkPath}
               onClick={() => setIsOpen(false)}
               className="hover:bg-white/20 rounded-md px-2 py-1 transition"
             >
-              Kursus
+              Produk
             </Link>
             <Link
               href="/panduan"
