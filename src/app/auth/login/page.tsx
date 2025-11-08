@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import BackButton from "@/components/kaming/backbutton";
 import Section from "@/components/sections";
 
 export default function LoginPage() {
@@ -26,9 +27,12 @@ export default function LoginPage() {
         if (res?.error) {
             setError(res?.error);
         } else {
+            setSuccess("Segera redirect ke halaman dashboard");
             const sessionRes = await fetch("/api/auth/session");
             const sessionData = await sessionRes.json();
-            setSuccess("Segera redirect ke halaman dashboard")
+
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
             if (sessionData?.user?.role === "admin") {
                 router.push("/admin/dashboard");
             } else {
@@ -45,6 +49,7 @@ export default function LoginPage() {
             onSubmit={handleLogin}
             className="bg-black/60 backdrop-blur-xl border border-gray-800 w-full max-w-md p-8 rounded-2xl shadow-2xl"
             >
+            <BackButton />
             <h2 className="text-3xl font-bold mb-6 text-center text-white text-transparent bg-clip-text">
                 Sign In
             </h2>
@@ -99,9 +104,8 @@ export default function LoginPage() {
                 {error && (
                     <p className="text-red-500 text-sm mt-3 text-center">{error}</p>
                 )}
-
                 {success && (
-                    <p className="text-green-500 text-sm mt-3 text-center">{error}</p>
+                    <p className="text-green-500 text-sm mt-3 text-center">{success}</p>
                 )}
 
             <p className="text-sm text-center text-gray-400 mt-4">

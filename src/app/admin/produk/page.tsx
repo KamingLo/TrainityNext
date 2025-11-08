@@ -9,12 +9,12 @@ import AnimatedTabPanel from "@/components/kaming/AnimatedTabPanel";
 import ProductForm, { ProductFormData } from "@/components/kaming/ProductForm";
 import ProductList from "@/components/kaming/ProductList";
 
-// Definisikan tipe di satu tempat, misal `types/index.ts`
 interface Video {
   idPelajaran: string;
   namaPelajaran: string;
   kodePelajaran: string;
 }
+
 interface Product {
   _id: string;
   name: string;
@@ -22,7 +22,6 @@ interface Product {
   desc: string;
   video: Video[];
 }
-// -----------------------------------------------------------
 
 export default function ProductsPage() {
   const [tab, setTab] = useState<"create" | "list">("create");
@@ -88,7 +87,7 @@ export default function ProductsPage() {
   ];
 
   return (
-    <div className="text-white px-6 py-10">
+    <div className="text-white">
       <Section id="hero" className="text-center">
         <h1 className="text-4xl font-bold mb-2">Manajemen Kursus</h1>
         <p className="text-gray-400 text-lg">
@@ -108,7 +107,6 @@ export default function ProductsPage() {
                 onSubmit={handleCreateProduct}
                 submitText="Simpan Kursus"
               >
-                {/* Bagian form video disisipkan di sini */}
                 <div className="bg-black/40 p-4 rounded-xl border border-gray-700">
                   <h3 className="text-lg font-semibold mb-3">Tambah Video</h3>
                   <div className="flex flex-col md:flex-row gap-3">

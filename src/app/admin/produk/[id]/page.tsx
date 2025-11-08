@@ -4,9 +4,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import BackButton from "@/components/kaming/backbutton";
 import Section from "@/components/sections";
 import TabSwitcher from "@/components/kaming/TabSwitcher";
-import AnimatedTabPanel from "@/components/kaming/AnimatedTabPanel";
 import ProductForm, { ProductFormData } from "@/components/kaming/ProductForm";
 
 interface Video {
@@ -24,147 +24,138 @@ interface Product {
 }
 
 export default function EditProductPage() {
-  const { id } = useParams();
-  const router = useRouter();
-  const [tab, setTab] = useState<"kursus" | "video">("kursus");
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+const { id } = useParams();
+const router = useRouter();
+const [tab, setTab] = useState<"kursus" | "video">("kursus");
+const [product, setProduct] = useState<Product | null>(null);
+const [loading, setLoading] = useState(false);
+const [message, setMessage] = useState<string | null>(null);
 
-  // --- PERUBAHAN 1 ---
-  // State untuk form kursus (sudah digabung)
-  const [formData, setFormData] = useState<ProductFormData>({
-    name: "",
-    shortDesc: "",
-    desc: "",
-  });
- 
-  // State untuk form video (tetap sama)
-  const [namaPelajaran, setNamaPelajaran] = useState("");
-  const [kodePelajaran, setKodePelajaran] = useState("");
+    const [formData, setFormData] = useState<ProductFormData>({
+    name: "",
+    shortDesc: "",
+    desc: "",
+    });
 
-  // modal state (tetap sama)
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
-  const [editNama, setEditNama] = useState("");
-  const [editKode, setEditKode] = useState("");
+    const [namaPelajaran, setNamaPelajaran] = useState("");
+    const [kodePelajaran, setKodePelajaran] = useState("");
 
-  useEffect(() => {
-    if (!id) return;
-    (async () => {
-      try {
-        const res = await fetch(`/api/products/${id}`);
-        if (!res.ok) throw new Error("Gagal memuat produk");
-        const data = await res.json();
-        setProduct(data);
-        
-        // --- PERUBAHAN 2 ---
-        // Mengisi state object formData
-        setFormData({
-          name: data.name || "",
-          shortDesc: data.shortDesc || "",
-          desc: data.desc || ""
-        });
-      } catch (err: any) {
-        setMessage(err.message);
-      }
-    })();
-  }, [id]);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+    const [editNama, setEditNama] = useState("");
+    const [editKode, setEditKode] = useState("");
 
-  async function updateProduct(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/products/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        // --- PERUBAHAN 3 ---
-        // Mengirim state formData
-        body: JSON.stringify(formData),
-      });
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error || "Gagal update produk");
-      setProduct(body.product);
-      setMessage("✅ Perubahan kursus tersimpan");
-    } catch (err: any) {
-      setMessage(err.message);
-  } finally {
-      setLoading(false);
-    }
-  }
+    useEffect(() => {
+    if (!id) return;
+    (async () => {
+        try {
+        const res = await fetch(`/api/products/${id}`);
+        if (!res.ok) throw new Error("Gagal memuat produk");
+        const data = await res.json();
+        setProduct(data);
 
-  // --- TIDAK ADA PERUBAHAN PADA FUNGSI DI BAWAH INI ---
+        setFormData({
+            name: data.name || "",
+            shortDesc: data.shortDesc || "",
+            desc: data.desc || "",
+        });
+        } catch (err: any) {
+        setMessage(err.message);
+        }
+    })();
+    }, [id]);
 
-  async function addVideo() {
-    if (!namaPelajaran || !kodePelajaran)
-      return setMessage("Isi nama & kode pelajaran!");
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/products/${id}/video`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ namaPelajaran, kodePelajaran }),
-      });
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error);
-      setProduct(body.product);
-      setNamaPelajaran("");
-      setKodePelajaran("");
-      setMessage("✅ Video ditambahkan");
-    } catch (err: any) {
-      setMessage(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+    async function updateProduct(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    try {
+        const res = await fetch(`/api/products/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+        });
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.error || "Gagal update produk");
+        setProduct(body.product);
+        setMessage("✅ Perubahan kursus tersimpan");
+    } catch (err: any) {
+        setMessage(err.message);
+    } finally {
+        setLoading(false);
+    }
+    }
 
-  async function handleUpdateVideo() {
-    if (!selectedVideo) return;
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `/api/products/${id}/video/${selectedVideo._id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            namaPelajaran: editNama,
-            kodePelajaran: editKode,
-          }),
-        }
-      );
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error);
-      setProduct(body.product);
-      setMessage("✅ Video diperbarui");
-      setShowEditModal(false);
-    } catch (err: any) {
-      setMessage(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+    async function addVideo() {
+    if (!namaPelajaran || !kodePelajaran)
+        return setMessage("Isi nama & kode pelajaran!");
+    setLoading(true);
+    try {
+        const res = await fetch(`/api/products/${id}/video`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ namaPelajaran, kodePelajaran }),
+        });
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.error);
+        setProduct(body.product);
+        setNamaPelajaran("");
+        setKodePelajaran("");
+        setMessage("✅ Video ditambahkan");
+    } catch (err: any) {
+        setMessage(err.message);
+    } finally {
+        setLoading(false);
+    }
+    }
 
-  async function handleDeleteVideo() {
-    if (!selectedVideo) return;
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `/api/products/${id}/video/${selectedVideo._id}`,
-        { method: "DELETE" }
-      );
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error);
-      setProduct(body.product);
-      setMessage("🗑️ Video dihapus");
-      setShowDeleteModal(false);
-    } catch (err: any) {
-      setMessage(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+    async function handleUpdateVideo() {
+    if (!selectedVideo) return;
+    setLoading(true);
+    try {
+        const res = await fetch(
+        `/api/products/${id}/video/${selectedVideo._id}`,
+        {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+            namaPelajaran: editNama,
+            kodePelajaran: editKode,
+            }),
+        }
+        );
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.error);
+        setProduct(body.product);
+        setMessage("✅ Video diperbarui");
+        setShowEditModal(false);
+    } catch (err: any) {
+        setMessage(err.message);
+    } finally {
+        setLoading(false);
+    }
+    }
+
+    async function handleDeleteVideo() {
+    if (!selectedVideo) return;
+    setLoading(true);
+    try {
+        const res = await fetch(
+        `/api/products/${id}/video/${selectedVideo._id}`,
+        { method: "DELETE" }
+        );
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.error);
+        setProduct(body.product);
+        setMessage("🗑️ Video dihapus");
+        setShowDeleteModal(false);
+    } catch (err: any) {
+        setMessage(err.message);
+    } finally {
+        setLoading(false);
+    }
+    }
+
 
   const tabs = [
     { key: "kursus" as const, label: "Informasi Kursus" },
@@ -176,6 +167,7 @@ export default function EditProductPage() {
       <div className="text-white px-6 py-10">
         <div className="w-[90%] lg:w-[80%] mx-auto max-w-4xl">
           <div className="bg-black/60 backdrop-blur-md border border-gray-700 rounded-2xl p-8 shadow-lg">
+           <BackButton/>
             <h1 className="text-3xl font-bold mb-2 text-center">Edit Kursus</h1>
             <p className="text-lg text-gray-400 text-center mb-6">{product?.name || "..."}</p>
 
@@ -183,7 +175,7 @@ export default function EditProductPage() {
 
             <AnimatePresence mode="wait">
               {tab === "kursus" && (
-                <motion.div key="kursus" /* Animasi bisa langsung di sini atau di komponen baru */>
+                <motion.div key="kursus">
                     <ProductForm
                       formData={formData}
                       onFormChange={setFormData}
@@ -203,7 +195,6 @@ export default function EditProductPage() {
                   transition={{ duration: 0.25 }}
                   className="space-y-6"
                 >
-                  {/* Form Tambah Video */}
                   <div className="bg-black/40 p-5 rounded-xl border border-gray-700 space-y-3">
                     <h3 className="font-semibold text-lg">Tambah Video</h3>
                     <div className="flex flex-col gap-3">
@@ -231,7 +222,6 @@ export default function EditProductPage() {
                     </div>
                   </div>
 
-                  {/* List Video */}
                   <div className="bg-black/40 p-5 rounded-xl border border-gray-700">
                     <h3 className="font-semibold mb-3 text-lg">Daftar Video</h3>
                     {!product?.video?.length ? (
@@ -287,7 +277,6 @@ export default function EditProductPage() {
         </div>
       </div>
 
-      {/* ===== Modal Edit Video ===== */}
       <AnimatePresence>
         {showEditModal && selectedVideo && (
           <motion.div
@@ -335,7 +324,6 @@ export default function EditProductPage() {
         )}
       </AnimatePresence>
 
-      {/* ===== Modal Delete Confirmation ===== */}
       <AnimatePresence>
         {showDeleteModal && selectedVideo && (
           <motion.div
