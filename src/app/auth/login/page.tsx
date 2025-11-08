@@ -10,6 +10,7 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
     const router = useRouter();
     
     const handleLogin = async (e: React.FormEvent) => {
@@ -27,6 +28,7 @@ export default function LoginPage() {
         } else {
             const sessionRes = await fetch("/api/auth/session");
             const sessionData = await sessionRes.json();
+            setSuccess("Segera redirect ke halaman dashboard")
             if (sessionData?.user?.role === "admin") {
                 router.push("/admin/dashboard");
             } else {
@@ -96,6 +98,10 @@ export default function LoginPage() {
 
                 {error && (
                     <p className="text-red-500 text-sm mt-3 text-center">{error}</p>
+                )}
+
+                {success && (
+                    <p className="text-green-500 text-sm mt-3 text-center">{error}</p>
                 )}
 
             <p className="text-sm text-center text-gray-400 mt-4">
