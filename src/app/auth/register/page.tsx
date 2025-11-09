@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Section from "@/components/sections";
+import BackButton from "@/components/kaming/backbutton";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -41,7 +41,7 @@ export default function RegisterPage() {
             onSubmit={handleRegister}
             className="bg-black/60 backdrop-blur-xl border border-gray-800 w-full max-w-md p-8 rounded-2xl shadow-2xl"
             >
-
+            <BackButton />
             <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r text-white text-transparent bg-clip-text">
                 Sign Up
             </h2>
