@@ -1,13 +1,14 @@
-// product/page.tsx (Setelah Refactor)
+// product/page.tsx (Telah diperbarui)
 "use client";
 
 import { useState, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Section from "@/components/sections";
 import TabSwitcher from "@/components/kaming/TabSwitcher";
 import AnimatedTabPanel from "@/components/kaming/AnimatedTabPanel";
 import ProductForm, { ProductFormData } from "@/components/kaming/ProductForm";
 import ProductList from "@/components/kaming/ProductList";
+import styles from "@/styles/kaming.module.css"; // <-- IMPORT FILE CSS UTAMA
 
 interface Video {
   idPelajaran: string;
@@ -37,6 +38,10 @@ export default function ProductsPage() {
     namaPelajaran: "",
     kodePelajaran: "",
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -76,9 +81,28 @@ export default function ProductsPage() {
     }
   }
 
-  async function deleteProduct(id: string) {
-    await fetch(`/api/products/${id}`, { method: "DELETE" });
-    fetchProducts();
+  function handleDeleteClick(id: string) {
+    const product = products.find((p) => p._id === id);
+    if (product) {
+      setProductToDelete(product);
+      setIsModalOpen(true);
+    }
+  }
+
+  async function handleConfirmDelete() {
+    if (!productToDelete) return; 
+
+    setIsLoading(true);
+    try {
+      await fetch(`/api/products/${productToDelete._id}`, { method: "DELETE" });
+      await fetchProducts();
+    } catch (error) {
+      console.error("Gagal menghapus:", error);
+    } finally {
+      setIsLoading(false);
+      setIsModalOpen(false);
+      setProductToDelete(null);
+    }
   }
 
   const tabs = [
@@ -87,17 +111,17 @@ export default function ProductsPage() {
   ];
 
   return (
-    <div className="text-white">
-      <Section id="hero" className="text-center">
-        <h1 className="text-4xl font-bold mb-2">Manajemen Kursus</h1>
-        <p className="text-gray-400 text-lg">
+    <div className={styles.listPage_container}>
+      <Section id="hero" className={styles.listPage_heroSection}>
+        <h1 className={styles.listPage_title}>Manajemen Kursus</h1>
+        <p className={styles.listPage_subtitle}>
           Tambah, ubah, dan kelola kursus pembelajaran digital Trainity.
         </p>
       </Section>
 
       <TabSwitcher tabs={tabs} activeTab={tab} onTabClick={setTab} />
 
-      <div className="w-[90%] lg:w-[80%] mx-auto max-w-4xl">
+      <div className={styles.listPage_tabContentWrapper}>
         <AnimatePresence mode="wait">
           {tab === "create" && (
             <AnimatedTabPanel key="create">
@@ -107,53 +131,97 @@ export default function ProductsPage() {
                 onSubmit={handleCreateProduct}
                 submitText="Simpan Kursus"
               >
-                <div className="bg-black/40 p-4 rounded-xl border border-gray-700">
-                  <h3 className="text-lg font-semibold mb-3">Tambah Video</h3>
-                  <div className="flex flex-col md:flex-row gap-3">
-                    <input
-                      type="text"
-                      placeholder="Nama Pelajaran"
-                      value={videoFormData.namaPelajaran}
-                      onChange={(e) => setVideoFormData({ ...videoFormData, namaPelajaran: e.target.value })}
-                      className="flex-1 p-2 rounded-lg bg-black/30 border border-gray-700"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Kode Pelajaran"
-                      value={videoFormData.kodePelajaran}
-                      onChange={(e) => setVideoFormData({ ...videoFormData, kodePelajaran: e.target.value })}
-                      className="flex-1 p-2 rounded-lg bg-black/30 border border-gray-700"
-                    />
-                    <button
-                      type="button"
-                      onClick={addVideoTemp}
-                      className="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700"
-                    >
-                      + Tambah
-                    </button>
-                  </div>
-                  {videos.length > 0 && (
-                    <ul className="mt-3 space-y-2 text-sm">
-                      {videos.map((v) => (
-                        <li key={v.idPelajaran} className="flex justify-between border-b border-gray-700 pb-1">
-                          <span>{v.namaPelajaran}</span>
-                          <span className="text-gray-400">{v.kodePelajaran}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+                <div className={styles.listPage_videoFormContainer}>
+                   <h3 className={styles.listPage_videoFormTitle}>Tambah Video</h3>
+                   <div className={styles.listPage_inputGroup}>
+                     <input
+                       type="text"
+                       placeholder="Nama Pelajaran"
+                       value={videoFormData.namaPelajaran}
+                       onChange={(e) => setVideoFormData({ ...videoFormData, namaPelajaran: e.target.value })}
+                       className={styles.listPage_videoInput}
+                     />
+                     <input
+                       type="text"
+                       placeholder="Kode Pelajaran"
+                       value={videoFormData.kodePelajaran}
+                       onChange={(e) => setVideoFormData({ ...videoFormData, kodePelajaran: e.target.value })}
+                       className={styles.listPage_videoInput}
+                     />
+                     <button
+                       type="button"
+                       onClick={addVideoTemp}
+                       className={styles.listPage_addButton}
+                     >
+                       + Tambah
+                     </button>
+                   </div>
+                   {videos.length > 0 && (
+                     <ul className={styles.listPage_videoList}>
+                       {videos.map((v) => (
+                         <li key={v.idPelajaran} className={styles.listPage_videoListItem}>
+                           <span>{v.namaPelajaran}</span>
+                           <span className={styles.listPage_videoCode}>{v.kodePelajaran}</span>
+                         </li>
+                       ))}
+                     </ul>
+                   )}
+                 </div>
               </ProductForm>
             </AnimatedTabPanel>
           )}
 
           {tab === "list" && (
             <AnimatedTabPanel key="list">
-              <ProductList products={products} onDelete={deleteProduct} />
+              <ProductList
+                products={products}
+                onDelete={handleDeleteClick}
+              />
             </AnimatedTabPanel>
           )}
         </AnimatePresence>
       </div>
+
+      {/* --- MODAL HAPUS (MENGGUNAKAN STYLE REUSABLE) --- */}
+      <AnimatePresence>
+        {isModalOpen && productToDelete && (
+          <motion.div
+            className={styles.modal_backdrop}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className={`${styles.modal_content} ${styles.modal_contentDelete}`}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+            >
+              <h3 className={styles.modal_titleDelete}>Hapus Kursus Ini?</h3>
+              <p className={styles.modal_text}>
+                "{productToDelete.name}" akan dihapus permanen. Tindakan ini
+                tidak dapat dibatalkan.
+              </p>
+              <div className={styles.modal_actionsCenter}>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className={styles.modal_buttonSecondary}
+                  disabled={isLoading}
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  disabled={isLoading}
+                  className={styles.modal_buttonDanger}
+                >
+                  {isLoading ? "Menghapus..." : "Hapus"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

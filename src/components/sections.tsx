@@ -1,22 +1,24 @@
 import { ReactNode } from "react";
+import styles from "@/styles/kaming.module.css"; // <-- Impor
 
 interface SectionProps {
   id?: string;
   className?: string;
   children: ReactNode;
-  bg?: string;
 }
 
 export default function Section({
   id,
   className = "",
   children,
-  bg = "",
 }: SectionProps) {
+
+  const combinedClassName = `${styles.section} ${className}`.trim();
+
   return (
     <section
       id={id}
-      className={`w-[90%] lg:w-[80%] mx-auto mt-24 md:pt-10 pt-10 md:pt-20 ${bg} ${className}`}
+      className={combinedClassName}
     >
       {children}
     </section>

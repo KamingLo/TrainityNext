@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
           url.pathname = "/user/dashboard";
           return NextResponse.redirect(url);
     }
-
+    
   }
 
   return NextResponse.next();

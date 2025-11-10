@@ -1,6 +1,7 @@
 // src/components/product/ProductList.tsx
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import styles from "@/styles/kaming.module.css"; // Impor
 
 // Asumsikan tipe ini ada di file terpusat, misal `types/index.ts`
 interface Video {
@@ -27,41 +28,37 @@ export default function ProductList({ products, onDelete }: ProductListProps) {
   const router = useRouter();
 
   if (products.length === 0) {
-    return (
-      <p className="text-center text-gray-400">
-        Belum ada kursus yang ditambahkan.
-      </p>
-    );
+    return <p className={styles.emptyListText}>Belum ada kursus yang ditambahkan.</p>;
   }
 
   return (
     <>
-      <h2 className="text-2xl font-semibold mb-6 text-center">Daftar Kursus</h2>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <h2 className={styles.listTitle}>Daftar Kursus</h2>
+      <div className={styles.productGrid}>
         {products.map((p) => (
           <motion.div
             key={p._id}
             whileHover={{ scale: 1.02 }}
-            className="bg-black/40 border border-gray-700 rounded-2xl p-5 space-y-3 flex flex-col"
+            className={styles.productCard}
           >
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl font-semibold">{p.name}</h3>
-              <div className="flex gap-3">
+            <div className={styles.cardHeader}>
+              <h3 className={styles.cardTitle}>{p.name}</h3>
+              <div className={styles.cardActions}>
                 <button
                   onClick={() => router.push(`/admin/produk/${p._id}`)}
-                  className="text-blue-500 hover:text-blue-400"
+                  className={styles.cardEditButton}
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => onDelete(p._id)}
-                  className="text-red-500 hover:text-red-400"
+                  className={styles.cardDeleteButton}
                 >
                   Hapus
                 </button>
               </div>
             </div>
-            <p className="text-gray-400 text-sm flex-grow">{p.shortDesc}</p>
+            <p className={styles.cardDescription}>{p.shortDesc}</p>
           </motion.div>
         ))}
       </div>
