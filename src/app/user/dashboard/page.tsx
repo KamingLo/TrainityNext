@@ -1,83 +1,107 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+// 'useSession' dan 'useRouter' telah disimulasikan di bawah
+// karena tidak tersedia di lingkungan pratinjau ini.
+// Hapus/Komentari import asli saat menggunakan simulasi
+// import { useRouter } from "next/navigation";
+// import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-// Impor ikon dari lucide-react untuk menggantikan emoticon
+// Impor ikon dari lucide-react
 import {
-  CheckCircle,
-  BookOpen,
-  BarChart3,
   Play,
   Award,
-  Zap,
-  Settings,
-  ClipboardCheck,
+  Search,
+  BookOpen,
 } from "lucide-react";
 
-// Definisikan interface untuk data kursus
+// --- SIMULASI/MOCK UNTUK LINGKUNGAN INI ---
+// Di proyek Next.js Anda, Anda akan menggunakan import asli
+const useMockSession = () => ({
+  data: { user: { name: "Fabio", email: "fabio@trainity.com" } },
+  status: "authenticated",
+});
+const useMockRouter = () => ({
+  push: (path: string) => alert(`Simulasi navigasi ke: ${path}`),
+});
+const useSession = useMockSession;
+const useRouter = useMockRouter;
+// --- AKHIR DARI SIMULASI ---
+
+// --- INTERFACE DATA ---
 interface Course {
   id: number;
   title: string;
-  progress: number;
-  duration: string;
-  status: "completed" | "in-progress" | "not-started";
   category: string;
+  imageUrl: string;
 }
 
+interface InProgressCourse extends Course {
+  progress: number;
+}
+
+// --- KOMPONEN UTAMA ---
 export default function UserDashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [courses, setCourses] = useState<Course[]>([]);
+
+  const [inProgressCourses, setInProgressCourses] = useState<
+    InProgressCourse[]
+  >([]);
+  const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Arahkan pengguna jika tidak terautentikasi
     if (status === "unauthenticated") router.push("/");
   }, [status, router]);
 
   useEffect(() => {
-    // Simulasi pengambilan data kursus
-    const coursesData: Course[] = [
+    // === SIMULASI DATA BACKEND-FRIENDLY ===
+    // Backend hanya mengambil kursus aktif (LIMIT 4)
+    // dan kursus rekomendasi (LIMIT 3)
+    
+    const coursesData: InProgressCourse[] = [
       {
         id: 1,
-        title: "JavaScript Fundamentals",
-        progress: 75,
-        duration: "8 jam",
-        status: "in-progress",
-        category: "Programming",
+        title: "React untuk Pemula",
+        progress: 30,
+        category: "Frontend",
+        imageUrl: "https://placehold.co/600x400/3B82F6/FFFFFF?text=React",
       },
       {
         id: 2,
-        title: "React untuk Pemula",
-        progress: 30,
-        duration: "12 jam",
-        status: "in-progress",
-        category: "Frontend",
-      },
-      {
-        id: 3,
-        title: "HTML & CSS Dasar",
-        progress: 100,
-        duration: "6 jam",
-        status: "completed",
-        category: "Web Development",
-      },
-      {
-        id: 4,
-        title: "Node.js Backend",
-        progress: 0,
-        duration: "10 jam",
-        status: "not-started",
-        category: "Backend",
+        title: "JavaScript Fundamentals",
+        progress: 75,
+        category: "Programming",
+        imageUrl: "https://placehold.co/600x400/F59E0B/FFFFFF?text=JavaScript",
       },
     ];
 
-    setCourses(coursesData);
+    const recommendedData: Course[] = [
+      {
+        id: 3,
+        title: "Node.js & Express",
+        category: "Backend",
+        imageUrl: "https://placehold.co/600x400/10B981/FFFFFF?text=Node.js",
+      },
+      {
+        id: 4,
+        title: "UI/UX Design with Figma",
+        category: "Desain",
+        imageUrl: "https://placehold.co/600x400/8B5CF6/FFFFFF?text=Figma",
+      },
+      {
+        id: 5,
+        title: "Dasar-Dasar HTML & CSS",
+        category: "Web Dasar",
+        imageUrl: "https://placehold.co/600x400/EF4444/FFFFFF?text=HTML/CSS",
+      },
+    ];
+
+    setInProgressCourses(coursesData);
+    setRecommendedCourses(recommendedData);
     setLoading(false);
   }, []);
 
-  // Tampilkan loading state
   if (status === "loading" || loading) {
     return (
       <div className="flex h-screen items-center justify-center text-gray-400">
@@ -86,230 +110,158 @@ export default function UserDashboardPage() {
     );
   }
 
-    const user = session?.user;
-
-  // Kalkulasi statistik
-  const completedCourses = courses.filter(
-    (course) => course.status === "completed"
-  ).length;
-  const inProgressCourses = courses.filter(
-    (course) => course.status === "in-progress"
-  ).length;
-  const totalProgress =
-    courses.length > 0
-      ? courses.reduce((acc, course) => acc + course.progress, 0) /
-        courses.length
-      : 0;
+  const user: { name?: string; email?: string } | undefined = session?.user;
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-8 pt-32">
+    <div className="min-h-screen bg-gray-950 text-white p-8 pt-40"> {/* pt-40 untuk memberi ruang di bawah header fixed */}
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-semibold mb-2">Dashboard</h1>
+          <h1 className="text-3xl font-semibold mb-2">
+            Selamat datang,{" "}
+            <span className="text-blue-400">{user?.name}</span>!
+          </h1>
           <p className="text-gray-400">
-            Selamat datang kembali,{" "}
-            <span className="text-blue-400 font-medium">{user?.name}</span>!
-            Siap melanjutkan perjalanan belajar Anda?
+            Teruskan progres Anda dan capai tujuan belajar Anda.
           </p>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Stat Card: Kursus Selesai */}
-          <div className="p-6 rounded-xl bg-gray-900 border border-gray-800">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-gray-400 text-sm font-medium mb-1">
-                  Kursus Selesai
-                </h3>
-                <p className="text-2xl font-bold text-green-400">
-                  {completedCourses}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-green-400/20 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-green-400" />
-              </div>
-            </div>
-          </div>
-
-          {/* Stat Card: Sedang Dipelajari */}
-          <div className="p-6 rounded-xl bg-gray-900 border border-gray-800">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-gray-400 text-sm font-medium mb-1">
-                  Sedang Dipelajari
-                </h3>
-                <p className="text-2xl font-bold text-blue-400">
-                  {inProgressCourses}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-blue-400/20 rounded-full flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-blue-400" />
-              </div>
-            </div>
-          </div>
-
-          {/* Stat Card: Rata-rata Progress */}
-          <div className="p-6 rounded-xl bg-gray-900 border border-gray-800">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-gray-400 text-sm font-medium mb-1">
-                  Rata-rata Progress
-                </h3>
-                <p className="text-2xl font-bold text-purple-400">
-                  {Math.round(totalProgress)}%
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-purple-400/20 rounded-full flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-purple-400" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Column - Course Progress */}
-          <div className="lg:col-span-2">
-            <div className="p-6 rounded-xl bg-gray-900 border border-gray-800">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold">Progress Kursus</h2>
-                <button
-                  onClick={() => router.push("/kursus")}
-                  className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
-                >
-                  Lihat Semua Kursus
-                </button>
-              </div>
-
-              <div className="space-y-6">
-                {courses.map((course) => (
-                  <div
-                    key={course.id}
-                    className="flex items-center justify-between p-4 bg-gray-800 rounded-lg border border-gray-700"
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-medium text-white mb-1">
-                        {course.title}
-                      </h3>
-                      <div className="flex items-center gap-4 text-sm text-gray-400">
-                        <span>{course.duration}</span>
-                        <span>•</span>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs ${
-                            course.status === "completed"
-                              ? "bg-green-400/20 text-green-400"
-                              : course.status === "in-progress"
-                              ? "bg-blue-400/20 text-blue-400"
-                              : "bg-gray-400/20 text-gray-400"
-                          }`}
-                        >
-                          {course.status === "completed"
-                            ? "Selesai"
-                            : course.status === "in-progress"
-                            ? "Dalam Progress"
-                            : "Belum Dimulai"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                      <div className="w-24 bg-gray-700 rounded-full h-2 overflow-hidden">
-                        <div
-                          className={`h-2 rounded-full transition-all duration-300 ${
-                            course.status === "completed"
-                              ? "bg-green-400"
-                              : course.status === "in-progress"
-                              ? "bg-blue-400"
-                              : "bg-gray-500"
-                          }`}
-                          style={{ width: `${course.progress}%` }}
-                        ></div>
-                      </div>
-                      <span
-                        className={`font-medium w-12 ${
-                          course.status === "completed"
-                            ? "text-green-400"
-                            : course.status === "in-progress"
-                            ? "text-blue-400"
-                            : "text-gray-400"
-                        }`}
-                      >
-                        {course.progress}%
-                      </span>
-                    </div>
-                  </div>
+        {/* Layout Utama (Satu Kolom) */}
+        <div className="w-full space-y-12">
+          
+          {/* Bagian: Kursus Sedang Berjalan */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-6">Kursus Sedang Berjalan</h2>
+            {inProgressCourses.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {inProgressCourses.map((course) => (
+                  <InProgressCourseCard 
+                    key={course.id} 
+                    course={course} 
+                    router={router} 
+                  />
                 ))}
               </div>
-            </div>
-          </div>
+            ) : (
+              <NoCourseCard router={router} />
+            )}
+          </section>
 
-          {/* Right Column - Quick Actions & Recent Activity */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
-            <div className="p-6 rounded-xl bg-gray-900 border border-gray-800">
-              <h2 className="text-xl font-semibold mb-4">Aksi Cepat</h2>
-              <div className="space-y-3">
-                <button
-                  onClick={() => router.push("/kursus")}
-                  className="w-full flex items-center gap-3 p-3 bg-gray-800 hover:bg-gray-750 rounded-lg transition-colors text-left"
-                >
-                  <Play className="w-5 h-5 text-blue-400" />
-                  <span>Lanjutkan Belajar</span>
-                </button>
-                <button
-                  onClick={() => router.push("/sertifikat")}
-                  className="w-full flex items-center gap-3 p-3 bg-gray-800 hover:bg-gray-750 rounded-lg transition-colors text-left"
-                >
-                  <Award className="w-5 h-5 text-green-400" />
-                  <span>Sertifikat Saya</span>
-                </button>
-                <button
-                  onClick={() => router.push("/quiz")}
-                  className="w-full flex items-center gap-3 p-3 bg-gray-800 hover:bg-gray-750 rounded-lg transition-colors text-left"
-                >
-                  <Settings className="w-5 h-5 text-gray-400" />
-                  <span>Edit Profil</span>
-                </button>
-              </div>
+          {/* Bagian: Rekomendasi Kursus */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-6">Rekomendasi Untuk Anda</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {recommendedCourses.map((course) => (
+                <RecommendedCourseCard 
+                  key={course.id} 
+                  course={course} 
+                  router={router} 
+                />
+              ))}
             </div>
+          </section>
 
-            {/* Recent Activity */}
-            <div className="p-6 rounded-xl bg-gray-900 border border-gray-800">
-              <h2 className="text-xl font-semibold mb-4">Aktivitas Terbaru</h2>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-8 h-8 bg-blue-400/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <ClipboardCheck className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <div>
-                    <p className="text-white">Menyelesaikan Quiz JavaScript</p>
-                    <p className="text-gray-400 text-xs">2 jam yang lalu</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-8 h-8 bg-green-400/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Play className="w-4 h-4 text-green-400" />
-                  </div>
-                  <div>
-                    <p className="text-white">Memulai Kursus React</p>
-                    <p className="text-gray-400 text-xs">1 hari yang lalu</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-8 h-8 bg-purple-400/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Award className="w-4 h-4 text-purple-400" />
-                  </div>
-                  <div>
-                    <p className="text-white">Mendapatkan Sertifikat HTML</p>
-                    <p className="text-gray-400 text-xs">3 hari yang lalu</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// --- KOMPONEN PENDUKUNG ---
+
+/**
+ * Kartu untuk menampilkan kursus yang sedang berjalan (dengan progress bar)
+ */
+function InProgressCourseCard({ course, router }: { course: InProgressCourse, router: any }) {
+  return (
+    <div className="rounded-xl bg-gray-900 border border-gray-800 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-blue-500/20 hover:-translate-y-1">
+      <img
+        src={course.imageUrl}
+        alt={course.title}
+        className="w-full h-40 object-cover"
+      />
+      <div className="p-5">
+        <span className="text-xs font-medium text-blue-400 bg-blue-900/50 px-2 py-1 rounded-full">
+          {course.category}
+        </span>
+        <h3 className="font-semibold text-lg text-white my-3">
+          {course.title}
+        </h3>
+        
+        {/* Progress Bar */}
+        <div className="mb-4">
+          <div className="flex justify-between text-sm text-gray-400 mb-1">
+            <span>Progres</span>
+            <span className="font-semibold text-blue-400">{course.progress}%</span>
+          </div>
+          <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
+            <div
+              className="bg-blue-400 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${course.progress}%` }}
+            ></div>
+          </div>
+        </div>
+        
+        <button
+          onClick={() => router.push(`/kursus/${course.id}`)}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors font-medium"
+        >
+          <Play className="w-5 h-5" />
+          Lanjutkan
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Kartu untuk menampilkan kursus yang direkomendasikan (tanpa progress bar)
+ */
+function RecommendedCourseCard({ course, router }: { course: Course, router: any }) {
+  return (
+    <div className="rounded-xl bg-gray-900 border border-gray-800 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-gray-700/20 hover:-translate-y-1">
+      <img
+        src={course.imageUrl}
+        alt={course.title}
+        className="w-full h-32 object-cover"
+      />
+      <div className="p-5">
+        <span className="text-xs font-medium text-gray-400 bg-gray-700/50 px-2 py-1 rounded-full">
+          {course.category}
+        </span>
+        <h3 className="font-semibold text-base text-white my-3">
+          {course.title}
+        </h3>
+        <button
+          onClick={() => router.push(`/kursus/${course.id}`)}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors font-medium text-sm"
+        >
+          <BookOpen className="w-4 h-4" />
+          Lihat Detail
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
+/**
+ * Kartu placeholder jika tidak ada kursus
+ */
+function NoCourseCard({ router }: { router: any }) {
+  return (
+    <div className="p-6 md:col-span-2 rounded-xl bg-gray-900 border border-gray-800 border-dashed flex flex-col items-center justify-center text-center h-full">
+      <Search className="w-12 h-12 text-gray-600 mb-4" />
+      <h3 className="text-xl font-semibold mb-2">Anda Belum Memulai Kursus</h3>
+      <p className="text-gray-400 mb-6">
+        Cari kursus yang Anda minati untuk memulai perjalanan!
+      </p>
+      <button
+        onClick={() => router.push("/kursus")}
+        className="flex items-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors font-medium"
+      >
+        Cari Kursus
+      </button>
     </div>
   );
 }
