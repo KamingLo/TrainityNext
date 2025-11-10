@@ -50,11 +50,26 @@ export async function POST(req: Request) {
 
 // GET ALL
 export async function GET(req: Request) {
-    try {
-        await connectDB();
-        const products = await Product.find().sort({ createdAt: -1 });
-        return NextResponse.json(products);
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await connectDB();
+
+    const { searchParams } = new URL(req.url);
+    const limitParam = searchParams.get("limit");
+
+    // Default: tanpa limit (semua data)
+    let limit = 0;
+
+    // Jika user set ?limit=2 atau angka lain
+    if (limitParam && !isNaN(Number(limitParam))) {
+      limit = Number(limitParam);
     }
+
+    const products = await Product.find()
+      .sort({ createdAt: -1 })
+      .limit(limit); // jika limit = 0 => tidak dibatasi
+
+    return NextResponse.json(products);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
