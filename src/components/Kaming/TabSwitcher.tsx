@@ -1,11 +1,6 @@
 // src/components/product/TabSwitcher.tsx
 import styles from "@/styles/kaming.module.css"; // Impor
 
-interface Tab {
-  key: string;
-  label: string;
-}
-
 interface TabSwitcherProps<T extends string> {
   tabs: { key: T; label: string }[];
   activeTab: T;

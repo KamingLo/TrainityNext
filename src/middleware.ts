@@ -16,7 +16,7 @@ export async function middleware(req: NextRequest) {
   }
 
   if (token) {
-      const role = (token as any).role;
+      const role = (token as CustomToken).role;
       if (isAdminPath && role !== "admin") {
           const url = req.nextUrl.clone();
           url.pathname = "/user/dashboard";

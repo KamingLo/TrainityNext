@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import styles from "@/styles/kaming.module.css"; // Impor
 
-// Asumsikan tipe ini ada di file terpusat, misal `types/index.ts`
 interface Video {
   idPelajaran?: string;
   _id?: string;

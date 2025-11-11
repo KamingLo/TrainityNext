@@ -199,8 +199,7 @@ export default function ProductsPage() {
             >
               <h3 className={styles.modal_titleDelete}>Hapus Kursus Ini?</h3>
               <p className={styles.modal_text}>
-                "{productToDelete.name}" akan dihapus permanen. Tindakan ini
-                tidak dapat dibatalkan.
+                {`${productToDelete.name} akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.`}
               </p>
               <div className={styles.modal_actionsCenter}>
                 <button

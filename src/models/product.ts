@@ -1,17 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
-
-export interface IVideo {
-  _id?: string;
-  namaPelajaran: string;
-  kodePelajaran: string;
-}
-
-export interface IProduct extends Document {
-  name: string;
-  shortDesc: string;
-  desc: string;
-  video: IVideo[];
-}
+import mongoose, { Schema } from "mongoose";
 
 const VideoSchema = new Schema<IVideo>({
   namaPelajaran: { type: String, required: true },

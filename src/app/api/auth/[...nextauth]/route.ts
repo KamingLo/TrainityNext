@@ -1,7 +1,8 @@
-import NextAuth, { type AuthOptions } from "next-auth";
+import NextAuth, { type AuthOptions, type User, type Session } from "next-auth";
+import { type JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { connectDB } from "@/lib/db";
-import User from "@/models/user";
+import UserModel from "@/models/user";
 import bcrypt from "bcryptjs";
 
 export const authOptions: AuthOptions = {
@@ -13,14 +14,13 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // ✅ tambahkan pengecekan aman biar nggak error 'possibly undefined'
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Isi semua field form");
         }
 
         await connectDB();
 
-        const user = await User.findOne({ email: credentials.email }).select("+password");
+        const user = await UserModel.findOne({ email: credentials.email }).select("+password");
         if (!user) throw new Error("User tidak ditemukan");
 
         const valid = await bcrypt.compare(credentials.password, user.password);
@@ -40,26 +40,26 @@ export const authOptions: AuthOptions = {
     signIn: "/auth/login",
   },
 
-  session: {
-    strategy: "jwt" as const, // ✅ fix: pastikan ini 'as const' biar sesuai tipe
-  },
+  session: { strategy: "jwt" },
 
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
-    // ✅ tambahkan tipe parameter biar nggak implicit any
-    async jwt({ token, user }: { token: any; user?: any }) {
+    async jwt({ token, user }: { token: JWT; user?: User }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
+
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (token) {
-        session.user = session.user || {};
-        session.user.id = token.id;
-        session.user.role = token.role;
+        session.user = {
+          ...session.user,
+          id: token.id,
+          role: token.role,
+        };
       }
       return session;
     },

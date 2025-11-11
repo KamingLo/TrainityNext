@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams} from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import BackButton from "@/components/kaming/backbutton";
 import Section from "@/components/sections";
@@ -10,23 +10,8 @@ import TabSwitcher from "@/components/kaming/TabSwitcher";
 import ProductForm, { ProductFormData } from "@/components/kaming/ProductForm";
 import styles from "@/styles/kaming.module.css"; // <-- IMPORT FILE CSS UTAMA
 
-interface Video {
-  _id: string;
-  namaPelajaran: string;
-  kodePelajaran: string;
-}
-
-interface Product {
-  _id: string;
-  name: string;
-  shortDesc: string;
-  desc: string;
-  video: Video[];
-}
-
 export default function EditProductPage() {
   const { id } = useParams();
-  const router = useRouter();
   const [tab, setTab] = useState<"kursus" | "video">("kursus");
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
@@ -61,9 +46,9 @@ export default function EditProductPage() {
           shortDesc: data.shortDesc || "",
           desc: data.desc || "",
         });
-      } catch (err: any) {
-        setMessage(err.message);
-      }
+      } catch (err: AppError) {
+        if (err instanceof Error) setMessage(err.message);
+    }
     })();
   }, [id]);
 
@@ -80,8 +65,8 @@ export default function EditProductPage() {
       if (!res.ok) throw new Error(body.error || "Gagal update produk");
       setProduct(body.product);
       setMessage("✅ Perubahan kursus tersimpan");
-    } catch (err: any) {
-      setMessage(err.message);
+    } catch (err: AppError) {
+        if (err instanceof Error) setMessage(err.message);
     } finally {
       setLoading(false);
     }
@@ -103,8 +88,8 @@ export default function EditProductPage() {
       setNamaPelajaran("");
       setKodePelajaran("");
       setMessage("✅ Video ditambahkan");
-    } catch (err: any) {
-      setMessage(err.message);
+    } catch (err: AppError) {
+        if (err instanceof Error) setMessage(err.message);
     } finally {
       setLoading(false);
     }
@@ -130,8 +115,8 @@ export default function EditProductPage() {
       setProduct(body.product);
       setMessage("✅ Video diperbarui");
       setShowEditModal(false);
-    } catch (err: any) {
-      setMessage(err.message);
+    } catch (err: AppError) {
+        if (err instanceof Error) setMessage(err.message);
     } finally {
       setLoading(false);
     }
@@ -150,8 +135,8 @@ export default function EditProductPage() {
       setProduct(body.product);
       setMessage("🗑️ Video dihapus");
       setShowDeleteModal(false);
-    } catch (err: any) {
-      setMessage(err.message);
+    } catch (err: AppError) {
+        if (err instanceof Error) setMessage(err.message);
     } finally {
       setLoading(false);
     }
@@ -339,7 +324,7 @@ export default function EditProductPage() {
             >
               <h3 className={styles.modal_titleDelete}>Hapus Video Ini?</h3>
               <p className={styles.modal_text}>
-                "{selectedVideo.namaPelajaran}" akan dihapus permanen.
+                {`${selectedVideo.namaPelajaran} akan dihapus permanen.`}
               </p>
               <div className={styles.modal_actionsCenter}>
                 <button
