@@ -1,31 +1,32 @@
 import React from 'react';
 import { Code, Server, Layers } from 'lucide-react';
+import styles from "@/styles/charless.categories.module.css";
 
 const Categories = () => {
   const categories = [
-    { icon: <Code className="w-8 h-8" />, name: "Front End Development" },
-    { icon: <Server className="w-8 h-8" />, name: "Back End Development" },
-    { icon: <Layers className="w-8 h-8" />, name: "Framework & Library" }
+    { icon: <Code className={styles.icon} />, name: "Front End Development" },
+    { icon: <Server className={styles.icon} />, name: "Back End Development" },
+    { icon: <Layers className={styles.icon} />, name: "Framework & Library" }
   ];
 
   return (
-    <section className="py-20">
-      <div className="w-[90%] lg:w-[80%] mx-auto px-4">
-        <div className="bg-gradient-to-br from-purple-950/30 to-blue-950/50 border border-purple-500/20 rounded-3xl p-8 md:p-12">
-          <h2 className="text-4xl font-bold text-white text-center mb-12">
+    <section className={styles.section}>
+      <div className={styles.container}>
+        <div className={styles.card}>
+          <h2 className={styles.title}>
             Kategori Kursus yang Kami Sediakan
           </h2>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className={styles.grid}>
             {categories.map((category, index) => (
               <div 
                 key={index}
-                className="group bg-white/5 border border-white/10 rounded-xl p-8 hover:bg-white/10 hover:border-blue-500/50 transition-all cursor-pointer text-center"
+                className={styles.categoryCard}
               >
-                <div className="w-16 h-16 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400 mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <div className={styles.iconWrapper}>
                   {category.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-white">{category.name}</h3>
+                <h3 className={styles.categoryName}>{category.name}</h3>
               </div>
             ))}
           </div>

@@ -6,7 +6,7 @@ import './payment.css';
 export default function PaymentPaymentPage() {
   return (
     <>
-      <Script src="/js/testing/payment.js" strategy="afterInteractive" />
+      <Script src="/js/joe/payment.js" strategy="afterInteractive" />
       <PaymentForm />
     </>
   );

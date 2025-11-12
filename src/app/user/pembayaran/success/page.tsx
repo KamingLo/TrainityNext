@@ -5,7 +5,7 @@ import './success.css';
 export default function SuccessPage() {
   return (
     <>
-      <Script src="/js/testing/success.js" strategy="afterInteractive" />
+      <Script src="/js/joe/success.js" strategy="afterInteractive" />
       <SuccessForm />
     </>
   );

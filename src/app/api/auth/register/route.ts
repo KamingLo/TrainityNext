@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Semua field wajib diisi." }, { status: 400 });
     }
 
-    if(password.length <= 8 && confirm.length <= 8){
+    if(password.length <= 8 || confirm.length <= 8){
         return NextResponse.json({ error: "Password harus 8 karakter"}, {status: 400});
     }
 

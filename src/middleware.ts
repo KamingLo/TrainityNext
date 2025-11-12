@@ -8,7 +8,7 @@ export async function middleware(req: NextRequest) {
 
   const isUserPath = pathname.startsWith("/user");
   const isAdminPath = pathname.startsWith("/admin");
-  
+
   if (!token && (isUserPath || isAdminPath)) {
     const url = req.nextUrl.clone();
     url.pathname = "/auth/login";
@@ -16,20 +16,17 @@ export async function middleware(req: NextRequest) {
   }
 
   if (token) {
-      const role = (token as any).role;
-      if (isAdminPath && role !== "admin") {
-          const url = req.nextUrl.clone();
-          url.pathname = "/user/dashboard";
-          return NextResponse.redirect(url);
+    const role = (token as CustomToken).role;
+    if (isAdminPath && role !== "admin") {
+      const url = req.nextUrl.clone();
+      url.pathname = "/user/dashboard";
+      return NextResponse.redirect(url);
     }
-
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
