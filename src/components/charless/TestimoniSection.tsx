@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from "@/styles/charless.testimoni.module.css";
 
 const testimonials = [
   {
@@ -30,30 +31,30 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="py-20 overflow-hidden">
-      <div className="w-[90%] lg:w-[80%] mx-auto px-4 mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold text-white text-center">
+    <section className={styles.section}>
+      <div className={styles.container}>
+        <h2 className={styles.title}>
           Kata Mereka yang Belajar Bersama Kami
         </h2>
       </div>
 
-      <div className="relative">
-        <div className="flex gap-6 animate-scroll">
+      <div className={styles.scrollWrapper}>
+        <div className={styles.scrollContainer}>
           {[...testimonials, ...testimonials].map((testimonial, index) => (
             <div 
               key={index}
-              className="flex-shrink-0 w-96 bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4"
+              className={styles.card}
             >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+              <div className={styles.cardHeader}>
+                <div className={styles.avatar}>
                   {testimonial.name[0]}
                 </div>
                 <div>
-                  <div className="font-semibold text-white">{testimonial.name}</div>
-                  <div className="text-sm text-gray-400">{testimonial.institution}</div>
+                  <div className={styles.name}>{testimonial.name}</div>
+                  <div className={styles.institution}>{testimonial.institution}</div>
                 </div>
               </div>
-              <p className="text-gray-300 leading-relaxed">{testimonial.quote}</p>
+              <p className={styles.quote}>{testimonial.quote}</p>
             </div>
           ))}
         </div>
