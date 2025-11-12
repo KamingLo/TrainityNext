@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 // Import hooks yang diperlukan dari React
 import { useState, useEffect } from "react"; 
 // Hapus import 'Section', 'useSession', dan 'Link' karena menyebabkan error kompilasi di lingkungan ini.
@@ -92,40 +93,25 @@ export default function App() {
         <p className="text-gray-400">Halo, {user?.name}! Selamat datang di panel admin</p>
       </div>
 
-      {/* Statistics Cards - HANYA 3 KARTU */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-white">{dashboardData.stats.totalUsers}</div>
-          <div className="text-gray-300 text-sm">Total Users</div>
-        </div>
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-white">{dashboardData.stats.totalProducts}</div>
-          <div className="text-gray-300 text-sm">Total Products</div>
-        </div>
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-white">{dashboardData.stats.totalReviews}</div>
-          <div className="text-gray-300 text-sm">Total Reviews</div>
-        </div>
-      </div>
 
       {/* Quick Actions */}
       <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 mb-8">
         <h2 className="text-2xl font-semibold mb-4 text-center">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Ganti <Link> dengan <a> */}
-          <a href="/admin/reviews" className="block">
+          <Link href="/admin/review" className="block">
             <div className="bg-blue-500/20 border border-blue-500/30 rounded-xl p-4 text-center hover:bg-blue-500/30 transition-all cursor-pointer">
               <div className="text-2xl mb-2">⭐</div>
               <div className="font-semibold text-white">Manage Reviews</div>
-              <div className="text-blue-300 text-sm">{dashboardData.stats.totalReviews} reviews</div>
+                <div className="text-gray-400 text-sm">Kelola ulasan dan testimoni pelanggan</div>
             </div>
-          </a>
+          </Link>
           
           <a href="/admin/products" className="block">
             <div className="bg-green-500/20 border border-green-500/30 rounded-xl p-4 text-center hover:bg-green-500/30 transition-all cursor-pointer">
               <div className="text-2xl mb-2">📚</div>
               <div className="font-semibold text-white">Manage Products</div>
-              <div className="text-green-300 text-sm">{dashboardData.stats.totalProducts} products</div>
+                <div className="text-gray-400 text-sm">Kelola semua data inventaris barang</div>
             </div>
           </a>
           
@@ -133,7 +119,7 @@ export default function App() {
             <div className="bg-purple-500/20 border border-purple-500/30 rounded-xl p-4 text-center hover:bg-purple-500/30 transition-all cursor-pointer">
               <div className="text-2xl mb-2">👥</div>
               <div className="font-semibold text-white">Manage Users</div>
-              <div className="text-purple-300 text-sm">{dashboardData.stats.totalUsers} users</div>
+                <div className="text-gray-400 text-sm">Lihat dan atur semua pengguna</div>
             </div>
           </a>
           
@@ -141,7 +127,7 @@ export default function App() {
             <div className="bg-orange-500/20 border border-orange-500/30 rounded-xl p-4 text-center hover:bg-orange-500/30 transition-all cursor-pointer">
               <div className="text-2xl mb-2">👤</div>
               <div className="font-semibold text-white">View Profile</div>
-              <div className="text-orange-300 text-sm">Admin settings</div>
+              <div className="text-gray-400 text-sm">Ubah informasi akun dan kata sandi</div>
             </div>
           </a>
         </div>
@@ -190,7 +176,7 @@ export default function App() {
                       <h4 className="font-semibold text-white">{product.name}</h4>
                       <span className="text-green-400 font-bold">
                         {/* Tambahkan pengecekan jika price tidak ada */}
-                        Rp {product.price ? product.price.toLocaleString() : 'N/A'}
+                        Rp {"25000"}
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-sm">
@@ -198,12 +184,9 @@ export default function App() {
                       <span className="text-green-400">● Active</span>
                     </div>
                     <div className="flex gap-2 mt-3">
-                      <button className="bg-blue-500 hover:bg-blue-400 px-3 py-1 rounded text-xs text-white transition-all">
-                        Edit
-                      </button>
-                      <button className="bg-gray-500 hover:bg-gray-400 px-3 py-1 rounded text-xs text-white transition-all">
+                      <Link href={`/admin/produk/${product._id}`} className="bg-gray-500 hover:bg-gray-400 px-3 py-1 rounded text-xs text-white transition-all">
                         View
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 ))
@@ -213,9 +196,9 @@ export default function App() {
             </div>
           )}
 
-          <a href="/admin/products" className="block text-center mt-4 text-blue-400 hover:text-blue-300">
+          <Link href="/admin/produk" className="block text-center mt-4 text-blue-400 hover:text-blue-300">
             View All Products →
-          </a>
+          </Link>
         </div>
       </div>
 
