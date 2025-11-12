@@ -1,0 +1,124 @@
+
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* 1 kolom di mobile */
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 2rem auto; /* Beri jarak dari atas/bawah */
+}
+
+/* Desktop: 2 kolom */
+@media (min-width: 768px) {
+  .detailGrid {
+    grid-template-columns: 3fr 2fr;
+    gap: 2.5rem;
+  }
+}
+
+.imageWrapper {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden; /* Penting untuk memaksa radius di gambar */
+  background-color: #1C1C1E; /* Background jika gambar gagal load */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  align-self: start; /* Mencegah kolom ini meregang */
+}
+
+.productImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block; /* Menghilangkan spasi ekstra di bawah gambar */
+}
+
+/* Kolom Kanan: "Kartu" Detail */
+.detailsWrapper {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(60, 60, 60);
+  background-color: rgb(10, 10, 10, 0.30);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.productTitle {
+  font-size: 2.5rem;
+  color: #FFFFFF;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+.productDescription {
+  font-size: 1.1rem;
+  color: #B0B0B0; /* Warna abu-abu terang untuk deskripsi */
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* Box Aksi: "Kartu" di dalam kartu */
+.actionBox {
+  border: 1px solid rgb(60, 60, 60);
+  background-color: rgb(10, 10, 10, 0.30);/* Sedikit lebih terang dari card utama */
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: auto; /* Mendorong box ini ke bawah */
+}
+
+.productPrice {
+  font-size: 1.8rem;
+  font-weight: 700;
+  /* Warna hijau terang untuk "Gratis" agar menonjol */
+  color: #30D158; 
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.actionButtonContainer {
+  width: 100%;
+}
+
+/* Styling Tombol (Vibrant Dark Mode) */
+.actionButton_primary,
+.actionButton_owned,
+.actionButton_secondary {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Tombol Utama (Beli) - Biru Terang */
+.actionButton_primary {
+  background-color: #0A84FF;
+  color: white;
+}
+
+.actionButton_primary:hover {
+  background-color: #0070e0;
+}
+
+/* Tombol Sudah Dimiliki (Mulai Belajar) - Hijau Terang */
+.actionButton_owned {
+  background-color: #30D158;
+  color: white;
+}
+
+.actionButton_owned:hover {
+  background-color: #2ab44d;
+}
+
+.actionButton_secondary {
+  background-color: #3A3A3C;
+  color: #FFFFFF;
+}
+
+.actionButton_secondary:hover {
+  background-color: #4a4a4c;
+}

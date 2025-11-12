@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
-import styles from "@/styles/kaming.module.css"; // <-- Impor
+
+// DIUBAH: Impor dari common.module.css
+import styles from "@/styles/kaming/common.module.css";
 
 interface SectionProps {
   id?: string;
@@ -12,7 +14,8 @@ export default function Section({
   className = "",
   children,
 }: SectionProps) {
-
+  
+  // Menggabungkan kelas default .section dengan kelas tambahan dari props
   const combinedClassName = `${styles.section} ${className}`.trim();
 
   return (

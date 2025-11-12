@@ -4,7 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import styles from "@/styles/kaming.module.css"; // Impor
+
+// DIUBAH: Impor dari common.module.css
+import styles from "@/styles/kaming/common.module.css";
 
 export default function Footer() {
   const path = usePathname();
@@ -107,8 +109,7 @@ export default function Footer() {
               info@trainity.com
             </Link>
             <br />
-            Phone:{" "}
-            <span className={styles.footerPhone}>+62 838-3536-0789</span>
+            Phone: <span className={styles.footerPhone}>+62 838-3536-0789</span>
           </p>
           <div className={styles.socialsContainer}>
             <Link
