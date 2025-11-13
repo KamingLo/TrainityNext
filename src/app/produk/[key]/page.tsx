@@ -57,7 +57,7 @@ export default function DetailProdukPage() {
 
   // Fungsi untuk handle submit review
   const handleSubmitReview = async (reviewData: { rating: number; comment: string }) => {
-    const response = await fetch('/api/reviews', {
+    const response = await fetch('/api/user/review', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -149,11 +149,8 @@ export default function DetailProdukPage() {
         </div>
       </div>
 
-      {/* Komponen Form Review */}
       <ReviewForm 
-        productId={product._id}
         productKey={productKey}
-        onSubmit={handleSubmitReview}
       />
     </Section>
   );

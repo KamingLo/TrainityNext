@@ -4,7 +4,7 @@ import Section from "@/components/sections";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import styles from "@/styles/michael/adminReview.module.css";
+import styles from "@/styles/michael/reviewAdmin.module.css";
 
 interface Review {
   _id: string;
@@ -35,7 +35,7 @@ export default function AdminReview() {
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/admin/review?page=${currentPage}&limit=${itemsPerPage}`);
+      const response = await fetch(`/api/admin/review`);
       const data = await response.json();
       
       if (response.ok) {
