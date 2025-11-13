@@ -6,7 +6,9 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
-import styles from "@/styles/kaming.module.css"; // Impor
+
+// DIUBAH: Impor dari common.module.css
+import styles from "@/styles/kaming/common.module.css";
 
 export default function NavigationBar() {
   const [isOpen, setIsOpen] = useState(false);

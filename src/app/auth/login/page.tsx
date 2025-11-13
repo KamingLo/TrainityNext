@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import BackButton from "@/components/kaming/backbutton";
 import Section from "@/components/sections";
-import styles from "@/styles/kaming.module.css"; // Impor
+
+// DIUBAH: Impor dari auth.module.css
+import styles from "@/styles/kaming/auth.module.css";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -46,6 +48,7 @@ export default function LoginPage() {
     <Section>
       <div className={styles.loginContainer}>
         <form onSubmit={handleLogin} className={styles.loginForm}>
+          {/* BackButton akan mengambil gayanya sendiri dari common.module.css */}
           <BackButton />
           <h2 className={styles.loginTitle}>Sign In</h2>
 
@@ -78,7 +81,7 @@ export default function LoginPage() {
               />
               <div className={styles.textRight}>
                 <Link
-                  href={`/auth/forget-password`}
+                  href={`/auth/forgot-password`} // Diubah dari forget-password
                   className={styles.linkSubtle}
                 >
                   Lupa Password?

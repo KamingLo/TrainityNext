@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BackButton from "@/components/kaming/backbutton";
-import styles from "@/styles/kaming.module.css"; // Impor
+import styles from "@/styles/kaming/auth.module.css"; // Impor
 import Section from "@/components/sections";
 
 export default function RegisterPage() {

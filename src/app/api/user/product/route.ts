@@ -3,51 +3,56 @@ import Product from "@/models/product";
 import UserProduct from "@/models/user_product"; 
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 export const dynamic = 'force-dynamic'; 
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // 1. Dapatkan sesi pengguna (jika ada)
+    const { searchParams } = new URL(request.url);
+    const key = searchParams.get('key'); // bisa undefined
+
     const session = await getServerSession(authOptions);
-    const userId = session?.user?.id
-    console.log(userId);
+    const userId = session?.user?.id;
 
     await connectDB();
 
-    // 2. Ambil data produk
-    const products = await Product.find({})
-      .select("name name_lowercase shortDesc video")
-      .slice("video", 1)
-      .lean<IProduct[]>(); // <--- PERBAIKAN: Beri tahu TypeScript ini adalah array IProduct
+    // --- Buat query
+    const query: any = {};
+    if (key) {
+      query.name = key; // filter jika key ada
+    }
 
-    // 3. Ambil data kepemilikan pengguna (jika login)
-    let ownedProductIds = new Set<string>();  
+    const products = await Product.find(query)
+      .select("name desc shortDesc video")
+      .slice("video", 1)
+      .lean<IProduct[]>(); // <-- array produk
+
+    // --- Ambil produk yang dimiliki user
+    let ownedProductIds = new Set<string>();
     if (userId) {
-      const userProducts = await UserProduct.find({ 
-        user: userId, 
-        status: 'aktif' 
+      const userProducts = await UserProduct.find({
+        user: userId,
+        status: 'aktif'
       })
       .select("product")
-      .lean<IUserProduct[]>(); // <--- PERBAIKAN: Beri tahu TypeScript ini adalah array IUserProduct
-      
+      .lean<IUserProduct[]>();
+
       ownedProductIds = new Set(userProducts.map(p => p.product.toString()));
     }
 
-    // 4. Format data
-    // Sekarang TypeScript tahu bahwa 'product' adalah IProduct
+    // --- Format produk
     const formattedProducts = products.map(product => {
       const firstVideo = product.video?.[0];
-      // 'product._id' sekarang dikenali, '?' tidak lagi diperlukan
-      const isOwned = ownedProductIds.has(product._id.toString()); 
+      const isOwned = ownedProductIds.has(product._id.toString());
 
       return {
-        _id: product._id.toString(), // '?' tidak lagi diperlukan
+        _id: product._id.toString(),
         name: product.name,
+        desc: product.desc,
         shortDesc: product.shortDesc,
-        kodePelajaranPertama: firstVideo ? firstVideo.kodePelajaran : null,
-        isOwned: isOwned
+        kodePelajaranPertama: firstVideo?.kodePelajaran ?? null,
+        isOwned
       };
     });
 

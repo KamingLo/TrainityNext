@@ -1,7 +1,9 @@
 // src/components/product/ProductList.tsx
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import styles from "@/styles/kaming.module.css"; // Impor
+
+// DIUBAH: Impor dari adminProductList.module.css
+import styles from "@/styles/kaming/adminProductList.module.css";
 
 interface Video {
   idPelajaran?: string;
@@ -32,7 +34,13 @@ export default function ProductList({ products, onDelete }: ProductListProps) {
 
   return (
     <>
+      {/* CATATAN: 
+        Kelas 'styles.listTitle' tidak ada di file CSS kita. 
+        Anda mungkin bermaksud menggunakan kelas lain, 
+        atau menambahkannya ke 'adminProductList.module.css' 
+      */}
       <h2 className={styles.listTitle}>Daftar Kursus</h2>
+      
       <div className={styles.productGrid}>
         {products.map((p) => (
           <motion.div

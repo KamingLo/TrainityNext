@@ -8,7 +8,10 @@ import TabSwitcher from "@/components/kaming/TabSwitcher";
 import AnimatedTabPanel from "@/components/kaming/AnimatedTabPanel";
 import ProductForm, { ProductFormData } from "@/components/kaming/ProductForm";
 import ProductList from "@/components/kaming/ProductList";
-import styles from "@/styles/kaming.module.css"; // <-- IMPORT FILE CSS UTAMA
+
+// DIUBAH: Impor modul spesifik yang dibutuhkan halaman ini
+import listStyles from "@/styles/kaming/adminProductList.module.css";
+import modalStyles from "@/styles/kaming/modal.module.css";
 
 interface Video {
   idPelajaran: string;
@@ -28,7 +31,7 @@ export default function ProductsPage() {
   const [tab, setTab] = useState<"create" | "list">("create");
   const [products, setProducts] = useState<Product[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
-  
+
   const [formData, setFormData] = useState<ProductFormData>({
     name: "",
     shortDesc: "",
@@ -90,7 +93,7 @@ export default function ProductsPage() {
   }
 
   async function handleConfirmDelete() {
-    if (!productToDelete) return; 
+    if (!productToDelete) return;
 
     setIsLoading(true);
     try {
@@ -111,17 +114,18 @@ export default function ProductsPage() {
   ];
 
   return (
-    <div className={styles.listPage_container}>
-      <Section id="hero" className={styles.listPage_heroSection}>
-        <h1 className={styles.listPage_title}>Manajemen Kursus</h1>
-        <p className={styles.listPage_subtitle}>
+    // Menggunakan 'listStyles' untuk gaya halaman
+    <div className={listStyles.listPage_container}>
+      <Section id="hero" className={listStyles.listPage_heroSection}>
+        <h1 className={listStyles.listPage_title}>Manajemen Kursus</h1>
+        <p className={listStyles.listPage_subtitle}>
           Tambah, ubah, dan kelola kursus pembelajaran digital Trainity.
         </p>
       </Section>
 
       <TabSwitcher tabs={tabs} activeTab={tab} onTabClick={setTab} />
 
-      <div className={styles.listPage_tabContentWrapper}>
+      <div className={listStyles.listPage_tabContentWrapper}>
         <AnimatePresence mode="wait">
           {tab === "create" && (
             <AnimatedTabPanel key="create">
@@ -131,42 +135,42 @@ export default function ProductsPage() {
                 onSubmit={handleCreateProduct}
                 submitText="Simpan Kursus"
               >
-                <div className={styles.listPage_videoFormContainer}>
-                   <h3 className={styles.listPage_videoFormTitle}>Tambah Video</h3>
-                   <div className={styles.listPage_inputGroup}>
-                     <input
-                       type="text"
-                       placeholder="Nama Pelajaran"
-                       value={videoFormData.namaPelajaran}
-                       onChange={(e) => setVideoFormData({ ...videoFormData, namaPelajaran: e.target.value })}
-                       className={styles.listPage_videoInput}
-                     />
-                     <input
-                       type="text"
-                       placeholder="Kode Pelajaran"
-                       value={videoFormData.kodePelajaran}
-                       onChange={(e) => setVideoFormData({ ...videoFormData, kodePelajaran: e.target.value })}
-                       className={styles.listPage_videoInput}
-                     />
-                     <button
-                       type="button"
-                       onClick={addVideoTemp}
-                       className={styles.listPage_addButton}
-                     >
-                       + Tambah
-                     </button>
-                   </div>
-                   {videos.length > 0 && (
-                     <ul className={styles.listPage_videoList}>
-                       {videos.map((v) => (
-                         <li key={v.idPelajaran} className={styles.listPage_videoListItem}>
-                           <span>{v.namaPelajaran}</span>
-                           <span className={styles.listPage_videoCode}>{v.kodePelajaran}</span>
-                         </li>
-                       ))}
-                     </ul>
-                   )}
-                 </div>
+                <div className={listStyles.listPage_videoFormContainer}>
+                  <h3 className={listStyles.listPage_videoFormTitle}>Tambah Video</h3>
+                  <div className={listStyles.listPage_inputGroup}>
+                    <input
+                      type="text"
+                      placeholder="Nama Pelajaran"
+                      value={videoFormData.namaPelajaran}
+                      onChange={(e) => setVideoFormData({ ...videoFormData, namaPelajaran: e.target.value })}
+                      className={listStyles.listPage_videoInput}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Kode Pelajaran"
+                      value={videoFormData.kodePelajaran}
+                      onChange={(e) => setVideoFormData({ ...videoFormData, kodePelajaran: e.target.value })}
+                      className={listStyles.listPage_videoInput}
+                    />
+                    <button
+                      type="button"
+                      onClick={addVideoTemp}
+                      className={listStyles.listPage_addButton}
+                    >
+                      + Tambah
+                    </button>
+                  </div>
+                  {videos.length > 0 && (
+                    <ul className={listStyles.listPage_videoList}>
+                      {videos.map((v) => (
+                        <li key={v.idPelajaran} className={listStyles.listPage_videoListItem}>
+                          <span>{v.namaPelajaran}</span>
+                          <span className={listStyles.listPage_videoCode}>{v.kodePelajaran}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </ProductForm>
             </AnimatedTabPanel>
           )}
@@ -182,29 +186,29 @@ export default function ProductsPage() {
         </AnimatePresence>
       </div>
 
-      {/* --- MODAL HAPUS (MENGGUNAKAN STYLE REUSABLE) --- */}
+      {/* --- MODAL HAPUS (MENGGUNAKAN 'modalStyles') --- */}
       <AnimatePresence>
         {isModalOpen && productToDelete && (
           <motion.div
-            className={styles.modal_backdrop}
+            className={modalStyles.modal_backdrop}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className={`${styles.modal_content} ${styles.modal_contentDelete}`}
+              className={`${modalStyles.modal_content} ${modalStyles.modal_contentDelete}`}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
             >
-              <h3 className={styles.modal_titleDelete}>Hapus Kursus Ini?</h3>
-              <p className={styles.modal_text}>
+              <h3 className={modalStyles.modal_titleDelete}>Hapus Kursus Ini?</h3>
+              <p className={modalStyles.modal_text}>
                 {`${productToDelete.name} akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.`}
               </p>
-              <div className={styles.modal_actionsCenter}>
+              <div className={modalStyles.modal_actionsCenter}>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className={styles.modal_buttonSecondary}
+                  className={modalStyles.modal_buttonSecondary}
                   disabled={isLoading}
                 >
                   Batal
@@ -212,7 +216,7 @@ export default function ProductsPage() {
                 <button
                   onClick={handleConfirmDelete}
                   disabled={isLoading}
-                  className={styles.modal_buttonDanger}
+                  className={modalStyles.modal_buttonDanger}
                 >
                   {isLoading ? "Menghapus..." : "Hapus"}
                 </button>
