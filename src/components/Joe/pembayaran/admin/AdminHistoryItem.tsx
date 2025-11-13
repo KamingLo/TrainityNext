@@ -15,7 +15,6 @@ const AdminHistoryItem: React.FC<AdminHistoryItemProps> = ({ item, index }) => {
   }[item.status];
 
   const handleDetail = () => {
-    // TODO: Navigate to detail page or open modal
     console.log("View detail for:", item.orderId);
   };
 

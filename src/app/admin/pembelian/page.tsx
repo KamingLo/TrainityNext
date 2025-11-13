@@ -1,7 +1,7 @@
 "use client";
 
-import AdminHistoryForm from "@/components/Joe/pembayaran/admin/AdminHistoryForm";
-import "./pembayaran.css";
+import AdminHistoryForm from "@/components/joe/pembayaran/admin/AdminHistoryForm";
+import "@/styles/joe/pembelian.css";
 
 export default function AdminHistoryPage() {
   return (

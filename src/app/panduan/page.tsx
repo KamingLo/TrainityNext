@@ -1,6 +1,6 @@
 import './panduan.css';
-import FAQSection from '@/components/Joe/lainnya/FAQSection';
-import FAQAuthor from '@/components/Joe/lainnya/FAQAuthor';
+import FAQSection from '@/components/joe/lainnya/FAQSection';
+import FAQAuthor from '@/components/joe/lainnya/FAQAuthor';
 
 export default function Panduan() {
   return (
