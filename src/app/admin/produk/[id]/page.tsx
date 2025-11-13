@@ -54,7 +54,7 @@ export default function EditProductPage() {
     if (!id) return;
     (async () => {
       try {
-        const res = await fetch(`/api/products/${id}`);
+        const res = await fetch(`/api/admin/products/${id}`);
         if (!res.ok) throw new Error("Gagal memuat produk");
         const data = await res.json();
         setProduct(data);
@@ -74,7 +74,7 @@ export default function EditProductPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`/api/products/${id}`, {
+      const res = await fetch(`/api/admin/products/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -95,7 +95,7 @@ export default function EditProductPage() {
       return setMessage("Isi nama & kode pelajaran!");
     setLoading(true);
     try {
-      const res = await fetch(`/api/products/${id}/video`, {
+      const res = await fetch(`/api/admin/products/${id}/video`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ namaPelajaran, kodePelajaran }),
@@ -118,7 +118,7 @@ export default function EditProductPage() {
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/products/${id}/video/${selectedVideo._id}`,
+        `/api/admin/products/${id}/video/${selectedVideo._id}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -145,7 +145,7 @@ export default function EditProductPage() {
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/products/${id}/video/${selectedVideo._id}`,
+        `/api/admin/products/${id}/video/${selectedVideo._id}`,
         { method: "DELETE" }
       );
       const body = await res.json();
