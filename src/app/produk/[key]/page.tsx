@@ -6,9 +6,9 @@ import { useParams } from "next/navigation";
 import Section from "@/components/sections";
 import Link from "next/link";
 import Image from "next/image";
+import ReviewForm from "@/components/michael/reviewForm";
 
 import styles from "@/styles/kaming/publicProdukDetail.module.css";
-import reviewStyles from "@/styles/michael/reviewUser.module.css"; // Import file CSS baru
 
 interface Product {
   _id: string;
@@ -17,11 +17,6 @@ interface Product {
   shortDesc: string;
   kodePelajaranPertama: string;
   isOwned: boolean;
-}
-
-interface ReviewFormData {
-  rating: number;
-  comment: string;
 }
 
 export default function DetailProdukPage() {
@@ -35,14 +30,6 @@ export default function DetailProdukPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // State untuk form review
-  const [reviewForm, setReviewForm] = useState<ReviewFormData>({
-    rating: 0,
-    comment: ""
-  });
-  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
-  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   useEffect(() => {
     if (!productKey || isAuthLoading) return;
@@ -69,97 +56,26 @@ export default function DetailProdukPage() {
   }, [productKey, isAuthLoading]);
 
   // Fungsi untuk handle submit review
-  const handleSubmitReview = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!isLoggedIn) {
-      alert("Silakan login terlebih dahulu untuk memberikan review");
-      return;
-    }
+  const handleSubmitReview = async (reviewData: { rating: number; comment: string }) => {
+    const response = await fetch('/api/reviews', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        productId: product?._id,
+        productKey: productKey,
+        rating: reviewData.rating,
+        comment: reviewData.comment,
+        userId: session?.user?.id,
+        userName: session?.user?.name || 'User'
+      }),
+    });
 
-    if (reviewForm.rating === 0) {
-      alert("Silakan berikan rating bintang");
-      return;
-    }
-
-    if (reviewForm.comment.trim() === "") {
-      alert("Silakan tulis komentar review");
-      return;
-    }
-
-    if (reviewForm.comment.length > 128) {
-      alert("Komentar maksimal 128 karakter");
-      return;
-    }
-
-    setIsSubmittingReview(true);
-
-    try {
-      const response = await fetch('/api/reviews', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productId: product?._id,
-          productKey: productKey,
-          rating: reviewForm.rating,
-          comment: reviewForm.comment,
-          userId: session?.user?.id,
-          userName: session?.user?.name || 'User'
-        }),
-      });
-
-      if (response.ok) {
-        setReviewSubmitted(true);
-        setReviewForm({ rating: 0, comment: "" });
-        alert("Review berhasil dikirim!");
-      } else {
-        throw new Error("Gagal mengirim review");
-      }
-    } catch (error) {
-      alert("Terjadi kesalahan saat mengirim review");
-    } finally {
-      setIsSubmittingReview(false);
+    if (!response.ok) {
+      throw new Error("Gagal mengirim review");
     }
   };
-
-  // Fungsi untuk handle rating bintang
-  const handleRatingClick = (rating: number) => {
-    setReviewForm(prev => ({ ...prev, rating }));
-  };
-
-  // Fungsi untuk handle perubahan komentar
-  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    if (value.length <= 128) {
-      setReviewForm(prev => ({ ...prev, comment: value }));
-    }
-  };
-
-  if (loading || isAuthLoading) {
-    return (
-      <Section>
-        <div>Memuat detail produk...</div>
-      </Section>
-    );
-  }
-
-  if (error) {
-    return (
-      <Section>
-        <div>Error: {error}</div>
-      </Section>
-    );
-  }
-
-  if (!product) {
-    return (
-      <Section>
-        <div>Produk tidak ditemukan.</div>
-      </Section>
-    );
-  }
 
   const getActionButton = () => {
     if (!isLoggedIn) {
@@ -172,7 +88,7 @@ export default function DetailProdukPage() {
       );
     }
 
-    if (product.isOwned) {
+    if (product?.isOwned) {
       return (
         <Link href={`/user/belajar/${product.name}`} passHref>
           <button className={styles.actionButton_owned}>Mulai Belajar</button>
@@ -186,6 +102,18 @@ export default function DetailProdukPage() {
       </Link>
     );
   };
+
+  if (loading || isAuthLoading) {
+    return <Section><div>Memuat detail produk...</div></Section>;
+  }
+
+  if (error) {
+    return <Section><div>Error: {error}</div></Section>;
+  }
+
+  if (!product) {
+    return <Section><div>Produk tidak ditemukan.</div></Section>;
+  }
 
   // --- Render Halaman Utama ---
   return (
@@ -221,78 +149,12 @@ export default function DetailProdukPage() {
         </div>
       </div>
 
-      {/* Form Review Sederhana dengan CSS terpisah */}
-      <div className={reviewStyles.reviewSection}>
-        <h2 className={reviewStyles.reviewTitle}>Berikan Review</h2>
-        
-        {!isLoggedIn ? (
-          <div className={reviewStyles.loginPrompt}>
-            <p>Silakan login untuk memberikan review</p>
-            <Link href="/auth/login" className={reviewStyles.loginLink}>
-              Login Sekarang
-            </Link>
-          </div>
-        ) : reviewSubmitted ? (
-          <div className={reviewStyles.successMessage}>
-            <p>Terima kasih! Review Anda telah berhasil dikirim.</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmitReview} className={reviewStyles.reviewForm}>
-            {/* Rating Bintang */}
-            <div className={reviewStyles.ratingSection}>
-              <label className={reviewStyles.ratingLabel}>Rating:</label>
-              <div className={reviewStyles.starRating}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
-                    className={`${reviewStyles.starButton} ${
-                      star <= reviewForm.rating ? reviewStyles.starActive : reviewStyles.starInactive
-                    }`}
-                    onClick={() => handleRatingClick(star)}
-                  >
-                    ★
-                  </button>
-                ))}
-              </div>
-              <span className={reviewStyles.ratingText}>
-                {reviewForm.rating > 0 ? `${reviewForm.rating} bintang` : "Pilih rating"}
-              </span>
-            </div>
-
-            {/* Komentar Sederhana */}
-            <div className={reviewStyles.commentSection}>
-              <div className={reviewStyles.commentHeader}>
-                <label htmlFor="comment" className={reviewStyles.commentLabel}>
-                  Komentar:
-                </label>
-                <span className={reviewStyles.charCount}>
-                  {reviewForm.comment.length}/128
-                </span>
-              </div>
-              <textarea
-                id="comment"
-                value={reviewForm.comment}
-                onChange={handleCommentChange}
-                placeholder="Tulis komentar singkat Anda... (maks. 128 karakter)"
-                className={reviewStyles.commentTextarea}
-                rows={3}
-                maxLength={128}
-                required
-              />
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isSubmittingReview || reviewForm.rating === 0 || reviewForm.comment.trim() === ""}
-              className={reviewStyles.submitButton}
-            >
-              {isSubmittingReview ? "Mengirim..." : "Kirim Review"}
-            </button>
-          </form>
-        )}
-      </div>
+      {/* Komponen Form Review */}
+      <ReviewForm 
+        productId={product._id}
+        productKey={productKey}
+        onSubmit={handleSubmitReview}
+      />
     </Section>
   );
 }
