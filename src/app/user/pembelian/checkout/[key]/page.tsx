@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import CheckoutContainer from "@/components/joe/pembayaran/checkout/CheckoutContainer";
+import CheckoutContainer from "@/components/joe/pembelian/checkout/CheckoutContainer";
 import "@/styles/joe/checkout.css";
 
 export default function CheckoutPage() {

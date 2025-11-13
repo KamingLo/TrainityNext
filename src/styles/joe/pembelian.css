@@ -163,7 +163,6 @@
     font-size: 18px;
 }
 
-/* Grid Layout - 2 Columns */
 .admin-history-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -296,7 +295,7 @@
 .amount-value {
     font-size: 18px;
     font-weight: 700;
-    color: #1369ff;
+    color: white;
 }
 
 .card-footer {
@@ -339,7 +338,6 @@
     }
 }
 
-/* No History */
 .no-history {
     text-align: center;
     color: white;
@@ -370,7 +368,6 @@
     margin-bottom: 1rem;
 }
 
-/* Responsive Design */
 @media (max-width: 1200px) {
     .admin-history-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -518,5 +515,49 @@
 
     .no-history h3 {
         font-size: 20px;
+    }
+}
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #121212;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    flex-direction: column;
+    color: white;
+}
+
+.anim {
+    border: 6px solid rgba(255, 255, 255, 0.2);
+    border-top: 6px solid #1369ff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
     }
 }
