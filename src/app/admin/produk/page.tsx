@@ -51,7 +51,7 @@ export default function ProductsPage() {
   }, []);
 
   async function fetchProducts() {
-    const res = await fetch("/api/products");
+    const res = await fetch("/api/admin/products");
     const data = await res.json();
     setProducts(data);
   }
@@ -70,7 +70,7 @@ export default function ProductsPage() {
 
   async function handleCreateProduct(e: React.FormEvent) {
     e.preventDefault();
-    const res = await fetch("/api/products", {
+    const res = await fetch("/api/admin/products", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...formData, video: videos }),
@@ -97,7 +97,7 @@ export default function ProductsPage() {
 
     setIsLoading(true);
     try {
-      await fetch(`/api/products/${productToDelete._id}`, { method: "DELETE" });
+      await fetch(`/api/admin/products/${productToDelete._id}`, { method: "DELETE" });
       await fetchProducts();
     } catch (error) {
       console.error("Gagal menghapus:", error);

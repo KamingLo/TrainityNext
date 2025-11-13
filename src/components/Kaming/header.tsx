@@ -18,8 +18,8 @@ export default function NavigationBar() {
   const userRole = (session?.user as { role?: string })?.role;
   const dashboardPath =
     userRole === "admin" ? "/admin/dashboard" : "/user/dashboard";
-  const pembayaranPath =
-    userRole === "admin" ? "/admin/pembayaran" : "/user/pembayaran";
+  const pembelianPath =
+    userRole === "admin" ? "/admin/pembelian" : "/user/pembelian";
   const produkPath = userRole === "admin" ? "/admin/produk" : "/produk";
 
   return (
@@ -47,8 +47,8 @@ export default function NavigationBar() {
             Panduan
           </Link>
           {isLoggedIn && (
-            <Link href={pembayaranPath} className={styles.navLink}>
-              Pembayaran
+            <Link href={pembelianPath} className={styles.navLink}>
+              Pembelian
             </Link>
           )}
         </div>
@@ -80,7 +80,10 @@ export default function NavigationBar() {
         </div>
 
         {/* Tombol menu (mobile) */}
-        <button onClick={() => setIsOpen(!isOpen)} className={styles.menuToggle}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={styles.menuToggle}
+        >
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </nav>
@@ -120,11 +123,11 @@ export default function NavigationBar() {
             {isLoggedIn && (
               <>
                 <Link
-                  href={pembayaranPath}
+                  href={pembelianPath}
                   onClick={() => setIsOpen(false)}
                   className={styles.menuMobileLink}
                 >
-                  Pembayaran
+                  Pembelian
                 </Link>
                 <Link
                   href={dashboardPath}

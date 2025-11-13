@@ -6,8 +6,10 @@ import { useParams } from "next/navigation";
 import Section from "@/components/sections";
 import Link from "next/link";
 import Image from "next/image";
+import ReviewForm from "@/components/michael/reviewForm";
 
 import styles from "@/styles/kaming/publicProdukDetail.module.css";
+import reviewStyles from "@/styles/michael/reviewUser.module.css";
 
 interface Product {
   _id: string;
@@ -18,8 +20,16 @@ interface Product {
   isOwned: boolean;
 }
 
+interface Review {
+  _id: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
 export default function DetailProdukPage() {
-  const { status: authStatus } = useSession();
+  const { status: authStatus, data: session } = useSession();
   const isLoggedIn = authStatus === "authenticated";
   const isAuthLoading = authStatus === "loading";
 
@@ -27,8 +37,10 @@ export default function DetailProdukPage() {
   const productKey = params.key as string;
 
   const [product, setProduct] = useState<Product | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
 
   useEffect(() => {
     if (!productKey || isAuthLoading) return;
@@ -44,6 +56,8 @@ export default function DetailProdukPage() {
         if (!productData) throw new Error("Produk tidak ditemukan.");
 
         setProduct(productData);
+        // Fetch reviews setelah product didapatkan
+        await fetchReviews(productData._id);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -53,6 +67,75 @@ export default function DetailProdukPage() {
 
     fetchProductDetail();
   }, [productKey, isAuthLoading]);
+
+  // Fungsi untuk fetch reviews
+  const fetchReviews = async (productId: string) => {
+    try {
+      setReviewsLoading(true);
+      const response = await fetch(`/api/reviews?productId=${productId}&limit=5`);
+      if (response.ok) {
+        const data = await response.json();
+        setReviews(data.reviews || []);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  // Fungsi untuk handle submit review
+  const handleSubmitReview = async (reviewData: { rating: number; comment: string }) => {
+    const response = await fetch('/api/user/review', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        productId: product?._id,
+        productKey: productKey,
+        rating: reviewData.rating,
+        comment: reviewData.comment,
+        userId: session?.user?.id,
+        userName: session?.user?.name || 'User'
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Gagal mengirim review");
+    }
+
+    // Refresh reviews setelah submit berhasil
+    if (product?._id) {
+      await fetchReviews(product._id);
+    }
+  };
+
+  const getActionButton = () => {
+    if (!isLoggedIn) {
+      return (
+        <Link href="/auth/login" passHref>
+          <button className={styles.actionButton_secondary}>
+            Login untuk Beli
+          </button>
+        </Link>
+      );
+    }
+
+    if (product?.isOwned) {
+      return (
+        <Link href={`/user/belajar/${product.name}`} passHref>
+          <button className={styles.actionButton_owned}>Mulai Belajar</button>
+        </Link>
+      );
+    }
+
+    return (
+      <Link href={`/user/pembelian/checkout/${productKey}`} passHref>
+        <button className={styles.actionButton_primary}>Beli Sekarang</button>
+      </Link>
+    );
+  };
 
   if (loading || isAuthLoading) {
     return <Section><div>Memuat detail produk...</div></Section>;
@@ -66,42 +149,10 @@ export default function DetailProdukPage() {
     return <Section><div>Produk tidak ditemukan.</div></Section>;
   }
 
-  const getActionButton = () => {
-    if (!isLoggedIn) {
-      return (
-        <Link href="/auth/login" passHref>
-          {/* Menggunakan style sekunder untuk dark mode */}
-          <button className={styles.actionButton_secondary}>
-            Login untuk Beli
-          </button>
-        </Link>
-      );
-    }
-
-    if (product.isOwned) {
-      return (
-        <Link href={`/user/belajar/${product.name}`} passHref>
-          <button className={styles.actionButton_owned}>
-            Mulai Belajar
-          </button>
-        </Link>
-      );
-    }
-
-    return (
-      <Link href={`/payment/${productKey}`} passHref>
-        <button className={styles.actionButton_primary}>
-          Beli Sekarang
-        </button>
-      </Link>
-    );
-  };
-
   // --- Render Halaman Utama ---
   return (
     <Section className={styles.space}>
       <div className={styles.detailGrid}>
-
         {/* Kolom Kiri: "Kartu" Gambar */}
         <div className={styles.imageWrapper}>
           <Image
@@ -117,8 +168,6 @@ export default function DetailProdukPage() {
         {/* Kolom Kanan: "Kartu" Detail */}
         <div className={styles.detailsWrapper}>
 
-          {/* CATATAN: Kelas .detailsHeader tidak ada di CSS Anda.
-              Anda bisa menambahkannya atau menghapus div ini. */}
           <div>
             <h1 className={styles.productTitle}>{product.name}</h1>
             <p className={styles.productDescription}>{product.desc}</p>
@@ -131,9 +180,12 @@ export default function DetailProdukPage() {
               {getActionButton()}
             </div>
           </div>
-
         </div>
       </div>
+
+      <ReviewForm 
+        productKey={productKey}
+      />
     </Section>
   );
 }
