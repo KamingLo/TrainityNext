@@ -1,6 +1,7 @@
 "use client";
 
 import { Play } from "lucide-react";
+import styles from '@/styles/fabio/InProgressCourseCard.module.css';
 
 interface Course {
   id: number;
@@ -27,33 +28,32 @@ export default function InProgressCourseCard({
   router,
 }: InProgressCourseCardProps) {
   return (
-    <div className="rounded-xl bg-black/30 border border-gray-800 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-blue-500/20 hover:-translate-y-1 backdrop-blur-sm">
-      <div className="relative w-full h-40">
+    <div className={styles.courseCard}>
+      <div className={styles.courseHeader}>
         <img
           src={course.imageUrl}
           alt={course.title}
-          className="w-full h-40 object-cover"
+          className={styles.courseImage}
         />
-      </div>
-
-      <div className="p-5">
-        <span className="text-xs font-medium text-blue-400 bg-blue-900/50 px-2 py-1 rounded-full">
+        <span className={styles.categoryBadge}>
           {course.category}
         </span>
+      </div>
 
-        <h3 className="font-semibold text-lg text-white my-3">{course.title}</h3>
+      <div className={styles.courseContent}>
+        <h3 className={styles.courseTitle}>{course.title}</h3>
 
-        <div className="mb-4">
-          <div className="flex justify-between text-sm text-gray-400 mb-1">
+        <div className={styles.progressSection}>
+          <div className={styles.progressHeader}>
             <span>Progres</span>
-            <span className="font-semibold text-blue-400">
+            <span className={styles.progressPercentage}>
               {course.progress}%
             </span>
           </div>
 
-          <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
+          <div className={styles.progressBar}>
             <div
-              className="bg-blue-400 h-2 rounded-full transition-all duration-300"
+              className={styles.progressFill}
               style={{ width: `${course.progress}%` }}
             />
           </div>
@@ -61,9 +61,10 @@ export default function InProgressCourseCard({
 
         <button
           onClick={() => router.push(`/kursus/${course.id}`)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors font-medium"
+          className={styles.continueButton}
         >
-          <Play className="w-5 h-5" /> Lanjutkan
+          <Play className={styles.buttonIcon} /> 
+          Lanjutkan
         </button>
       </div>
     </div>

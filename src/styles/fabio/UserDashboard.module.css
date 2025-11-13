@@ -1,0 +1,152 @@
+.loadingContainer {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 1.125rem;
+}
+
+.welcomeCard {
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  color: white;
+  text-align: center;
+}
+
+.welcomeTitle {
+  font-size: 1.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.userName {
+  color: #60a5fa;
+}
+
+.welcomeSubtitle {
+  color: #9ca3af;
+  font-size: 1rem;
+}
+
+.quickActions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.actionCard {
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #374151;
+  text-align: center;
+  background: rgba(17, 24, 39, 0.8);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.actionCard:hover {
+  border-color: #60a5fa;
+  transform: translateY(-2px);
+}
+
+.actionIcon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.actionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.actionDescription {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.equalGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.equalCard {
+  background: rgba(17, 24, 39, 0.8);
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #374151;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #374151;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.coursesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recommendedList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .equalGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .quickActions {
+    grid-template-columns: 1fr;
+  }
+  
+  .welcomeCard {
+    padding: 1.5rem;
+  }
+  
+  .welcomeTitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .equalCard {
+    padding: 1rem;
+  }
+  
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .cardTitle {
+    font-size: 1.125rem;
+  }
+  
+  .actionCard {
+    padding: 1rem;
+  }
+}

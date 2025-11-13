@@ -1,21 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import InProgressCourseCard from "@/components/fabio/InProgressCourseCard";
 import RecommendedCourseCard from "@/components/fabio/RecommendedCourseCard";
 import NoCourseCard from "@/components/fabio/NoCourseCard";
-
-const useMockSession = () => ({
-  data: { user: { name: "Fabio", email: "fabio@trainity.com" } },
-  status: "authenticated",
-});
-
-const useMockRouter = () => ({
-  push: (path: string) => alert(`Simulasi navigasi ke: ${path}`),
-});
-
-const useSession = useMockSession;
-const useRouter = useMockRouter;
+import Section from '@/components/sections';
+import styles from '@/styles/fabio/UserDashboard.module.css';
 
 interface Course {
   id: number;
@@ -29,16 +20,11 @@ interface InProgressCourse extends Course {
 }
 
 export default function UserDashboardPage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
 
   const [inProgressCourses, setInProgressCourses] = useState<InProgressCourse[]>([]);
   const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (status === "unauthenticated") router.push("/");
-  }, [status, router]);
 
   useEffect(() => {
     const coursesData: InProgressCourse[] = [
@@ -84,60 +70,80 @@ export default function UserDashboardPage() {
     setLoading(false);
   }, []);
 
-  if (status === "loading" || loading) {
+  if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center text-gray-400">
+      <div className={styles.loadingContainer}>
         Memuat dashboard...
       </div>
     );
   }
 
-  const user = session?.user;
+  const user = { name: "Fabio" };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-8 pt-40">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-semibold mb-2">
-            Selamat datang, <span className="text-blue-400">{user?.name}</span>!
-          </h1>
-          <p className="text-gray-400">
-            Teruskan progres Anda dan capai tujuan belajar Anda.
-          </p>
+    <Section>
+      <div className={styles.welcomeCard}>
+        <h1 className={styles.welcomeTitle}>
+          Selamat datang, <span className={styles.userName}>{user?.name}</span>!
+        </h1>
+        <p className={styles.welcomeSubtitle}>
+          Teruskan progres Anda dan capai tujuan belajar Anda.
+        </p>
+      </div>
+
+      <div className={styles.quickActions}>
+        <div className={styles.actionCard} onClick={() => router.push("/user/profile")}>
+          <div className={styles.actionIcon}>👤</div>
+          <h3 className={styles.actionTitle}>Profil Saya</h3>
+          <p className={styles.actionDescription}>Kelola data pribadi dan pengaturan akun</p>
         </div>
+        <div className={styles.actionCard} onClick={() => router.push("/user/belajar")}>
+          <div className={styles.actionIcon}>📚</div>
+          <h3 className={styles.actionTitle}>Halaman Belajar</h3>
+          <p className={styles.actionDescription}>Akses materi dan lanjutkan pembelajaran</p>
+        </div>
+        <div className={styles.actionCard} onClick={() => router.push("/user/produk")}>
+          <div className={styles.actionIcon}>🛍️</div>
+          <h3 className={styles.actionTitle}>Produk & Kursus</h3>
+          <p className={styles.actionDescription}>Jelajahi kursus dan produk lainnya</p>
+        </div>
+      </div>
 
-        <div className="w-full space-y-12">
-          <section>
-            <h2 className="text-2xl font-semibold mb-6">Kursus Sedang Berjalan</h2>
+      <div className={styles.equalGrid}>
+        <div className={styles.equalCard}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>Kursus Sedang Berjalan</h2>
+          </div>
+          <div className={styles.coursesList}>
             {inProgressCourses.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {inProgressCourses.map((course) => (
-                  <InProgressCourseCard
-                    key={course.id}
-                    course={course}
-                    router={router}
-                  />
-                ))}
-              </div>
-            ) : (
-              <NoCourseCard router={router} />
-            )}
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold mb-6">Rekomendasi Untuk Anda</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {recommendedCourses.map((course) => (
-                <RecommendedCourseCard
+              inProgressCourses.map((course) => (
+                <InProgressCourseCard
                   key={course.id}
                   course={course}
                   router={router}
                 />
-              ))}
-            </div>
-          </section>
+              ))
+            ) : (
+              <NoCourseCard router={router} />
+            )}
+          </div>
+        </div>
+
+        <div className={styles.equalCard}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>Rekomendasi Untuk Anda</h2>
+          </div>
+          <div className={styles.recommendedList}>
+            {recommendedCourses.map((course) => (
+              <RecommendedCourseCard
+                key={course.id}
+                course={course}
+                router={router}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </Section>
   );
 }
