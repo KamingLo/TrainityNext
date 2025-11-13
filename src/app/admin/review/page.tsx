@@ -38,14 +38,28 @@ export default function AdminReview() {
       const response = await fetch(`/api/admin/review`);
       const data = await response.json();
       
-      if (response.ok) {
-        setReviews(data.reviews);
-        setTotalPages(data.totalPages);
+      if (data.data) {
+        // Transform data dari API untuk match dengan interface Review
+        const transformedReviews = data.data.map((review: any) => ({
+          _id: review._id,
+          userName: review.userId?.name || 'Unknown User',
+          userEmail: review.userId?.email || 'No Email',
+          productName: review.productId?.name || 'Unknown Product',
+          rating: review.rating,
+          comment: review.comment,
+          createdAt: review.createdAt,
+          status: review.status || 'approved'
+        }));
+        
+        setReviews(transformedReviews);
+        setTotalPages(data.pagination?.totalPages || 1);
       } else {
-        console.error("Failed to fetch reviews:", data.error);
+        console.error("Invalid response format:", data);
+        setReviews([]);
       }
     } catch (error) {
       console.error("Error fetching reviews:", error);
+      setReviews([]);
     } finally {
       setLoading(false);
     }
@@ -59,7 +73,7 @@ export default function AdminReview() {
     if (!confirmed) return;
 
     try {
-      const response = await fetch(`/api/admin/review/${reviewId}`, {
+      const response = await fetch(`/api/admin/review?id=${reviewId}`, {
         method: 'DELETE',
       });
 

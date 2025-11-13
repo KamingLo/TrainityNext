@@ -9,6 +9,7 @@ import Image from "next/image";
 import ReviewForm from "@/components/michael/reviewForm";
 
 import styles from "@/styles/kaming/publicProdukDetail.module.css";
+import reviewStyles from "@/styles/michael/reviewUser.module.css";
 
 interface Product {
   _id: string;
@@ -17,6 +18,14 @@ interface Product {
   shortDesc: string;
   kodePelajaranPertama: string;
   isOwned: boolean;
+}
+
+interface Review {
+  _id: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
 }
 
 export default function DetailProdukPage() {
@@ -28,8 +37,10 @@ export default function DetailProdukPage() {
   const productKey = params.key as string;
 
   const [product, setProduct] = useState<Product | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
 
   useEffect(() => {
     if (!productKey || isAuthLoading) return;
@@ -45,6 +56,8 @@ export default function DetailProdukPage() {
         if (!productData) throw new Error("Produk tidak ditemukan.");
 
         setProduct(productData);
+        // Fetch reviews setelah product didapatkan
+        await fetchReviews(productData._id);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -54,6 +67,22 @@ export default function DetailProdukPage() {
 
     fetchProductDetail();
   }, [productKey, isAuthLoading]);
+
+  // Fungsi untuk fetch reviews
+  const fetchReviews = async (productId: string) => {
+    try {
+      setReviewsLoading(true);
+      const response = await fetch(`/api/reviews?productId=${productId}&limit=5`);
+      if (response.ok) {
+        const data = await response.json();
+        setReviews(data.reviews || []);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
 
   // Fungsi untuk handle submit review
   const handleSubmitReview = async (reviewData: { rating: number; comment: string }) => {
@@ -74,6 +103,11 @@ export default function DetailProdukPage() {
 
     if (!response.ok) {
       throw new Error("Gagal mengirim review");
+    }
+
+    // Refresh reviews setelah submit berhasil
+    if (product?._id) {
+      await fetchReviews(product._id);
     }
   };
 
