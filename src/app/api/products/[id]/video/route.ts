@@ -24,7 +24,7 @@ export async function POST(req: Request, context: { params: Promise<{ id: string
         }
 
         // cek duplikat namaPelajaran
-        const duplicate = product.video.some((v: any) => v.namaPelajaran === namaPelajaran);
+        const duplicate = product.video.some((v: Video) => v.namaPelajaran === namaPelajaran);
         if (duplicate) {
         return NextResponse.json(
             { message: "Nama pelajaran sudah ada, tidak ditambahkan", product },
@@ -39,8 +39,10 @@ export async function POST(req: Request, context: { params: Promise<{ id: string
         { message: "Video berhasil ditambahkan", product },
         { status: 201 }
         );
-    } catch (error: any) {
-        console.error("POST /video error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (err: AppError) {
+        if (err instanceof Error) {
+            console.error("POST /video error:", err);
+            return NextResponse.json({ error: err.message }, { status: 500 });
+        }
     }
 }

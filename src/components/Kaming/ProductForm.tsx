@@ -2,6 +2,7 @@
 "use client";
 
 import React from "react";
+import styles from "@/styles/kaming.module.css"; // Impor
 
 // Definisikan tipe untuk data form
 export interface ProductFormData {
@@ -34,9 +35,11 @@ export default function ProductForm({
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 text-white">
-      <h2 className="text-2xl font-semibold mb-6 text-center">
-        {submitText.includes("Simpan") ? "Tambah Kursus Baru" : "Informasi Kursus"}
+    <form onSubmit={onSubmit} className={styles.productForm}>
+      <h2 className={styles.formTitle}>
+        {submitText.includes("Simpan")
+          ? "Tambah Kursus Baru"
+          : "Informasi Kursus"}
       </h2>
       <input
         type="text"
@@ -44,7 +47,7 @@ export default function ProductForm({
         placeholder="Nama Kursus"
         value={formData.name}
         onChange={handleChange}
-        className="w-full p-3 rounded-xl bg-black/30 border border-gray-700 placeholder-gray-500"
+        className={styles.formInput}
         required
       />
       <input
@@ -53,7 +56,7 @@ export default function ProductForm({
         placeholder="Deskripsi Singkat"
         value={formData.shortDesc}
         onChange={handleChange}
-        className="w-full p-3 rounded-xl bg-black/30 border border-gray-700 placeholder-gray-500"
+        className={styles.formInput}
         required
       />
       <textarea
@@ -61,7 +64,8 @@ export default function ProductForm({
         placeholder="Deskripsi Lengkap"
         value={formData.desc}
         onChange={handleChange}
-        className="w-full p-3 rounded-xl bg-black/30 border border-gray-700 placeholder-gray-500"
+        className={styles.formTextarea}
+        rows={5} // Anda mungkin ingin menambahkan ini untuk textarea
         required
       />
 
@@ -71,7 +75,7 @@ export default function ProductForm({
       <button
         type="submit"
         disabled={isLoading}
-        className="bg-green-600 w-full py-3 rounded-xl text-white font-semibold hover:bg-green-700 mt-3 disabled:opacity-50"
+        className={styles.submitButton}
       >
         {isLoading ? "Memproses..." : submitText}
       </button>

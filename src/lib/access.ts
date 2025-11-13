@@ -3,22 +3,15 @@ import { NextResponse } from "next/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import mongoose from "mongoose";
 
-interface CheckOptions {
-  model: string;
-  resourceId: string;
-  userPath: string; // contoh: "userId" atau "userProduct.userId"
-}
-
 // ROLE-BASED ACCESS CHECK
 export async function canAccess(req: Request, roles: string[] = []) {
   const session = await getServerSession(authOptions);
   if (!session?.user)
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-  const role = (session.user as any).role;
-  if (role === "admin") return null;
+  const { role } = session.user;
+  if (role === "admin" || roles.includes(role)) return null;
 
-  if (roles.includes(role)) return null;
   return NextResponse.json({ message: "Forbidden: insufficient role" }, { status: 403 });
 }
 
@@ -29,7 +22,7 @@ export async function ownershipCheck(req: Request, options: CheckOptions) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const { model, resourceId, userPath } = options;
-  const userId = (session.user as any).id;
+  const userId = session.user.id;
 
   const Model = mongoose.models[model];
   if (!Model)
@@ -39,10 +32,11 @@ export async function ownershipCheck(req: Request, options: CheckOptions) {
   if (!resource)
     return NextResponse.json({ message: "Resource not found" }, { status: 404 });
 
+  // traverse nested path (e.g. "author._id")
   const pathParts = userPath.split(".");
-  let ownerId: any = resource;
+  let ownerId: unknown = resource;
   for (const part of pathParts) {
-    ownerId = ownerId?.[part];
+    ownerId = (ownerId as Record<string, unknown>)?.[part];
   }
 
   if (!ownerId)

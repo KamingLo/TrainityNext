@@ -32,9 +32,11 @@ export async function DELETE(
         { message: "Video berhasil dihapus", product },
         { status: 200 }
         );
-    } catch (error: any) {
-        console.error("DELETE /video error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: AppError) {
+        if (error instanceof Error) {
+            console.error("DELETE /video error:", error);
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
     }
 }
 
@@ -69,8 +71,10 @@ export async function PATCH(
             { message: "Video berhasil diperbarui", product },
             { status: 200 }
         );
-    } catch (error: any) {
-        console.error("PATCH /video error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: AppError) {
+        if (error instanceof Error) {
+            console.error("PATCH /video error:", error);
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
     }
 }

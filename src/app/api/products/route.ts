@@ -16,9 +16,9 @@ export async function POST(req: Request) {
         const existing = await Product.findOne({ name: data.name });
         if (existing) {
         const newVideos = data.video.filter(
-            (v: any) =>
+            (v: Video) =>
             !existing.video.some(
-                (ev: any) => ev.namaPelajaran === v.namaPelajaran
+                (ev: Video) => ev.namaPelajaran === v.namaPelajaran
             )
         );
 
@@ -43,8 +43,8 @@ export async function POST(req: Request) {
             { status: 201 }
         );
         }
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: AppError) {
+       if (error instanceof Error) return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
 
@@ -52,9 +52,24 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
     try {
         await connectDB();
-        const products = await Product.find().sort({ createdAt: -1 });
+
+        const { searchParams } = new URL(req.url);
+        const limitParam = searchParams.get("limit");
+
+        // Default: tanpa limit (semua data)
+        let limit = 0;
+
+        // Jika user set ?limit=2 atau angka lain
+        if (limitParam && !isNaN(Number(limitParam))) {
+        limit = Number(limitParam);
+        }
+
+        const products = await Product.find()
+        .sort({ createdAt: -1 })
+        .limit(limit); // jika limit = 0 => tidak dibatasi
+
         return NextResponse.json(products);
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: AppError) {
+        if (error instanceof Error) return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

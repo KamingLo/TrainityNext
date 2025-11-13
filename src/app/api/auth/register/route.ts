@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Semua field wajib diisi." }, { status: 400 });
     }
 
-    if(password.length <= 8 && confirm.length <= 8){
+    if(password.length <= 8 || confirm.length <= 8){
         return NextResponse.json({ error: "Password harus 8 karakter"}, {status: 400});
     }
 
@@ -43,6 +43,6 @@ export async function POST(req: Request) {
     );
   } catch (err) {
     console.error("Register Error:", err);
-    return NextResponse.json({ error: "Terjadi kesalahan server." }, { status: 500 });
-  }
+    return NextResponse.json({ error: "Terjadi kesalahan server." }, { status: 500 });
+  }
 }

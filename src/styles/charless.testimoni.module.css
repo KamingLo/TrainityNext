@@ -1,0 +1,108 @@
+:root {
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-white: #ffffff;
+  --color-blue-500: #3b82f6;
+  --color-purple-500: #a855f7;
+
+  --color-white-alpha-5: rgba(255, 255, 255, 0.05);
+  --color-white-alpha-10: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.section {
+  padding-top: 5rem;   
+  padding-bottom: 5rem;
+  overflow: hidden;
+}
+
+.container {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;  
+  padding-right: 1rem; 
+  margin-bottom: 3rem; 
+}
+
+@media (min-width: 1024px) {
+  .container {
+    width: 80%;
+  }
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 700;  
+  color: var(--color-white);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 3rem;
+  }
+}
+
+.scrollWrapper {
+  position: relative;
+}
+
+.scrollContainer {
+  display: flex;
+  gap: 1.5rem;
+  animation: scroll 40s linear infinite;
+}
+
+.card {
+  flex-shrink: 0;
+  width: 24rem;
+  background-color: var(--color-white-alpha-5);
+  border: 1px solid var(--color-white-alpha-10);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  & > * + * {
+    margin-top: 1rem;
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 3rem;
+  height: 3rem;
+  background-image: linear-gradient(to bottom right, var(--color-blue-500), var(--color-purple-500));
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  font-weight: 700;
+}
+
+.name {
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.institution {
+  font-size: 0.875rem;
+  color: var(--color-gray-400);
+}
+
+.quote {
+  color: var(--color-gray-300);
+  line-height: 1.625;
+}
