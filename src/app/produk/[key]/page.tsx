@@ -125,18 +125,14 @@ export default function DetailProdukPage() {
     if (product?.isOwned) {
       return (
         <Link href={`/user/belajar/${product.name}`} passHref>
-          <button className={styles.actionButton_owned}>
-            Mulai Belajar
-          </button>
+          <button className={styles.actionButton_owned}>Mulai Belajar</button>
         </Link>
       );
     }
 
     return (
-      <Link href={`/payment/${productKey}`} passHref>
-        <button className={styles.actionButton_primary}>
-          Beli Sekarang
-        </button>
+      <Link href={`/user/pembelian/checkout/${productKey}`} passHref>
+        <button className={styles.actionButton_primary}>Beli Sekarang</button>
       </Link>
     );
   };
@@ -157,7 +153,6 @@ export default function DetailProdukPage() {
   return (
     <Section className={styles.space}>
       <div className={styles.detailGrid}>
-
         {/* Kolom Kiri: "Kartu" Gambar */}
         <div className={styles.imageWrapper}>
           <Image
@@ -185,7 +180,6 @@ export default function DetailProdukPage() {
               {getActionButton()}
             </div>
           </div>
-
         </div>
       </div>
 
