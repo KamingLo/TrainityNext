@@ -32,21 +32,6 @@ declare global {
         userPath: string; // contoh: "userId" atau "userProduct.userId"
     }
 
-    interface User {
-        id: string;
-        role: string;
-    }
-
-    interface Session {
-        user: {
-            id: string;
-            role: string;
-            name?: string | null;
-            email?: string | null;
-            image?: string | null;
-        };
-    }
-
     interface Video {
         _id: string;
         namaPelajaran: string;
@@ -80,7 +65,6 @@ declare global {
 
 // src/types/types.d.ts
 
-
 declare module "next-auth" {
   interface User extends DefaultUser {
     id: string;
@@ -93,7 +77,6 @@ declare module "next-auth" {
       role: string;
       name?: string | null;
       email?: string | null;
-      image?: string | null;
     };
   }
 

@@ -1,0 +1,134 @@
+/* =================================
+    --- MODAL REUSABLE (UNTUK SEMUA HALAMAN) ---
+    ================================= */
+
+.modal_backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* bg-black/70 */
+    backdrop-filter: blur(4px); /* backdrop-blur-sm */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 1rem; /* p-4 */
+}
+
+.modal_content {
+    background-color: rgba(0, 0, 0, 0.6); /* bg-black/60 */
+    backdrop-filter: blur(12px); /* backdrop-blur-md */
+    border: 1px solid #374151; /* border-gray-700 */
+    border-radius: 1rem; /* rounded-2xl */
+    padding: 1.5rem; /* p-6 */
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
+    max-width: 28rem; /* max-w-md */
+    width: 100%;
+}
+
+.modal_contentDelete {
+    text-align: center;
+}
+
+.modal_title {
+    font-size: 1.25rem; /* text-xl */
+    line-height: 1.75rem;
+    font-weight: 600; /* font-semibold */
+    margin-bottom: 1rem; /* mb-4 */
+    color: #ffffff;
+}
+.modal_titleDelete {
+    composes: modal_title;
+    margin-bottom: 0.75rem; /* mb-3 */
+}
+
+.modal_input {
+    width: 100%;
+    padding: 0.75rem; /* p-3 */
+    border-radius: 0.75rem; /* rounded-xl */
+    background-color: rgba(0, 0, 0, 0.3); /* bg-black/30 */
+    border: 1px solid #374151; /* border-gray-700 */
+    color: #ffffff;
+    box-sizing: border-box; /* Pastikan padding tidak merusak width */
+}
+.modal_input::placeholder {
+    color: #6b7280; /* placeholder-gray-500 */
+}
+
+.modal_inputNama {
+    composes: modal_input;
+    margin-bottom: 0.75rem; /* mb-3 */
+}
+.modal_inputKode {
+    composes: modal_input;
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+.modal_text {
+    color: #9ca3af; /* text-gray-400 */
+    margin-bottom: 1.5rem; /* mb-6 */
+}
+
+.modal_actions {
+    display: flex;
+    gap: 0.75rem; /* gap-3 */
+}
+.modal_actionsEnd {
+    composes: modal_actions;
+    justify-content: flex-end; /* justify-end */
+}
+.modal_actionsCenter {
+    composes: modal_actions;
+    justify-content: center; /* justify-center */
+}
+
+.modal_buttonSecondary {
+    padding: 0.5rem 1.25rem; /* px-5 py-2 */
+    border-radius: 0.75rem; /* rounded-xl */
+    border: 1px solid #374151; /* border border-gray-700 */
+    transition: background-color 150ms; /* transition */
+    background: none;
+    color: white;
+    cursor: pointer;
+}
+.modal_buttonSecondary:hover {
+    background-color: rgba(0, 0, 0, 0.3); /* hover:bg-black/30 */
+}
+.modal_buttonSecondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.modal_buttonPrimary {
+    padding: 0.5rem 1.25rem; /* px-5 py-2 */
+    background-color: #2563eb; /* bg-blue-600 */
+    border-radius: 0.75rem; /* rounded-xl */
+    transition: all 150ms; /* transition */
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.modal_buttonPrimary:hover {
+    background-color: #1d4ed8; /* hover:bg-blue-700 */
+}
+.modal_buttonPrimary:disabled {
+    opacity: 0.5; /* disabled:opacity-50 */
+    cursor: not-allowed;
+}
+
+.modal_buttonDanger {
+    padding: 0.5rem 1.25rem; /* px-5 py-2 */
+    background-color: #dc2626; /* bg-red-600 */
+    border-radius: 0.75rem; /* rounded-xl */
+    transition: all 150ms; /* transition */
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.modal_buttonDanger:hover {
+    background-color: #b91c1c; /* hover:bg-red-700 */
+}
+
+.modal_buttonDanger:disabled {
+    opacity: 0.5; /* disabled:opacity-50 */
+    cursor: not-allowed;
+}

@@ -2,7 +2,9 @@
 "use client";
 
 import React from "react";
-import styles from "@/styles/kaming.module.css"; // Impor
+
+// DIUBAH: Impor dari common.module.css
+import styles from "@/styles/kaming/common.module.css";
 
 // Definisikan tipe untuk data form
 export interface ProductFormData {

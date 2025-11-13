@@ -2,13 +2,31 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams} from "next/navigation";
+import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import BackButton from "@/components/kaming/backbutton";
 import Section from "@/components/sections";
 import TabSwitcher from "@/components/kaming/TabSwitcher";
 import ProductForm, { ProductFormData } from "@/components/kaming/ProductForm";
-import styles from "@/styles/kaming.module.css"; // <-- IMPORT FILE CSS UTAMA
+
+// DIUBAH: Impor modul spesifik yang dibutuhkan halaman ini
+import editPageStyles from "@/styles/kaming/adminProductEdit.module.css";
+import modalStyles from "@/styles/kaming/modal.module.css";
+
+// Tipe AppError, Video, dan Product (Asumsi Anda punya ini)
+type AppError = unknown;
+interface Video {
+  _id: string;
+  namaPelajaran: string;
+  kodePelajaran: string;
+}
+interface Product {
+  _id: string;
+  name: string;
+  shortDesc: string;
+  desc: string;
+  video: Video[];
+}
 
 export default function EditProductPage() {
   const { id } = useParams();
@@ -48,7 +66,7 @@ export default function EditProductPage() {
         });
       } catch (err: AppError) {
         if (err instanceof Error) setMessage(err.message);
-    }
+      }
     })();
   }, [id]);
 
@@ -66,7 +84,7 @@ export default function EditProductPage() {
       setProduct(body.product);
       setMessage("✅ Perubahan kursus tersimpan");
     } catch (err: AppError) {
-        if (err instanceof Error) setMessage(err.message);
+      if (err instanceof Error) setMessage(err.message);
     } finally {
       setLoading(false);
     }
@@ -89,7 +107,7 @@ export default function EditProductPage() {
       setKodePelajaran("");
       setMessage("✅ Video ditambahkan");
     } catch (err: AppError) {
-        if (err instanceof Error) setMessage(err.message);
+      if (err instanceof Error) setMessage(err.message);
     } finally {
       setLoading(false);
     }
@@ -116,7 +134,7 @@ export default function EditProductPage() {
       setMessage("✅ Video diperbarui");
       setShowEditModal(false);
     } catch (err: AppError) {
-        if (err instanceof Error) setMessage(err.message);
+      if (err instanceof Error) setMessage(err.message);
     } finally {
       setLoading(false);
     }
@@ -136,7 +154,7 @@ export default function EditProductPage() {
       setMessage("🗑️ Video dihapus");
       setShowDeleteModal(false);
     } catch (err: AppError) {
-        if (err instanceof Error) setMessage(err.message);
+      if (err instanceof Error) setMessage(err.message);
     } finally {
       setLoading(false);
     }
@@ -149,12 +167,15 @@ export default function EditProductPage() {
 
   return (
     <Section>
-      <div className={styles.editPage_container}>
-        <div className={styles.editPage_contentWrapper}>
-          <div className={styles.editPage_card}>
+      {/* Menggunakan 'editPageStyles' untuk gaya halaman */}
+      <div className={editPageStyles.editPage_container}>
+        <div className={editPageStyles.editPage_contentWrapper}>
+          <div className={editPageStyles.editPage_card}>
             <BackButton />
-            <h1 className={styles.editPage_title}>Edit Kursus</h1>
-            <p className={styles.editPage_subtitle}>{product?.name || "..."}</p>
+            <h1 className={editPageStyles.editPage_title}>Edit Kursus</h1>
+            <p className={editPageStyles.editPage_subtitle}>
+              {product?.name || "..."}
+            </p>
 
             <TabSwitcher tabs={tabs} activeTab={tab} onTabClick={setTab} />
 
@@ -178,52 +199,61 @@ export default function EditProductPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.25 }}
-                  className={styles.editVideo_tabContent}
+                  className={editPageStyles.editVideo_tabContent}
                 >
-                  <div className={styles.editVideo_formContainer}>
-                    <h3 className={styles.editVideo_sectionTitle}>Tambah Video</h3>
-                    <div className={styles.editVideo_inputGroup}>
+                  <div className={editPageStyles.editVideo_formContainer}>
+                    <h3 className={editPageStyles.editVideo_sectionTitle}>
+                      Tambah Video
+                    </h3>
+                    <div className={editPageStyles.editVideo_inputGroup}>
                       <input
                         type="text"
                         placeholder="Nama Pelajaran"
                         value={namaPelajaran}
                         onChange={(e) => setNamaPelajaran(e.target.value)}
-                        className={styles.editVideo_input}
+                        className={editPageStyles.editVideo_input}
                       />
                       <input
                         type="text"
                         placeholder="Kode Pelajaran"
                         value={kodePelajaran}
                         onChange={(e) => setKodePelajaran(e.target.value)}
-                        className={styles.editVideo_input}
+                        className={editPageStyles.editVideo_input}
                       />
                       <button
                         onClick={addVideo}
                         disabled={loading}
-                        className={styles.editVideo_addButton}
+                        className={editPageStyles.editVideo_addButton}
                       >
                         {loading ? "Menambahkan..." : "Tambah"}
                       </button>
                     </div>
                   </div>
 
-                  <div className={styles.editVideo_listContainer}>
-                    <h3 className={styles.editVideo_listTitle}>Daftar Video</h3>
+                  <div className={editPageStyles.editVideo_listContainer}>
+                    <h3 className={editPageStyles.editVideo_listTitle}>
+                      Daftar Video
+                    </h3>
                     {!product?.video?.length ? (
-                      <p className={styles.editVideo_emptyListText}>Belum ada video.</p>
+                      <p className={editPageStyles.editVideo_emptyListText}>
+                        Belum ada video.
+                      </p>
                     ) : (
-                      <ul className={styles.editVideo_list}>
+                      <ul className={editPageStyles.editVideo_list}>
                         {product.video.map((v) => (
-                          <li key={v._id} className={styles.editVideo_listItem}>
+                          <li
+                            key={v._id}
+                            className={editPageStyles.editVideo_listItem}
+                          >
                             <div>
-                              <div className={styles.editVideo_name}>
+                              <div className={editPageStyles.editVideo_name}>
                                 {v.namaPelajaran}
                               </div>
-                              <div className={styles.editVideo_code}>
+                              <div className={editPageStyles.editVideo_code}>
                                 {v.kodePelajaran}
                               </div>
                             </div>
-                            <div className={styles.editVideo_actions}>
+                            <div className={editPageStyles.editVideo_actions}>
                               <button
                                 onClick={() => {
                                   setSelectedVideo(v);
@@ -231,7 +261,7 @@ export default function EditProductPage() {
                                   setEditKode(v.kodePelajaran);
                                   setShowEditModal(true);
                                 }}
-                                className={styles.editVideo_editButton}
+                                className={editPageStyles.editVideo_editButton}
                               >
                                 Edit
                               </button>
@@ -240,7 +270,9 @@ export default function EditProductPage() {
                                   setSelectedVideo(v);
                                   setShowDeleteModal(true);
                                 }}
-                                className={styles.editVideo_deleteButton}
+                                className={
+                                  editPageStyles.editVideo_deleteButton
+                                }
                               >
                                 Hapus
                               </button>
@@ -254,50 +286,52 @@ export default function EditProductPage() {
               )}
             </AnimatePresence>
 
-            {message && <p className={styles.editPage_message}>{message}</p>}
+            {message && (
+              <p className={editPageStyles.editPage_message}>{message}</p>
+            )}
           </div>
         </div>
       </div>
 
-      {/* --- MODAL EDIT VIDEO (MENGGUNAKAN STYLE REUSABLE) --- */}
+      {/* --- MODAL EDIT VIDEO (MENGGUNAKAN 'modalStyles') --- */}
       <AnimatePresence>
         {showEditModal && selectedVideo && (
           <motion.div
-            className={styles.modal_backdrop}
+            className={modalStyles.modal_backdrop}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className={styles.modal_content}
+              className={modalStyles.modal_content}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
             >
-              <h3 className={styles.modal_title}>Edit Video</h3>
+              <h3 className={modalStyles.modal_title}>Edit Video</h3>
               <input
                 value={editNama}
                 onChange={(e) => setEditNama(e.target.value)}
                 placeholder="Nama Pelajaran"
-                className={styles.modal_inputNama}
+                className={modalStyles.modal_inputNama}
               />
               <input
                 value={editKode}
                 onChange={(e) => setEditKode(e.target.value)}
                 placeholder="Kode Pelajaran"
-                className={styles.modal_inputKode}
+                className={modalStyles.modal_inputKode}
               />
-              <div className={styles.modal_actionsEnd}>
+              <div className={modalStyles.modal_actionsEnd}>
                 <button
                   onClick={() => setShowEditModal(false)}
-                  className={styles.modal_buttonSecondary}
+                  className={modalStyles.modal_buttonSecondary}
                 >
                   Batal
                 </button>
                 <button
                   onClick={handleUpdateVideo}
                   disabled={loading}
-                  className={styles.modal_buttonPrimary}
+                  className={modalStyles.modal_buttonPrimary}
                 >
                   {loading ? "Menyimpan..." : "Simpan"}
                 </button>
@@ -307,36 +341,36 @@ export default function EditProductPage() {
         )}
       </AnimatePresence>
 
-      {/* --- MODAL HAPUS VIDEO (MENGGUNAKAN STYLE REUSABLE) --- */}
+      {/* --- MODAL HAPUS VIDEO (MENGGUNAKAN 'modalStyles') --- */}
       <AnimatePresence>
         {showDeleteModal && selectedVideo && (
           <motion.div
-            className={styles.modal_backdrop}
+            className={modalStyles.modal_backdrop}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className={`${styles.modal_content} ${styles.modal_contentDelete}`}
+              className={`${modalStyles.modal_content} ${modalStyles.modal_contentDelete}`}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
             >
-              <h3 className={styles.modal_titleDelete}>Hapus Video Ini?</h3>
-              <p className={styles.modal_text}>
+              <h3 className={modalStyles.modal_titleDelete}>Hapus Video Ini?</h3>
+              <p className={modalStyles.modal_text}>
                 {`${selectedVideo.namaPelajaran} akan dihapus permanen.`}
               </p>
-              <div className={styles.modal_actionsCenter}>
+              <div className={modalStyles.modal_actionsCenter}>
                 <button
                   onClick={() => setShowDeleteModal(false)}
-                  className={styles.modal_buttonSecondary}
+                  className={modalStyles.modal_buttonSecondary}
                 >
                   Batal
                 </button>
                 <button
                   onClick={handleDeleteVideo}
                   disabled={loading}
-                  className={styles.modal_buttonDanger}
+                  className={modalStyles.modal_buttonDanger}
                 >
                   {loading ? "Menghapus..." : "Hapus"}
                 </button>
