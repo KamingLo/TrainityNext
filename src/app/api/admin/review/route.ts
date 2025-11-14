@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
     // query utama
     const reviews = await Review.find()
-      .populate("userId", "name")
+      .populate("userId", "username")
       .populate("productId", "name")
       .select("rating comment createdAt")
       .sort({ createdAt: -1 })

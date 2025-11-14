@@ -63,12 +63,12 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Product not found" }, { status: 404 });
 
       reviews = await Review.find({ productId: product._id })
-        .populate("userId", "name image")
+        .populate("userId", "username")
         .sort({ createdAt: -1 })
         .limit(limit);
     } else {
       reviews = await Review.find()
-        .populate("userId", "name")
+        .populate("userId","username")
         .populate("productId", "name")
         .sort({ createdAt: -1 })
         .limit(limit);
