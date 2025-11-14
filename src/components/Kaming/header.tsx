@@ -15,9 +15,13 @@ export default function NavigationBar() {
   const isLoggedIn = status === "authenticated";
 
   const userRole = (session?.user as { role?: string })?.role;
+
   const dashboardPath =
     userRole === "admin" ? "/admin/dashboard" : "/user/dashboard";
+
   const produkPath = userRole === "admin" ? "/admin/produk" : "/produk";
+
+  const pembelianPath = "/admin/pembelian";
 
   return (
     <header className={styles.header}>
@@ -37,20 +41,29 @@ export default function NavigationBar() {
           <Link href="/" className={styles.navLink}>
             Home
           </Link>
+
           <Link href={produkPath} className={styles.navLink}>
             Produk
           </Link>
+
           {isLoggedIn && (
             <>
-                <Link href={"/user/profile"} className={styles.navLink}>
+              <Link href={"/user/profile"} className={styles.navLink}>
                 Profile
-                </Link>
+              </Link>
 
-                <Link href={"/user/belajar"} className={styles.navLink}>
+              <Link href={"/user/belajar"} className={styles.navLink}>
                 Belajar
+              </Link>
+
+              {userRole === "admin" && (
+                <Link href={pembelianPath} className={styles.navLink}>
+                  Pembelian
                 </Link>
+              )}
             </>
           )}
+
           <Link href="/panduan" className={styles.navLink}>
             Panduan
           </Link>
@@ -108,6 +121,7 @@ export default function NavigationBar() {
             >
               Home
             </Link>
+
             <Link
               href={produkPath}
               onClick={() => setIsOpen(false)}
@@ -125,6 +139,7 @@ export default function NavigationBar() {
                 >
                   Belajar
                 </Link>
+
                 <Link
                   href={"/user/profile"}
                   onClick={() => setIsOpen(false)}
@@ -132,13 +147,25 @@ export default function NavigationBar() {
                 >
                   Profile
                 </Link>
-                <Link
-                    href="/panduan"
+
+                {userRole === "admin" && (
+                  <Link
+                    href={pembelianPath}
                     onClick={() => setIsOpen(false)}
                     className={styles.menuMobileLink}
+                  >
+                    Pembelian
+                  </Link>
+                )}
+
+                <Link
+                  href="/panduan"
+                  onClick={() => setIsOpen(false)}
+                  className={styles.menuMobileLink}
                 >
-                    Panduan
+                  Panduan
                 </Link>
+
                 <Link
                   href={dashboardPath}
                   onClick={() => setIsOpen(false)}
@@ -146,6 +173,7 @@ export default function NavigationBar() {
                 >
                   Dashboard
                 </Link>
+
                 <button
                   onClick={() => {
                     setIsOpen(false);

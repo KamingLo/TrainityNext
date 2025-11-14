@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import FAQItem from "./FAQItem";
+import { useState } from "react";
+import Image from "next/image";
 
 const faqData = [
   {
@@ -106,7 +106,7 @@ export default function FAQSection() {
               value={searchQuery}
               onChange={handleSearchChange}
             />
-            <img src="/FAQ.svg" alt="FAQ" />
+            <Image src="/FAQ.svg" alt="FAQ" width={500} height={500} />
           </div>
 
           <div className="faq-right">

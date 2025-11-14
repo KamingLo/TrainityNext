@@ -6,7 +6,7 @@
 
 .admin-history-container {
     max-width: 1400px;
-    margin: 6rem auto;
+    margin: -5rem auto;
     padding: 2rem;
     min-height: 70vh;
 }
@@ -405,7 +405,7 @@
 @media (max-width: 768px) {
     .admin-history-container {
         padding: 1rem;
-        margin: 7rem auto;
+        margin: -1rem auto;
     }
 
     .admin-history-header {

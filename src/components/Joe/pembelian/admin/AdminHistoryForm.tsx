@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import LoadingScreen from "../LoadingScreen";
+import Image from "next/image";
 
 const NoHistory = () => (
   <div className="no-history">
@@ -167,10 +168,12 @@ const AdminHistoryItem: React.FC<AdminHistoryItemProps> = ({ item, index }) => {
         <div className="info-row">
           <span className="info-label">Payment:</span>
           <div className="payment-info">
-            <img
+            <Image
               src={item.paymentLogo}
               alt={item.paymentMethod}
               className="payment-icon"
+              width={80}
+              height={20}
             />
           </div>
         </div>
@@ -202,6 +205,17 @@ const AdminHistoryList: React.FC<AdminHistoryListProps> = ({ items }) => {
   );
 };
 
+interface ApiResponseItem {
+  _id: string;
+  user: {
+    email: string;
+  };
+  product: {
+    name: string;
+  };
+  createdAt: string;
+}
+
 const AdminHistoryForm: React.FC = () => {
   const [allItems, setAllItems] = useState<PurchaseItem[]>([]);
   const [filteredItems, setFilteredItems] = useState<PurchaseItem[]>([]);
@@ -221,18 +235,39 @@ const AdminHistoryForm: React.FC = () => {
         throw new Error("Failed to fetch history data");
       }
       const data = await response.json();
-      const formattedData = data.map((item: any) => ({
-        orderId: item._id,
-        transactionId: `TRX-${item._id}`,
-        accountInfo: item.user.email,
-        merchant: item.product.name,
-        paymentMethod: "Voucher",
-        paymentLogo: "/Payment/FREE.svg",
-        totalAmount: "Gratis",
-        date: new Date(item.createdAt).toLocaleString(),
-        status: "success",
-        statusText: "Berhasil",
-      }));
+
+      // Sort data by creation date
+      data.sort(
+        (a: ApiResponseItem, b: ApiResponseItem) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      );
+
+      const productCounters: { [key: string]: number } = {};
+      const formattedData = data.map((item: ApiResponseItem, index: number) => {
+        const productName = item.product.name.split(" ")[0].toUpperCase();
+
+        if (!productCounters[productName]) {
+          productCounters[productName] = 1;
+        } else {
+          productCounters[productName]++;
+        }
+
+        const transactionId = `${productName}-${productCounters[productName].toString().padStart(4, "0")}`;
+
+        return {
+          orderId: `Order${(index + 1).toString().padStart(2, "0")}`,
+          transactionId: transactionId,
+          accountInfo: item.user.email,
+          merchant: item.product.name,
+          paymentMethod: "Voucher",
+          paymentLogo: "/Payment/FREE.svg",
+          totalAmount: "Gratis",
+          date: new Date(item.createdAt).toLocaleString(),
+          status: "success" as "success",
+          statusText: "Berhasil",
+        };
+      });
+
       setAllItems(formattedData);
       setFilteredItems(formattedData);
     } catch (error) {

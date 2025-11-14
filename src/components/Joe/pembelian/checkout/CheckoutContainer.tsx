@@ -121,7 +121,7 @@ const PAYMENT_METHODS: PaymentMethodType[] = [
 export default function CheckoutContainer() {
   const params = useParams();
   const router = useRouter();
-  const { data: session, status: authStatus } = useSession();
+  const { status } = useSession();
   const productKey = params.key as string;
 
   const [isLoading, setIsLoading] = useState(true);
@@ -133,7 +133,7 @@ export default function CheckoutContainer() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    if (authStatus === "loading") return;
+    if (status === "loading") return;
 
     const loadProductData = async () => {
       if (!productKey) {
@@ -190,7 +190,7 @@ export default function CheckoutContainer() {
     };
 
     loadProductData();
-  }, [productKey, authStatus]);
+  }, [productKey, status]);
 
   const handleCheckboxChange = (id: string) => {
     if (id === "voucher") return;
@@ -216,7 +216,7 @@ export default function CheckoutContainer() {
   const handlePlaceOrder = async () => {
     if (!product) return;
 
-    if (authStatus !== "authenticated") {
+    if (status !== "authenticated") {
       setPopupContent({
         icon: "ðŸ”’",
         color: "orange",

@@ -1,5 +1,6 @@
 import React from "react";
 import { PurchaseItem } from "./AdminHistoryForm";
+import Image from "next/image";
 
 interface AdminHistoryItemProps {
   item: PurchaseItem;
@@ -47,10 +48,12 @@ const AdminHistoryItem: React.FC<AdminHistoryItemProps> = ({ item, index }) => {
         <div className="info-row">
           <span className="info-label">Payment:</span>
           <div className="payment-info">
-            <img
+            <Image
               src={item.paymentLogo}
               alt={item.paymentMethod}
               className="payment-icon"
+              width={80}
+              height={20}
             />
             <span>{item.paymentMethod}</span>
           </div>
