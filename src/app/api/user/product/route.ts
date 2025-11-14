@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     // --- Buat query
-    const query: any = {};
+    const query: {name?: string} = {};
     if (key) {
       query.name = key; // filter jika key ada
     }

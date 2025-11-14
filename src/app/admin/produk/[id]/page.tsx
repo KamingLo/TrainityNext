@@ -9,12 +9,9 @@ import Section from "@/components/sections";
 import TabSwitcher from "@/components/kaming/TabSwitcher";
 import ProductForm, { ProductFormData } from "@/components/kaming/ProductForm";
 
-// DIUBAH: Impor modul spesifik yang dibutuhkan halaman ini
 import editPageStyles from "@/styles/kaming/adminProductEdit.module.css";
 import modalStyles from "@/styles/kaming/modal.module.css";
 
-// Tipe AppError, Video, dan Product (Asumsi Anda punya ini)
-type AppError = unknown;
 interface Video {
   _id: string;
   namaPelajaran: string;

@@ -1,13 +1,4 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
-
-export interface IReview extends Document {
-  userId: mongoose.Types.ObjectId;
-  productId: mongoose.Types.ObjectId;
-  rating: number;
-  comment?: string; // Opsional: jika user ingin memberi teks ulasan
-  createdAt: Date;
-  updatedAt: Date;
-}
+import mongoose, { Schema, Model } from "mongoose";
 
 const reviewSchema = new Schema<IReview>(
   {

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import NavigationBar from "@/components/kaming/header";
 import Background from "@/components/kaming/background";
 import Footer from "@/components/kaming/footer";

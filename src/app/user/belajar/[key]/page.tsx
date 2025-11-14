@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams} from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import Section from "@/components/sections";
@@ -70,9 +70,8 @@ export default function BelajarPage() {
           const lastVideo = prod.video.find(v => v._id === data.lastWatchedVideoId);
           setSelectedVideo(lastVideo || prod.video[0]);
         }
-      } catch (err: any) {
-        console.error(err);
-        setError(err.message); // Set state error
+      } catch (err: AppError) {
+        if (err instanceof Error) setError(err.message);
       } finally {
         setLoading(false);
       }
