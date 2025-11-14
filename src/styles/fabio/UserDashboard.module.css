@@ -1,0 +1,288 @@
+.loadingContainer {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 1.125rem;
+}
+
+.welcomeCard {
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  color: white;
+  text-align: center;
+}
+
+.welcomeTitle {
+  font-size: 1.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.userName {
+  color: #60a5fa;
+}
+
+.welcomeSubtitle {
+  color: #9ca3af;
+  font-size: 1rem;
+}
+
+.quickActions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.actionCard {
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #374151;
+  text-align: center;
+  background: rgba(17, 24, 39, 0.8);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.actionCard:hover {
+  border-color: #60a5fa;
+  transform: translateY(-2px);
+}
+
+.actionIcon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.actionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.actionDescription {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.equalGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.equalCard {
+  background: rgba(17, 24, 39, 0.8);
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #374151;
+  height: fit-content; 
+  align-self: start; 
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #374151;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 1.35rem;     
+}
+
+.coursesList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.recommendedCarousel {
+  position: relative;
+}
+
+.carouselSlide {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.courseImageContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.courseImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.courseOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 1.5rem;
+  color: white;
+}
+
+.courseCategory {
+  background: #1e40af;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.courseTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0.75rem 0;
+  color: white;
+}
+
+.detailButton {
+  background: #1e40af;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.detailButton:hover {
+  background: #1e3a8a;
+}
+
+.carouselControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.carouselButton {
+  background: #374151;
+  border: none;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.carouselButton:hover {
+  background: #4b5563;
+  transform: scale(1.1);
+}
+
+.carouselDots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.carouselDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #374151;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carouselDot.active {
+  background: #60a5fa;
+  transform: scale(1.2);
+}
+
+.linkButton {
+  color: #60a5fa;
+  cursor: pointer;
+  border: 1px solid #60a5fa;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.linkButton:hover {
+  background: #1e40af;
+  color: white;
+}
+
+
+@media (max-width: 1024px) {
+  .equalGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .coursesList {
+    grid-template-columns: 1fr;
+  }
+  
+  .quickActions {
+    grid-template-columns: 1fr;
+  }
+  
+  .welcomeCard {
+    padding: 1.5rem;
+  }
+  
+  .welcomeTitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .equalCard {
+    padding: 1rem;
+  }
+  
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .cardTitle {
+    font-size: 1.125rem;
+  }
+  
+  .actionCard {
+    padding: 1rem;
+  }
+  
+  .carouselSlide {
+    height: 250px;
+  }
+}
