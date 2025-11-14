@@ -1,106 +1,208 @@
-import Link from 'next/link';
-import styles from '../../../styles/michael/dashboard.module.css';
-import Section from '@/components/sections';
+"use client";
 
-export default function DashboardPage() {
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import Section from "@/components/sections";
+import Link from "next/link";
+import styles from "@/styles/michael/dashboard.module.css";
+
+interface Activity {
+  userName: string;
+  purchasedAt: string;
+  productName: string;
+}
+
+interface Review {
+  productName: string;
+  rating: number;
+  comment: string;
+  userName: string;
+  reviewedAt: string;
+}
+
+interface DashboardData {
+  latestUserActivity: Activity[];
+  latestReviews: Review[];
+}
+
+export default function AdminDashboard() {
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchDashboardData();
+    }
+  }, [isLoggedIn]);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/admin/dashboard');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.data) {
+        setDashboardData(data.data);
+      } else {
+        throw new Error("Invalid response format");
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      setError("Gagal memuat data dashboard");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (status === "loading") {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+  
+  if (!isLoggedIn) {
+    return (
+      <div className={styles.loadingContainer}>
+        <p className={styles.errorText}>Anda belum login.</p>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <Section>
+        <div className={styles.loadingState}>
+          <div className={styles.spinner}></div>
+          <p>Memuat data dashboard...</p>
+        </div>
+      </Section>
+    );
+  }
+
+  if (error) {
+    return (
+      <Section>
+        <div className={styles.errorState}>
+          <p>{error}</p>
+          <button onClick={fetchDashboardData} className={styles.retryButton}>
+            Coba Lagi
+          </button>
+        </div>
+      </Section>
+    );
+  }
+
   return (
     <Section>
-      {/* Quick Actions */}
-      <div className={styles.quickActionsCard}>
-        <h2 className={styles.sectionTitle}>Quick Actions</h2>
-        <div className={styles.actionButtons}>
-          <Link href="/admin/produk" className={`${styles.actionBtn} ${styles.productBtn}`}>
-            <span className={styles.actionIcon}>📦</span>
-            Kelola Produk
-          </Link>
-          <Link href="/belajar" className={`${styles.actionBtn} ${styles.learnBtn}`}>
-            <span className={styles.actionIcon}>📚</span>
-            Materi Belajar
-          </Link>
-          <Link href="/admin" className={`${styles.actionBtn} ${styles.adminBtn}`}>
-            <span className={styles.actionIcon}>⚙️</span>
-            Admin Panel
-          </Link>
-        </div>
+      {/* Header */}
+      <div className={styles.header}>
+        <h1 className={styles.title}>Admin Dashboard</h1>
+        <p className={styles.subtitle}>Overview aktivitas dan review pengguna</p>
       </div>
 
-      {/* Main Content Grid - 2 Columns Sejajar */}
-      <div className={styles.equalGrid}>
-        {/* Card 1: Review Terbaru */}
-        <div className={styles.equalCard}>
+      {/* Quick Actions */}
+      <div className={styles.quickActions}>
+        <Link href="/admin/review" className={styles.actionButton}>
+          <span className={styles.actionIcon}>📝</span>
+          Kelola Review
+        </Link>
+        <Link href="/admin/produk" className={styles.actionButton}>
+          <span className={styles.actionIcon}>📦</span>
+          Kelola Produk
+        </Link>
+        <Link href="/admin/users" className={styles.actionButton}>
+          <span className={styles.actionIcon}>👥</span>
+          Kelola User
+        </Link>
+      </div>
+
+      {/* Dashboard Content */}
+      <div className={styles.dashboardGrid}>
+        
+        {/* Latest User Activity */}
+        <div className={styles.card}>
           <div className={styles.cardHeader}>
-            <h3 className={styles.cardTitle}>Review Terbaru</h3>
-            <Link href="/admin/review" className={styles.viewAllLink}>
-              Lihat Semua
+            <div className={styles.cardTitleWrapper}>
+              <h2 className={styles.cardTitle}>Aktivitas User Terbaru</h2>
+              <span className={styles.cardCount}>
+                {dashboardData?.latestUserActivity.length} aktivitas
+              </span>
+            </div>
+            <Link href="/admin/pembelian" className={styles.nextLink}>
+              Lihat Semua →
             </Link>
           </div>
-          <div className={styles.reviewsList}>
-            <div className={styles.reviewItem}>
-              <div className={styles.reviewHeader}>
-                <div className={styles.userAvatar}>
-                  <span className={styles.avatarText}>U1</span>
+          <div className={styles.activityList}>
+            {dashboardData?.latestUserActivity.map((activity, index) => (
+              <div key={index} className={styles.activityItem}>
+                <div className={styles.activityUser}>
+                  <div className={styles.userAvatar}>
+                    {activity.userName.charAt(0)}
+                  </div>
+                  <div className={styles.userInfo}>
+                    <span className={styles.userName}>{activity.userName}</span>
+                    <span className={styles.productName}>{activity.productName}</span>
+                  </div>
                 </div>
-                <div className={styles.userInfo}>
-                  <h4 className={styles.userName}>User 1</h4>
-                  <div className={styles.ratingStars}>★★★★★</div>
-                </div>
-              </div>
-              <p className={styles.reviewText}>
-                &quot;Kursus yang sangat membantu untuk pemula seperti saya. Penjelasannya mudah dipahami!&quot;
-              </p>
-            </div>
-            
-            <div className={styles.reviewItem}>
-              <div className={styles.reviewHeader}>
-                <div className={styles.userAvatar}>
-                  <span className={styles.avatarText}>U2</span>
-                </div>
-                <div className={styles.userInfo}>
-                  <h4 className={styles.userName}>User 2</h4>
-                  <div className={styles.ratingStars}>★★★★☆</div>
+                <div className={styles.activityTime}>
+                  {new Date(activity.purchasedAt).toLocaleDateString('id-ID')}
                 </div>
               </div>
-              <p className={styles.reviewText}>
-                &quot;Materi yang disajikan sangat relevan dengan kebutuhan industri saat ini. Recommended!&quot;
-              </p>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Card 2: Kelola Produk */}
-        <div className={styles.equalCard}>
+        {/* Latest Reviews */}
+        <div className={styles.card}>
           <div className={styles.cardHeader}>
-            <h3 className={styles.cardTitle}>Kelola Produk</h3>
-            <Link href="/admin/produk" className={styles.addButton}>
-              + Tambah Produk
+            <div className={styles.cardTitleWrapper}>
+              <h2 className={styles.cardTitle}>Review Terbaru</h2>
+              <span className={styles.cardCount}>
+                {dashboardData?.latestReviews.length} review
+              </span>
+            </div>
+            <Link href="/admin/review" className={styles.nextLink}>
+              Lihat Semua →
             </Link>
           </div>
-          <div className={styles.manageProductsList}>
-            <div className={styles.manageItem}>
-              <div className={styles.manageIcon}>📚</div>
-              <div className={styles.manageInfo}>
-                <h4 className={styles.manageName}>Kursus Pemrograman Dasar</h4>
-                <p className={styles.manageStats}>12 Pelajaran • 150 Siswa</p>
-                <div className={styles.manageActions}>
-                  <button className={styles.editBtn}>Edit</button>
-                  <button className={styles.deleteBtn}>Hapus</button>
+          <div className={styles.reviewList}>
+            {dashboardData?.latestReviews.map((review, index) => (
+              <div key={index} className={styles.reviewItem}>
+                <div className={styles.reviewHeader}>
+                  <div className={styles.reviewUser}>
+                    <div className={styles.userAvatar}>
+                      {review.userName.charAt(0)}
+                    </div>
+                    <div>
+                      <span className={styles.userName}>{review.userName}</span>
+                      <div className={styles.rating}>
+                        {"⭐".repeat(review.rating)}
+                        <span className={styles.ratingText}>({review.rating}/5)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className={styles.reviewTime}>
+                    {new Date(review.reviewedAt).toLocaleDateString('id-ID')}
+                  </span>
                 </div>
+                <p className={styles.reviewComment}>{review.comment}</p>
+                <span className={styles.productName}>{review.productName}</span>
               </div>
-            </div>
-            
-            <div className={styles.manageItem}>
-              <div className={styles.manageIcon}>🌐</div>
-              <div className={styles.manageInfo}>
-                <h4 className={styles.manageName}>Kursus Web Development</h4>
-                <p className={styles.manageStats}>20 Pelajaran • 89 Siswa</p>
-                <div className={styles.manageActions}>
-                  <button className={styles.editBtn}>Edit</button>
-                  <button className={styles.deleteBtn}>Hapus</button>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
+
       </div>
     </Section>
   );
