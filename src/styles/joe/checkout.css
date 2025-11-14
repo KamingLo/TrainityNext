@@ -6,9 +6,7 @@
 
 .checkout-container {
     display: flex;
-    height: 85vh;
     justify-content: center;
-    margin-top: 9rem;
 }
 
 .checkout-box {
@@ -68,7 +66,6 @@ h1 {
     padding-bottom: 10px;
     font-weight: 500;
     font-size: medium;
-    border-bottom: 2px solid #f2f2f2;
     color: white;
 }
 

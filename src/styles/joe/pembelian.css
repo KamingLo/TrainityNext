@@ -6,9 +6,8 @@
 
 .admin-history-container {
     max-width: 1400px;
-    margin: -5rem auto;
-    padding: 2rem;
-    min-height: 70vh;
+    margin: -4rem auto;
+    padding: 1rem;
 }
 
 .admin-history-header {

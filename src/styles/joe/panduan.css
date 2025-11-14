@@ -1,14 +1,14 @@
 /* ------------ panduan.html ------------ */
 
-/* * {
+/** {
     border: 2px solid red;
-} */
+}*/
 
 .faq-container {
     display: flex;
-    min-height: 100vh;
     width: 100%;
     justify-content: center;
+    margin-bottom: 2rem;
 }
 
 .faq-box {
@@ -46,6 +46,7 @@
 .faq-left img {
     width: 100%;
     max-width: 320px;
+    height: auto;
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
 }
 

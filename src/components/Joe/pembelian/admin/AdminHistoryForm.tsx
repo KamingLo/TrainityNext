@@ -1,14 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import LoadingScreen from "../LoadingScreen";
 import Image from "next/image";
 
 const NoHistory = () => (
   <div className="no-history">
     <i className="bx bx-cart-alt"></i>
-    <h3>Belum Ada Riwayat Pembelian</h3>
-    <p>Tidak ada transaksi yang ditemukan</p>
     <p>Mohon menunggu, data sedang diambil dan memerlukan waktu...</p>
   </div>
 );
@@ -221,14 +218,12 @@ const AdminHistoryForm: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<PurchaseItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchHistoryData();
   }, []);
 
   const fetchHistoryData = async () => {
-    setIsLoading(true);
     try {
       const response = await fetch("/api/admin/pembayaran");
       if (!response.ok) {
@@ -252,7 +247,9 @@ const AdminHistoryForm: React.FC = () => {
           productCounters[productName]++;
         }
 
-        const transactionId = `${productName}-${productCounters[productName].toString().padStart(4, "0")}`;
+        const transactionId = `${productName}-${productCounters[productName]
+          .toString()
+          .padStart(4, "0")}`;
 
         return {
           orderId: `Order${(index + 1).toString().padStart(2, "0")}`,
@@ -272,8 +269,6 @@ const AdminHistoryForm: React.FC = () => {
       setFilteredItems(formattedData);
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -317,9 +312,7 @@ const AdminHistoryForm: React.FC = () => {
             currentFilter={statusFilter}
           />
 
-          {isLoading ? (
-            <LoadingScreen isVisible={true} />
-          ) : filteredItems.length > 0 ? (
+          {filteredItems.length > 0 ? (
             <AdminHistoryList items={filteredItems} />
           ) : (
             <NoHistory />
