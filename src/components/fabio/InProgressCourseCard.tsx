@@ -3,15 +3,18 @@
 import { Play } from "lucide-react";
 import styles from '@/styles/fabio/InProgressCourseCard.module.css';
 
-interface Course {
-  id: number;
+interface InProgressCourse {
+  id: string;
+  _id?: string;
+  name: string;
+  shortDesc: string;
+  status: string;
+  lastWatchedVideoId?: string | null;
+  kodePertama?: string;
+  progress: number;
   title: string;
   category: string;
   imageUrl: string;
-}
-
-interface InProgressCourse extends Course {
-  progress: number;
 }
 
 interface RouterLike {

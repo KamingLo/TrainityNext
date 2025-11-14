@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import InProgressCourseCard from "@/components/fabio/InProgressCourseCard";
 import RecommendedCourseCard from "@/components/fabio/RecommendedCourseCard";
@@ -8,15 +8,28 @@ import NoCourseCard from "@/components/fabio/NoCourseCard";
 import Section from '@/components/sections';
 import styles from '@/styles/fabio/UserDashboard.module.css';
 
-interface Course {
-  id: number;
+interface DashboardCourse {
+  id: string;
+  _id?: string;
+  name: string;
+  shortDesc: string;
+  status: string;
+  lastWatchedVideoId?: string | null;
+  kodePertama?: string;
+}
+
+interface InProgressCourse {
+  id: string;
+  _id?: string;
+  name: string;
+  shortDesc: string;
+  status: string;
+  lastWatchedVideoId?: string | null;
+  kodePertama?: string;
+  progress: number;
   title: string;
   category: string;
   imageUrl: string;
-}
-
-interface InProgressCourse extends Course {
-  progress: number;
 }
 
 interface UserData {
@@ -25,18 +38,25 @@ interface UserData {
   email: string;
 }
 
+interface DashboardData {
+  data: {
+    ownedProducts: DashboardCourse[];
+    latestProducts: DashboardCourse[];
+  };
+}
+
 export default function UserDashboardPage() {
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const [inProgressCourses, setInProgressCourses] = useState<InProgressCourse[]>([]);
-  const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([]);
+  const [recommendedCourses, setRecommendedCourses] = useState<InProgressCourse[]>([]);
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchUserData();
-    loadCoursesData();
+    fetchDashboardData();
   }, []);
 
   const fetchUserData = async () => {
@@ -55,54 +75,58 @@ export default function UserDashboardPage() {
     }
   };
 
-  const loadCoursesData = () => {
-    const coursesData: InProgressCourse[] = [
-      {
-        id: 1,
-        title: "React untuk Pemula",
-        progress: 30,
-        category: "Frontend",
-        imageUrl: "https://images.unsplash.com/photo-1610563166150-b34df4f3bcd6?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        id: 2,
-        title: "JavaScript Fundamentals",
-        progress: 75,
-        category: "Programming",
-        imageUrl: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=80",
-      },
-    ];
+  const fetchDashboardData = async () => {
+    try {
+      const response = await fetch("/api/user/dashboard");
+      if (response.ok) {
+        const data: DashboardData = await response.json();
+        
+        const progressCourses: InProgressCourse[] = data.data.ownedProducts.map((course, index) => ({
+          ...course,
+          id: course.id || course._id || `course-${index}`,
+          title: course.name,
+          category: getCourseCategory(course.name),
+          imageUrl: getCourseImage(course.name),
+          progress: course.lastWatchedVideoId ? 50 : 0
+        }));
+        
+        const recommended: InProgressCourse[] = data.data.latestProducts.map((course, index) => ({
+          ...course,
+          id: course._id || `recommended-${index}`,
+          title: course.name,
+          category: getCourseCategory(course.name),
+          imageUrl: getCourseImage(course.name),
+          progress: 0
+        }));
 
-    const recommendedData: Course[] = [
-      {
-        id: 3,
-        title: "Node.js & Express",
-        category: "Backend",
-        imageUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        id: 4,
-        title: "UI/UX Design with Figma",
-        category: "Desain",
-        imageUrl: "https://images.unsplash.com/photo-1607083205563-3eacb915b1c5?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        id: 5,
-        title: "Dasar-Dasar HTML & CSS",
-        category: "Web Dasar",
-        imageUrl: "https://images.unsplash.com/photo-1555066930-6e0b7d37e8a1?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        id: 6,
-        title: "Python untuk Data Science",
-        category: "Data Science",
-        imageUrl: "https://images.unsplash.com/photo-1526379879527-8559ecfcaec0?auto=format&fit=crop&w=800&q=80",
-      },
-    ];
+        setInProgressCourses(progressCourses);
+        setRecommendedCourses(recommended);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    setInProgressCourses(coursesData);
-    setRecommendedCourses(recommendedData);
-    setLoading(false);
+  const getCourseImage = (courseName: string): string => {
+    const images: { [key: string]: string } = {
+      'HTML': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
+      'CSS': 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=80',
+      'Javascript': 'https://images.unsplash.com/photo-1610563166150-b34df4f3bcd6?auto=format&fit=crop&w=800&q=80',
+      'JavaScript': 'https://images.unsplash.com/photo-1610563166150-b34df4f3bcd6?auto=format&fit=crop&w=800&q=80'
+    };
+    return images[courseName] || 'https://images.unsplash.com/photo-1555066930-6e0b7d37e8a1?auto=format&fit=crop&w=800&q=80';
+  };
+
+  const getCourseCategory = (courseName: string): string => {
+    const categories: { [key: string]: string } = {
+      'HTML': 'Web Dasar',
+      'CSS': 'Web Dasar', 
+      'Javascript': 'Programming',
+      'JavaScript': 'Programming'
+    };
+    return categories[courseName] || 'Programming';
   };
 
   const nextSlide = () => {
