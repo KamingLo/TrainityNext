@@ -1,39 +1,39 @@
 import React from "react";
-import { PurchaseItem } from "./AdminHistoryForm";
 import Image from "next/image";
 
-interface AdminHistoryItemProps {
+export interface PurchaseItem {
+  orderId: string;
+  transactionId: string;
+  accountInfo: string;
+  merchant: string;
+  paymentMethod: string;
+  paymentLogo: string;
+  totalAmount: string;
+  date: string;
+  status: "success" | "pending" | "failed" | "cancelled";
+  statusText: string;
+}
+
+interface Props {
   item: PurchaseItem;
   index: number;
 }
 
-const AdminHistoryItem: React.FC<AdminHistoryItemProps> = ({ item, index }) => {
-  const statusClass = {
-    success: "success",
-    pending: "pending",
-    failed: "failed",
-    cancelled: "cancelled",
-  }[item.status];
-
-  const handleDetail = () => {
-    console.log("View detail for:", item.orderId);
-  };
-
+const AdminHistoryItem: React.FC<Props> = ({ item, index }) => {
   return (
     <div
       className="admin-history-card"
       style={{ animationDelay: `${index * 0.05}s` }}
     >
+      {/* HEADER – Hanya Order ID + Tanggal */}
       <div className="card-header">
         <div className="order-info">
           <span className="order-id">{item.orderId}</span>
-          <span className={`status-badge ${statusClass}`}>
-            {item.statusText}
-          </span>
         </div>
         <span className="transaction-date">{item.date}</span>
       </div>
 
+      {/* BODY */}
       <div className="card-body">
         <div className="info-row">
           <span className="info-label">Email:</span>
@@ -41,26 +41,25 @@ const AdminHistoryItem: React.FC<AdminHistoryItemProps> = ({ item, index }) => {
         </div>
 
         <div className="info-row">
-          <span className="info-label">Merchant:</span>
+          <span className="info-label">Produk:</span>
           <span className="info-value">{item.merchant}</span>
         </div>
 
         <div className="info-row">
-          <span className="info-label">Payment:</span>
+          <span className="info-label">Pembayaran:</span>
           <div className="payment-info">
             <Image
               src={item.paymentLogo}
-              alt={item.paymentMethod}
-              className="payment-icon"
+              alt="FREE"
               width={80}
               height={20}
+              className="payment-icon"
             />
-            <span>{item.paymentMethod}</span>
           </div>
         </div>
 
         <div className="info-row">
-          <span className="info-label">transactionId:</span>
+          <span className="info-label">Transaction ID:</span>
           <span className="info-value">{item.transactionId}</span>
         </div>
 
@@ -70,11 +69,9 @@ const AdminHistoryItem: React.FC<AdminHistoryItemProps> = ({ item, index }) => {
         </div>
       </div>
 
+      {/* FOOTER – Status "Berhasil" di pojok kanan bawah */}
       <div className="card-footer">
-        <button className="btn-detail" onClick={handleDetail}>
-          <i className="bx bx-show"></i>
-          Lihat Detail
-        </button>
+        <span className="status-badge success">{item.statusText}</span>
       </div>
     </div>
   );
