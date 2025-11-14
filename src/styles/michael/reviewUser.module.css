@@ -393,4 +393,62 @@
   .reviewItem {
     padding: 1rem;
   }
+  /* Tambahkan di reviewUser.module.css */
+
+.reviewHistorySection {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.userReviewsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.userReviewItem {
+  padding: 1rem;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.rating {
+  font-size: 1.1rem;
+  color: #ffc107;
+}
+
+.ratingNumber {
+  font-size: 0.9rem;
+  color: #666;
+  margin-left: 0.5rem;
+}
+
+.reviewDate {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.reviewComment {
+  margin: 0;
+  color: #333;
+  line-height: 1.5;
+}
 }
