@@ -1,19 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Section from '@/components/sections';
 import styles from '@/styles/fabio/EditProfile.module.css';
+
+interface UserProfile {
+  username: string;
+  email: string;
+}
 
 export default function EditProfilePage() {
   const router = useRouter();
   
   const [formData, setFormData] = useState({
-    username: "fabio123",
-    email: "fabio@trainity.com"
+    username: "",
+    email: ""
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      setIsFetching(true);
+      const response = await fetch("/api/user/profile");
+      
+      if (!response.ok) {
+        throw new Error("Gagal mengambil data profil");
+      }
+      
+      const userData: UserProfile = await response.json();
+      setFormData({
+        username: userData.username,
+        email: userData.email
+      });
+    } catch (err) {
+      setError("Gagal memuat data profil");
+      console.error("Error fetching profile:", err);
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -26,12 +59,41 @@ export default function EditProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    setTimeout(() => {
+    setError("");
+
+    try {
+      const response = await fetch("/api/user/profile", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Gagal memperbarui profil");
+      }
+
+      const updatedData = await response.json();
+      setFormData(updatedData);
       alert("Profile berhasil diperbarui!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan");
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
+
+  if (isFetching) {
+    return (
+      <Section>
+        <div className={styles.loadingContainer}>
+          Memuat profil...
+        </div>
+      </Section>
+    );
+  }
 
   return (
     <Section>
@@ -50,6 +112,12 @@ export default function EditProfilePage() {
             Kembali ke Dashboard
           </button>
 
+          {error && (
+            <div className={styles.errorMessage}>
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.formGroup}>
               <label className={styles.label}>Username</label>
@@ -60,6 +128,7 @@ export default function EditProfilePage() {
                 onChange={handleChange}
                 className={styles.input}
                 placeholder="Masukkan username"
+                required
               />
             </div>
 
@@ -72,6 +141,7 @@ export default function EditProfilePage() {
                 onChange={handleChange}
                 className={styles.input}
                 placeholder="Masukkan email"
+                required
               />
               <p className={styles.forgotPassword}>
                 Kamu lupa password? <span onClick={() => router.push("/auth/forgot-password")} className={styles.forgotLink}>klik disini!</span>

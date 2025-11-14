@@ -19,14 +19,42 @@ interface InProgressCourse extends Course {
   progress: number;
 }
 
+interface UserData {
+  name: string;
+  username: string;
+  email: string;
+}
+
 export default function UserDashboardPage() {
   const router = useRouter();
 
   const [inProgressCourses, setInProgressCourses] = useState<InProgressCourse[]>([]);
   const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([]);
+  const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchUserData();
+    loadCoursesData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch("/api/user/profile");
+      if (response.ok) {
+        const userData = await response.json();
+        setUser({
+          name: userData.username, // atau sesuaikan dengan field yang ada
+          username: userData.username,
+          email: userData.email
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  const loadCoursesData = () => {
     const coursesData: InProgressCourse[] = [
       {
         id: 1,
@@ -68,7 +96,7 @@ export default function UserDashboardPage() {
     setInProgressCourses(coursesData);
     setRecommendedCourses(recommendedData);
     setLoading(false);
-  }, []);
+  };
 
   if (loading) {
     return (
@@ -78,13 +106,11 @@ export default function UserDashboardPage() {
     );
   }
 
-  const user = { name: "Fabio" };
-
   return (
     <Section>
       <div className={styles.welcomeCard}>
         <h1 className={styles.welcomeTitle}>
-          Selamat datang, <span className={styles.userName}>{user?.name}</span>!
+          Selamat datang, <span className={styles.userName}>{user?.name || "User"}!</span>
         </h1>
         <p className={styles.welcomeSubtitle}>
           Teruskan progres Anda dan capai tujuan belajar Anda.
@@ -102,7 +128,7 @@ export default function UserDashboardPage() {
           <h3 className={styles.actionTitle}>Halaman Belajar</h3>
           <p className={styles.actionDescription}>Akses materi dan lanjutkan pembelajaran</p>
         </div>
-        <div className={styles.actionCard} onClick={() => router.push("/user/produk")}>
+        <div className={styles.actionCard} onClick={() => router.push("/produk")}>
           <div className={styles.actionIcon}>🛍️</div>
           <h3 className={styles.actionTitle}>Produk & Kursus</h3>
           <p className={styles.actionDescription}>Jelajahi kursus dan produk lainnya</p>

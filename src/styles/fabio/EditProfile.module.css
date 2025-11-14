@@ -1,3 +1,12 @@
+.loadingContainer {
+  display: flex;
+  height: 50vh;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 1.125rem;
+}
+
 .profileHeader {
   margin-bottom: 2rem;
   text-align: center;
@@ -56,6 +65,16 @@
 .backIcon {
   font-size: 1rem;
   font-weight: 600;
+}
+
+.errorMessage {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  border-radius: 6px;
+  color: #fca5a5;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
 }
 
 .form {
