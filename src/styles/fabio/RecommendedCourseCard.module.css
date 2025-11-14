@@ -1,19 +1,23 @@
 .recommendedCard {
   background: rgba(31, 41, 55, 0.8);
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid #374151;
   overflow: hidden;
   transition: all 0.3s ease;
+  height: 100%;
+  width: 100%;
 }
 
 .recommendedCard:hover {
-  border-color: #4b5563;
+  border-color: #60a5fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .recommendedHeader {
   position: relative;
   width: 100%;
-  height: 100px;
+  height: 140px;
 }
 
 .recommendedImage {
@@ -24,26 +28,32 @@
 
 .recommendedCategory {
   position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-  background: #374151;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: rgba(55, 65, 81, 0.9);
   color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .recommendedContent {
-  padding: 1rem;
+  padding: 1.25rem;
 }
 
 .recommendedTitle {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   color: white;
   margin-bottom: 1rem;
   line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .detailButton {
@@ -52,19 +62,19 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: #374151;
+  padding: 0.6rem 1rem;
+  background: #1e40af;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: 500;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .detailButton:hover {
-  background: #4b5563;
+  background: #1e3a8a;
 }
 
 .buttonIcon {

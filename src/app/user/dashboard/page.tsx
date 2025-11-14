@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import InProgressCourseCard from "@/components/fabio/InProgressCourseCard";
 import RecommendedCourseCard from "@/components/fabio/RecommendedCourseCard";
@@ -27,6 +27,7 @@ interface UserData {
 
 export default function UserDashboardPage() {
   const router = useRouter();
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const [inProgressCourses, setInProgressCourses] = useState<InProgressCourse[]>([]);
   const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([]);
@@ -44,7 +45,7 @@ export default function UserDashboardPage() {
       if (response.ok) {
         const userData = await response.json();
         setUser({
-          name: userData.username, // atau sesuaikan dengan field yang ada
+          name: userData.username,
           username: userData.username,
           email: userData.email
         });
@@ -91,11 +92,29 @@ export default function UserDashboardPage() {
         category: "Web Dasar",
         imageUrl: "https://images.unsplash.com/photo-1555066930-6e0b7d37e8a1?auto=format&fit=crop&w=800&q=80",
       },
+      {
+        id: 6,
+        title: "Python untuk Data Science",
+        category: "Data Science",
+        imageUrl: "https://images.unsplash.com/photo-1526379879527-8559ecfcaec0?auto=format&fit=crop&w=800&q=80",
+      },
     ];
 
     setInProgressCourses(coursesData);
     setRecommendedCourses(recommendedData);
     setLoading(false);
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide(prev => (prev + 1) % recommendedCourses.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(prev => (prev - 1 + recommendedCourses.length) % recommendedCourses.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
   };
 
   if (loading) {
@@ -105,6 +124,8 @@ export default function UserDashboardPage() {
       </div>
     );
   }
+
+  const currentCourse = recommendedCourses[currentSlide];
 
   return (
     <Section>
@@ -128,7 +149,7 @@ export default function UserDashboardPage() {
           <h3 className={styles.actionTitle}>Halaman Belajar</h3>
           <p className={styles.actionDescription}>Akses materi dan lanjutkan pembelajaran</p>
         </div>
-        <div className={styles.actionCard} onClick={() => router.push("/produk")}>
+        <div className={styles.actionCard} onClick={() => router.push("/user/produk")}>
           <div className={styles.actionIcon}>🛍️</div>
           <h3 className={styles.actionTitle}>Produk & Kursus</h3>
           <p className={styles.actionDescription}>Jelajahi kursus dan produk lainnya</p>
@@ -159,14 +180,52 @@ export default function UserDashboardPage() {
           <div className={styles.cardHeader}>
             <h2 className={styles.cardTitle}>Rekomendasi Untuk Anda</h2>
           </div>
-          <div className={styles.recommendedList}>
-            {recommendedCourses.map((course) => (
-              <RecommendedCourseCard
-                key={course.id}
-                course={course}
-                router={router}
-              />
-            ))}
+          <div className={styles.recommendedCarousel}>
+            <div className={styles.carouselSlide}>
+              <div className={styles.courseImageContainer}>
+                <img 
+                  src={currentCourse?.imageUrl} 
+                  alt={currentCourse?.title}
+                  className={styles.courseImage}
+                />
+                <div className={styles.courseOverlay}>
+                  <span className={styles.courseCategory}>{currentCourse?.category}</span>
+                  <h3 className={styles.courseTitle}>{currentCourse?.title}</h3>
+                  <button 
+                    onClick={() => router.push(`/kursus/${currentCourse?.id}`)}
+                    className={styles.detailButton}
+                  >
+                    Lihat Detail
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div className={styles.carouselControls}>
+              <button 
+                onClick={prevSlide}
+                className={styles.carouselButton}
+              >
+                ‹
+              </button>
+              
+              <div className={styles.carouselDots}>
+                {recommendedCourses.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`${styles.carouselDot} ${currentSlide === index ? styles.active : ''}`}
+                  />
+                ))}
+              </div>
+              
+              <button 
+                onClick={nextSlide}
+                className={styles.carouselButton}
+              >
+                ›
+              </button>
+            </div>
           </div>
         </div>
       </div>

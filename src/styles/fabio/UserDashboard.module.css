@@ -82,6 +82,8 @@
   border-radius: 8px;
   padding: 1.5rem;
   border: 1px solid #374151;
+  height: fit-content; 
+  align-self: start; 
 }
 
 .cardHeader {
@@ -106,10 +108,120 @@
   gap: 1rem;
 }
 
-.recommendedList {
-  display: grid;
-  grid-template-columns: 1fr;
+.recommendedCarousel {
+  position: relative;
+}
+
+.carouselSlide {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 300px;
+}
+
+.courseImageContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.courseImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.courseOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 1.5rem;
+  color: white;
+}
+
+.courseCategory {
+  background: #1e40af;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.courseTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0.75rem 0;
+  color: white;
+}
+
+.detailButton {
+  background: #1e40af;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.detailButton:hover {
+  background: #1e3a8a;
+}
+
+.carouselControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 1rem;
+  margin-top: 1rem;
+}
+
+.carouselButton {
+  background: #374151;
+  border: none;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.carouselButton:hover {
+  background: #4b5563;
+  transform: scale(1.1);
+}
+
+.carouselDots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.carouselDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #374151;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carouselDot.active {
+  background: #60a5fa;
+  transform: scale(1.2);
 }
 
 @media (max-width: 1024px) {
@@ -148,5 +260,9 @@
   
   .actionCard {
     padding: 1rem;
+  }
+  
+  .carouselSlide {
+    height: 250px;
   }
 }
