@@ -44,15 +44,8 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
 
-  } catch (error: any) {
-    // Handle jika user sudah pernah review (validasi unique index di model)
-    if (error.code === 11000) {
-      return NextResponse.json(
-        { error: "Anda sudah memberikan review untuk produk ini" },
-        { status: 409 }
-      );
-    }
-    return NextResponse.json({ error: "Terjadi kesalahan server" }, { status: 500 });
+  } catch (error: AppError) {
+    if (error instanceof Error) return NextResponse.json({ error: "Terjadi kesalahan server" }, { status: 500 });
   }
 }
 

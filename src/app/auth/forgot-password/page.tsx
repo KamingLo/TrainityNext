@@ -4,17 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react"; // Lucide masih dipakai untuk panah back
+import { ArrowLeft } from "lucide-react";
 import Section from "@/components/sections";
 
-// Impor modul CSS
 import authStyles from "@/styles/kaming/auth.module.css";
 
 type Step = "forgot" | "verify" | "change";
 
 export default function ForgotPasswordPage() {
   const [step, setStep] = useState<Step>("forgot");
-  
+
   // State Data
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -25,14 +24,14 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
+
   // State Visibility Password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter();
 
-  // --- 1. Handler Kirim Kode ---
+  // --- 1. Send Code ---
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -55,15 +54,13 @@ export default function ForgotPasswordPage() {
         setSuccess(null);
         setStep("verify");
       }, 1500);
-
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: AppError) {
+        if (err instanceof Error) setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // --- 2. Handler Verifikasi Kode ---
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -86,15 +83,13 @@ export default function ForgotPasswordPage() {
         setSuccess(null);
         setStep("change");
       }, 1000);
-
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: AppError) {
+        if (err instanceof Error) setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // --- 3. Handler Ganti Password ---
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -109,7 +104,7 @@ export default function ForgotPasswordPage() {
       setError("Konfirmasi password tidak cocok.");
       return;
     }
-    
+
     setLoading(true);
 
     try {
@@ -125,34 +120,13 @@ export default function ForgotPasswordPage() {
 
       setSuccess("Password berhasil diubah! Mengarahkan ke login...");
       setTimeout(() => router.push("/auth/login"), 2000);
-
-    } catch (err: any) {
-      setError(err.message);
-      setLoading(false);
+    } catch (err: AppError) {
+        if (err instanceof Error) setError(err.message);
+        setLoading(false);
     }
   };
 
-  // Style wrapper untuk posisi relative (agar icon bisa absolute)
-  const passwordWrapperStyle: React.CSSProperties = {
-    position: "relative",
-    width: "100%",
-  };
-
-  // Style untuk icon mata (Boxicons)
-  const toggleIconStyle: React.CSSProperties = {
-    position: "absolute",
-    right: "15px",        // Jarak dari kanan
-    top: "50%",           // Posisi vertikal tengah
-    transform: "translateY(-50%)", // Center vertikal presisi
-    cursor: "pointer",
-    color: "#888",        // Warna icon abu-abu
-    fontSize: "22px",     // Ukuran icon boxicons
-    zIndex: 10,
-    display: "flex",      // Pastikan icon centered dalam containernya
-    alignItems: "center",
-  };
-
-  // Varian animasi
+  // Framer Motion Variants
   const formVariants = {
     hidden: { opacity: 0, x: 50, transition: { duration: 0.3 } },
     visible: { opacity: 1, x: 0, transition: { duration: 0.3 } },
@@ -163,7 +137,6 @@ export default function ForgotPasswordPage() {
     <Section>
       <div className={authStyles.loginContainer}>
         <div className={authStyles.loginForm}>
-          
           <AnimatePresence mode="wait">
             
             {/* === STEP 1: FORGOT === */}
@@ -177,13 +150,15 @@ export default function ForgotPasswordPage() {
                 onSubmit={handleSendCode}
               >
                 <h1 className={authStyles.loginTitle}>Lupa Password</h1>
-                <p className={authStyles.loginRedirectText} style={{ marginTop: 0, marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                <p className={authStyles.loginRedirectText}>
                   Masukkan email Anda yang terdaftar.
                 </p>
-                
+
                 <div className={authStyles.formInputsContainer}>
                   <div>
-                    <label htmlFor="email" className={authStyles.formLabel}>Email</label>
+                    <label htmlFor="email" className={authStyles.formLabel}>
+                      Email
+                    </label>
                     <input
                       id="email"
                       type="email"
@@ -196,7 +171,12 @@ export default function ForgotPasswordPage() {
                     />
                   </div>
                 </div>
-                <button type="submit" disabled={loading} className={authStyles.loginSubmitButton}>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={authStyles.loginSubmitButton}
+                >
                   {loading ? "Mengirim..." : "Kirim Kode"}
                 </button>
               </motion.form>
@@ -213,13 +193,15 @@ export default function ForgotPasswordPage() {
                 onSubmit={handleVerifyCode}
               >
                 <h1 className={authStyles.loginTitle}>Verifikasi Kode</h1>
-                <p className={authStyles.loginRedirectText} style={{ marginTop: 0, marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                <p className={authStyles.loginRedirectText}>
                   Kode OTP telah dikirim ke <strong>{email}</strong>
                 </p>
-                
+
                 <div className={authStyles.formInputsContainer}>
                   <div>
-                    <label htmlFor="code" className={authStyles.formLabel}>Kode Verifikasi</label>
+                    <label htmlFor="code" className={authStyles.formLabel}>
+                      Kode Verifikasi
+                    </label>
                     <input
                       id="code"
                       type="text"
@@ -234,14 +216,21 @@ export default function ForgotPasswordPage() {
                     />
                   </div>
                 </div>
-                <button type="submit" disabled={loading} className={authStyles.loginSubmitButton}>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={authStyles.loginSubmitButton}
+                >
                   {loading ? "Memverifikasi..." : "Verifikasi"}
                 </button>
-                <div style={{ marginTop: '10px', textAlign: 'center' }}>
-                  <button 
-                    type="button" 
+
+                <div style={{ marginTop: "10px", textAlign: "center" }}>
+                  <button
+                    type="button"
                     onClick={() => setStep("forgot")}
-                    style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '0.8rem' }}
+                    className={authStyles.loginRedirectLink}
+                    style={{ fontSize: "0.8rem" }}
                   >
                     Salah email? Kembali
                   </button>
@@ -249,7 +238,7 @@ export default function ForgotPasswordPage() {
               </motion.form>
             )}
 
-            {/* === STEP 3: CHANGE PASSWORD (Updated with Boxicons) === */}
+            {/* === STEP 3: CHANGE PASSWORD === */}
             {step === "change" && (
               <motion.form
                 key="change"
@@ -260,16 +249,17 @@ export default function ForgotPasswordPage() {
                 onSubmit={handleChangePassword}
               >
                 <h1 className={authStyles.loginTitle}>Atur Password Baru</h1>
-                <p className={authStyles.loginRedirectText} style={{ marginTop: 0, marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                <p className={authStyles.loginRedirectText}>
                   Silakan buat password baru yang aman.
                 </p>
-                
+
                 <div className={authStyles.formInputsContainer}>
-                  
                   {/* Password Baru */}
                   <div>
-                    <label htmlFor="newPassword" className={authStyles.formLabel}>Password Baru</label>
-                    <div style={passwordWrapperStyle}>
+                    <label htmlFor="newPassword" className={authStyles.formLabel}>
+                      Password Baru
+                    </label>
+                    <div className={authStyles.passwordWrapper}>
                       <input
                         id="newPassword"
                         type={showPassword ? "text" : "password"}
@@ -279,22 +269,22 @@ export default function ForgotPasswordPage() {
                         placeholder="Minimal 6 karakter"
                         required
                         disabled={loading}
-                        style={{ paddingRight: "45px" }} // Extra padding agar teks tidak tertutup icon
                       />
-                      <span 
-                        onClick={() => setShowPassword(!showPassword)} 
-                        style={toggleIconStyle}
+                      <span
+                        onClick={() => setShowPassword(!showPassword)}
+                        className={authStyles.passwordToggle}
                       >
-                        {/* Menggunakan Boxicons Class */}
-                        <i className={`bx ${showPassword ? 'bx-show' : 'bx-hide'}`}></i>
+                        <i className={`bx ${showPassword ? "bx-show" : "bx-hide"}`} />
                       </span>
                     </div>
                   </div>
 
                   {/* Konfirmasi Password */}
                   <div>
-                    <label htmlFor="confirmPassword" className={authStyles.formLabel}>Konfirmasi Password</label>
-                    <div style={passwordWrapperStyle}>
+                    <label htmlFor="confirmPassword" className={authStyles.formLabel}>
+                      Konfirmasi Password
+                    </label>
+                    <div className={authStyles.passwordWrapper}>
                       <input
                         id="confirmPassword"
                         type={showConfirmPassword ? "text" : "password"}
@@ -304,34 +294,44 @@ export default function ForgotPasswordPage() {
                         placeholder="Ulangi password baru"
                         required
                         disabled={loading}
-                        style={{ paddingRight: "45px" }}
                       />
-                      <span 
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
-                        style={toggleIconStyle}
+                      <span
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className={authStyles.passwordToggle}
                       >
-                        {/* Menggunakan Boxicons Class */}
-                        <i className={`bx ${showConfirmPassword ? 'bx-show' : 'bx-hide'}`}></i>
+                        <i
+                          className={`bx ${
+                            showConfirmPassword ? "bx-show" : "bx-hide"
+                          }`}
+                        />
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <button type="submit" disabled={loading} className={authStyles.loginSubmitButton}>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={authStyles.loginSubmitButton}
+                >
                   {loading ? "Menyimpan..." : "Ubah Password"}
                 </button>
               </motion.form>
             )}
           </AnimatePresence>
 
-          {/* Pesan Error / Sukses */}
-          {error && <div className={authStyles.errorMessage} style={{marginTop: '1rem', color: 'red', textAlign:'center'}}>{error}</div>}
-          {success && <div className={authStyles.successMessage} style={{marginTop: '1rem', color: 'green', textAlign:'center'}}>{success}</div>}
+          {/* Error & Success */}
+          {error && (
+            <p className={authStyles.errorMessage}>{error}</p>
+          )}
+          {success && (
+            <p className={authStyles.successMessage}>{success}</p>
+          )}
 
           {/* Back to Login */}
-          <div className={authStyles.loginRedirectText} style={{ marginTop: '1.5rem' }}>
+          <div className={authStyles.loginRedirectText}>
             <Link href="/auth/login" className={authStyles.loginRedirectLink}>
-              <ArrowLeft size={16} style={{ display: 'inline-block', marginRight: '4px' }} />
+              <ArrowLeft size={16} />
               Kembali ke Login
             </Link>
           </div>

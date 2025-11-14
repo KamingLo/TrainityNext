@@ -58,8 +58,8 @@ export default function DetailProdukPage() {
         setProduct(productData);
         // Fetch reviews setelah product didapatkan
         await fetchReviews(productData._id);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: AppError) {
+        if (err instanceof Error) setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -77,8 +77,8 @@ export default function DetailProdukPage() {
         const data = await response.json();
         setReviews(data.reviews || []);
       }
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
+    } catch (err: AppError) {
+        if (err instanceof Error) console.error (err.message);
     } finally {
       setReviewsLoading(false);
     }

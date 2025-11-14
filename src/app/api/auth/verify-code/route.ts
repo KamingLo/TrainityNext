@@ -13,12 +13,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Permintaan tidak valid." }, { status: 400 });
     }
 
-    // Cek apakah sudah expired
     if (new Date() > new Date(record.expiresAt)) {
       return NextResponse.json({ message: "Kode telah kadaluarsa." }, { status: 400 });
     }
 
-    // Cek apakah kode cocok
     if (record.token !== code) {
       return NextResponse.json({ message: "Kode verifikasi salah." }, { status: 400 });
     }
@@ -26,6 +24,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Kode valid." });
 
   } catch (error) {
+    console.log(error);
     return NextResponse.json({ message: "Terjadi kesalahan server." }, { status: 500 });
   }
 }

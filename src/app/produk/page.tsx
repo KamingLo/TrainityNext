@@ -54,8 +54,8 @@ export default function ProdukPage() {
 
         const data: Product[] = await res.json();
         setProducts(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: AppError) {
+        if (err instanceof Error) setError(err.message);
         setProducts([]); // Kosongkan produk jika ada error
       } finally {
         setLoading(false);

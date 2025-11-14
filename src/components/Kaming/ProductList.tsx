@@ -34,11 +34,6 @@ export default function ProductList({ products, onDelete }: ProductListProps) {
 
   return (
     <>
-      {/* CATATAN: 
-        Kelas 'styles.listTitle' tidak ada di file CSS kita. 
-        Anda mungkin bermaksud menggunakan kelas lain, 
-        atau menambahkannya ke 'adminProductList.module.css' 
-      */}
       <h2 className={styles.listTitle}>Daftar Kursus</h2>
       
       <div className={styles.productGrid}>

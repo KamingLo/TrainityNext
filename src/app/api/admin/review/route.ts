@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     await connectDB();
 
     // 1. Cek Autentikasi Admin
-    const session: any = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -49,12 +49,14 @@ export async function GET(req: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
-    console.error("Get Admin Reviews Error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+  } catch (error: AppError) {
+    if(error instanceof Error){
+        console.error("Get Admin Reviews Error:", error);
+        return NextResponse.json(
+          { error: "Internal Server Error" },
+          { status: 500 }
+        );
+    }
   }
 }
 
@@ -63,7 +65,7 @@ export async function DELETE(req: NextRequest) {
     await connectDB();
 
     // 1. Cek Autentikasi & Otorisasi
-    const session: any = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
     
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -91,8 +93,10 @@ export async function DELETE(req: NextRequest) {
       { status: 200 }
     );
 
-  } catch (error: any) {
-    console.error("Delete Review Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  } catch (error: AppError) {
+    if(error instanceof Error){
+        console.error("Delete Review Error:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
   }
 }

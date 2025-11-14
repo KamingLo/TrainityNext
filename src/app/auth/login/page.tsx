@@ -6,15 +6,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import BackButton from "@/components/kaming/backbutton";
 import Section from "@/components/sections";
-
-// DIUBAH: Impor dari auth.module.css
 import styles from "@/styles/kaming/auth.module.css";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // ⭐ NEW
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -31,6 +31,7 @@ export default function LoginPage() {
       setError(res?.error);
     } else {
       setSuccess("Segera redirect ke halaman dashboard");
+
       const sessionRes = await fetch("/api/auth/session");
       const sessionData = await sessionRes.json();
 
@@ -48,7 +49,6 @@ export default function LoginPage() {
     <Section>
       <div className={styles.loginContainer}>
         <form onSubmit={handleLogin} className={styles.loginForm}>
-          {/* BackButton akan mengambil gayanya sendiri dari common.module.css */}
           <BackButton />
           <h2 className={styles.loginTitle}>Sign In</h2>
 
@@ -67,23 +67,29 @@ export default function LoginPage() {
               />
             </div>
 
-            <div>
+            <div className={styles.passwordWrapper}>
               <label htmlFor="password" className={styles.formLabel}>
                 Password
               </label>
+
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Masukkan password"
                 className={styles.loginInput}
               />
+
+              <i
+                className={`bx ${
+                  showPassword ? "bx-hide" : "bx-show"
+                } ${styles.passwordIcon}`}
+                onClick={() => setShowPassword((prev) => !prev)}
+              ></i>
+
               <div className={styles.textRight}>
-                <Link
-                  href={`/auth/forgot-password`} // Diubah dari forget-password
-                  className={styles.linkSubtle}
-                >
+                <Link href="/auth/forgot-password" className={styles.linkSubtle}>
                   Lupa Password?
                 </Link>
               </div>

@@ -8,6 +8,16 @@ declare global {
         kodePelajaran: string;
     }
 
+    export interface IReview extends Document {
+        userId: mongoose.Types.ObjectId;
+        productId: mongoose.Types.ObjectId;
+        rating: number;
+        comment?: string; // Opsional: jika user ingin memberi teks ulasan
+        createdAt: Date;
+        updatedAt: Date;
+        code?:string;
+    }
+
     export interface IProduct extends Document {
         _id: Types.ObjectId;
         name: string;
