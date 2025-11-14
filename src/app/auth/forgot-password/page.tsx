@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { getSession, signOut } from "next-auth/react";
 import Section from "@/components/sections";
 
 import authStyles from "@/styles/kaming/auth.module.css";
@@ -14,24 +15,20 @@ type Step = "forgot" | "verify" | "change";
 export default function ForgotPasswordPage() {
   const [step, setStep] = useState<Step>("forgot");
 
-  // State Data
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // State UI
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // State Visibility Password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter();
 
-  // --- 1. Send Code ---
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -46,7 +43,6 @@ export default function ForgotPasswordPage() {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message || "Gagal mengirim kode");
 
       setSuccess(data.message);
@@ -54,8 +50,8 @@ export default function ForgotPasswordPage() {
         setSuccess(null);
         setStep("verify");
       }, 1500);
-    } catch (err: AppError) {
-        if (err instanceof Error) setError(err.message);
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -75,7 +71,6 @@ export default function ForgotPasswordPage() {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message || "Kode verifikasi salah");
 
       setSuccess("Kode valid!");
@@ -83,8 +78,8 @@ export default function ForgotPasswordPage() {
         setSuccess(null);
         setStep("change");
       }, 1000);
-    } catch (err: AppError) {
-        if (err instanceof Error) setError(err.message);
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -95,8 +90,8 @@ export default function ForgotPasswordPage() {
     setError(null);
     setSuccess(null);
 
-    if (newPassword.length < 6) {
-      setError("Password minimal 6 karakter");
+    if (newPassword.length < 8) {
+      setError("Password minimal 8 karakter");
       return;
     }
 
@@ -115,18 +110,24 @@ export default function ForgotPasswordPage() {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message || "Gagal mengubah password");
 
-      setSuccess("Password berhasil diubah! Mengarahkan ke login...");
-      setTimeout(() => router.push("/auth/login"), 2000);
+      const session = await getSession();
+
+    if (session) {
+      setSuccess("Kamu harus login ulang");
+      await signOut({ redirect: false });
+    }
+
+    setTimeout(() => router.push("/auth/login"), 2000);
     } catch (err: AppError) {
-        if (err instanceof Error) setError(err.message);
-        setLoading(false);
+        if(err instanceof Error){ 
+            setError(err.message);
+            setLoading(false);
+        } 
     }
   };
 
-  // Framer Motion Variants
   const formVariants = {
     hidden: { opacity: 0, x: 50, transition: { duration: 0.3 } },
     visible: { opacity: 1, x: 0, transition: { duration: 0.3 } },
@@ -138,7 +139,7 @@ export default function ForgotPasswordPage() {
       <div className={authStyles.loginContainer}>
         <div className={authStyles.loginForm}>
           <AnimatePresence mode="wait">
-            
+
             {/* === STEP 1: FORGOT === */}
             {step === "forgot" && (
               <motion.form
@@ -225,12 +226,11 @@ export default function ForgotPasswordPage() {
                   {loading ? "Memverifikasi..." : "Verifikasi"}
                 </button>
 
-                <div style={{ marginTop: "10px", textAlign: "center" }}>
+                <div className={authStyles.textRight}>
                   <button
                     type="button"
                     onClick={() => setStep("forgot")}
                     className={authStyles.loginRedirectLink}
-                    style={{ fontSize: "0.8rem" }}
                   >
                     Salah email? Kembali
                   </button>
@@ -238,97 +238,80 @@ export default function ForgotPasswordPage() {
               </motion.form>
             )}
 
-            {/* === STEP 3: CHANGE PASSWORD === */}
             {step === "change" && (
-              <motion.form
-                key="change"
-                variants={formVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                onSubmit={handleChangePassword}
-              >
-                <h1 className={authStyles.loginTitle}>Atur Password Baru</h1>
-                <p className={authStyles.loginRedirectText}>
-                  Silakan buat password baru yang aman.
-                </p>
+                <motion.form
+                    key="change"
+                    variants={formVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    onSubmit={handleChangePassword}
+                >
+                    <h1 className={authStyles.loginTitle}>Atur Password Baru</h1>
+                    <p className={authStyles.loginRedirectText}>
+                    Silakan buat password baru yang aman.
+                    </p>
 
-                <div className={authStyles.formInputsContainer}>
-                  {/* Password Baru */}
-                  <div>
-                    <label htmlFor="newPassword" className={authStyles.formLabel}>
-                      Password Baru
-                    </label>
+                    <div className={authStyles.formInputsContainer}>
                     <div className={authStyles.passwordWrapper}>
-                      <input
+                        <label htmlFor="newPassword" className={authStyles.formLabel}>
+                        Password Baru
+                        </label>
+
+                        <input
                         id="newPassword"
                         type={showPassword ? "text" : "password"}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        className={authStyles.loginInput}
                         placeholder="Minimal 6 karakter"
-                        required
+                        className={authStyles.loginInput}
                         disabled={loading}
-                      />
-                      <span
-                        onClick={() => setShowPassword(!showPassword)}
-                        className={authStyles.passwordToggle}
-                      >
-                        <i className={`bx ${showPassword ? "bx-show" : "bx-hide"}`} />
-                      </span>
-                    </div>
-                  </div>
+                        required
+                        />
 
-                  {/* Konfirmasi Password */}
-                  <div>
-                    <label htmlFor="confirmPassword" className={authStyles.formLabel}>
-                      Konfirmasi Password
-                    </label>
+                        <i
+                        className={`bx ${showPassword ? "bx-hide" : "bx-show"} ${authStyles.passwordIcon}`}
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        ></i>
+                    </div>
+
                     <div className={authStyles.passwordWrapper}>
-                      <input
+                        <label htmlFor="confirmPassword" className={authStyles.formLabel}>
+                        Konfirmasi Password
+                        </label>
+
+                        <input
                         id="confirmPassword"
                         type={showConfirmPassword ? "text" : "password"}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className={authStyles.loginInput}
                         placeholder="Ulangi password baru"
-                        required
+                        className={authStyles.loginInput}
                         disabled={loading}
-                      />
-                      <span
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className={authStyles.passwordToggle}
-                      >
-                        <i
-                          className={`bx ${
-                            showConfirmPassword ? "bx-show" : "bx-hide"
-                          }`}
+                        required
                         />
-                      </span>
-                    </div>
-                  </div>
-                </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className={authStyles.loginSubmitButton}
-                >
-                  {loading ? "Menyimpan..." : "Ubah Password"}
-                </button>
-              </motion.form>
+                        <i
+                        className={`bx ${showConfirmPassword ? "bx-hide" : "bx-show"} ${authStyles.passwordIcon}`}
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                        ></i>
+                    </div>
+                    </div>
+
+                    <button
+                    type="submit"
+                    disabled={loading}
+                    className={authStyles.loginSubmitButton}
+                    >
+                    {loading ? "Menyimpan..." : "Ubah Password"}
+                    </button>
+                </motion.form>
             )}
           </AnimatePresence>
 
-          {/* Error & Success */}
-          {error && (
-            <p className={authStyles.errorMessage}>{error}</p>
-          )}
-          {success && (
-            <p className={authStyles.successMessage}>{success}</p>
-          )}
+          {error && <p className={authStyles.errorMessage}>{error}</p>}
+          {success && <p className={authStyles.successMessage}>{success}</p>}
 
-          {/* Back to Login */}
           <div className={authStyles.loginRedirectText}>
             <Link href="/auth/login" className={authStyles.loginRedirectLink}>
               <ArrowLeft size={16} />

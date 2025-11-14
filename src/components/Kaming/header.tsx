@@ -7,7 +7,6 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
 
-// DIUBAH: Impor dari common.module.css
 import styles from "@/styles/kaming/common.module.css";
 
 export default function NavigationBar() {
@@ -18,8 +17,6 @@ export default function NavigationBar() {
   const userRole = (session?.user as { role?: string })?.role;
   const dashboardPath =
     userRole === "admin" ? "/admin/dashboard" : "/user/dashboard";
-  const pembelianPath =
-    userRole === "admin" ? "/admin/pembelian" : "/user/pembelian";
   const produkPath = userRole === "admin" ? "/admin/produk" : "/produk";
 
   return (
@@ -43,14 +40,20 @@ export default function NavigationBar() {
           <Link href={produkPath} className={styles.navLink}>
             Produk
           </Link>
+          {isLoggedIn && (
+            <>
+                <Link href={"/user/profile"} className={styles.navLink}>
+                Profile
+                </Link>
+
+                <Link href={"/user/belajar"} className={styles.navLink}>
+                Belajar
+                </Link>
+            </>
+          )}
           <Link href="/panduan" className={styles.navLink}>
             Panduan
           </Link>
-          {isLoggedIn && (
-            <Link href={pembelianPath} className={styles.navLink}>
-              Pembelian
-            </Link>
-          )}
         </div>
 
         {/* Aksi kanan (desktop) */}
@@ -112,22 +115,29 @@ export default function NavigationBar() {
             >
               Produk
             </Link>
-            <Link
-              href="/panduan"
-              onClick={() => setIsOpen(false)}
-              className={styles.menuMobileLink}
-            >
-              Panduan
-            </Link>
 
             {isLoggedIn && (
               <>
                 <Link
-                  href={pembelianPath}
+                  href={"/user/belajar"}
                   onClick={() => setIsOpen(false)}
                   className={styles.menuMobileLink}
                 >
-                  Pembelian
+                  Belajar
+                </Link>
+                <Link
+                  href={"/user/profile"}
+                  onClick={() => setIsOpen(false)}
+                  className={styles.menuMobileLink}
+                >
+                  Profile
+                </Link>
+                <Link
+                    href="/panduan"
+                    onClick={() => setIsOpen(false)}
+                    className={styles.menuMobileLink}
+                >
+                    Panduan
                 </Link>
                 <Link
                   href={dashboardPath}
