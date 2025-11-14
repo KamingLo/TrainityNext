@@ -2,6 +2,8 @@
 
 import { Play } from "lucide-react";
 import styles from '@/styles/fabio/InProgressCourseCard.module.css';
+import Image from "next/image";
+import Link from "next/link";
 
 interface InProgressCourse {
   id: string;
@@ -33,10 +35,12 @@ export default function InProgressCourseCard({
   return (
     <div className={styles.courseCard}>
       <div className={styles.courseHeader}>
-        <img
+        <Image
           src={course.imageUrl}
           alt={course.title}
           className={styles.courseImage}
+          width={300}
+          height={300}
         />
         <span className={styles.categoryBadge}>
           {course.category}
@@ -62,13 +66,13 @@ export default function InProgressCourseCard({
           </div>
         </div>
 
-        <button
-          onClick={() => router.push(`/kursus/${course.id}`)}
-          className={styles.continueButton}
-        >
+        <Link href={`/user/belajar/${course.name}`}>
+        <p className={styles.continueButton}>
           <Play className={styles.buttonIcon} /> 
-          Lanjutkan
-        </button>
+            Lanjutkan
+        </p>
+        </Link>
+            
       </div>
     </div>
   );

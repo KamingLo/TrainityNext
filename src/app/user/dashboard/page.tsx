@@ -7,6 +7,7 @@ import RecommendedCourseCard from "@/components/fabio/RecommendedCourseCard";
 import NoCourseCard from "@/components/fabio/NoCourseCard";
 import Section from '@/components/sections';
 import styles from '@/styles/fabio/UserDashboard.module.css';
+import Link from "next/link";
 
 interface DashboardCourse {
   id: string;
@@ -16,6 +17,8 @@ interface DashboardCourse {
   status: string;
   lastWatchedVideoId?: string | null;
   kodePertama?: string;
+  progressPercentage?: number;
+  video?: Array<{ kodePelajaran?: string }>;
 }
 
 interface InProgressCourse {
@@ -48,7 +51,6 @@ interface DashboardData {
 export default function UserDashboardPage() {
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
-
   const [inProgressCourses, setInProgressCourses] = useState<InProgressCourse[]>([]);
   const [recommendedCourses, setRecommendedCourses] = useState<InProgressCourse[]>([]);
   const [user, setUser] = useState<UserData | null>(null);
@@ -75,6 +77,13 @@ export default function UserDashboardPage() {
     }
   };
 
+  const getCourseImage = (course: DashboardCourse): string => {
+    const videoCode = course.kodePertama || course.video?.[0]?.kodePelajaran;
+    return videoCode 
+      ? `https://i.ytimg.com/vi/${videoCode}/hqdefault.jpg`
+      : 'https://via.placeholder.com/300x200/4F46E5/FFFFFF?text=No+Image';
+  };
+
   const fetchDashboardData = async () => {
     try {
       const response = await fetch("/api/user/dashboard");
@@ -85,17 +94,17 @@ export default function UserDashboardPage() {
           ...course,
           id: course.id || course._id || `course-${index}`,
           title: course.name,
-          category: getCourseCategory(course.name),
-          imageUrl: getCourseImage(course.name),
-          progress: course.lastWatchedVideoId ? 50 : 0
+          category: course.name,
+          imageUrl: getCourseImage(course),
+          progress: course.progressPercentage || 0
         }));
         
         const recommended: InProgressCourse[] = data.data.latestProducts.map((course, index) => ({
           ...course,
           id: course._id || `recommended-${index}`,
           title: course.name,
-          category: getCourseCategory(course.name),
-          imageUrl: getCourseImage(course.name),
+          category: course.name,
+          imageUrl: getCourseImage(course),
           progress: 0
         }));
 
@@ -107,26 +116,6 @@ export default function UserDashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const getCourseImage = (courseName: string): string => {
-    const images: { [key: string]: string } = {
-      'HTML': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
-      'CSS': 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=80',
-      'Javascript': 'https://images.unsplash.com/photo-1610563166150-b34df4f3bcd6?auto=format&fit=crop&w=800&q=80',
-      'JavaScript': 'https://images.unsplash.com/photo-1610563166150-b34df4f3bcd6?auto=format&fit=crop&w=800&q=80'
-    };
-    return images[courseName] || 'https://images.unsplash.com/photo-1555066930-6e0b7d37e8a1?auto=format&fit=crop&w=800&q=80';
-  };
-
-  const getCourseCategory = (courseName: string): string => {
-    const categories: { [key: string]: string } = {
-      'HTML': 'Web Dasar',
-      'CSS': 'Web Dasar', 
-      'Javascript': 'Programming',
-      'JavaScript': 'Programming'
-    };
-    return categories[courseName] || 'Programming';
   };
 
   const nextSlide = () => {
@@ -173,7 +162,7 @@ export default function UserDashboardPage() {
           <h3 className={styles.actionTitle}>Halaman Belajar</h3>
           <p className={styles.actionDescription}>Akses materi dan lanjutkan pembelajaran</p>
         </div>
-        <div className={styles.actionCard} onClick={() => router.push("/user/produk")}>
+        <div className={styles.actionCard} onClick={() => router.push("/produk")}>
           <div className={styles.actionIcon}>🛍️</div>
           <h3 className={styles.actionTitle}>Produk & Kursus</h3>
           <p className={styles.actionDescription}>Jelajahi kursus dan produk lainnya</p>
@@ -184,6 +173,11 @@ export default function UserDashboardPage() {
         <div className={styles.equalCard}>
           <div className={styles.cardHeader}>
             <h2 className={styles.cardTitle}>Kursus Sedang Berjalan</h2>
+              <Link href={`/user/belajar`} style={{textDecoration: "none"}}> 
+                <p className={styles.linkButton}>
+                Belajar Semua 
+              </p>
+            </Link>
           </div>
           <div className={styles.coursesList}>
             {inProgressCourses.length > 0 ? (
@@ -206,23 +200,15 @@ export default function UserDashboardPage() {
           </div>
           <div className={styles.recommendedCarousel}>
             <div className={styles.carouselSlide}>
-              <div className={styles.courseImageContainer}>
-                <img 
-                  src={currentCourse?.imageUrl} 
-                  alt={currentCourse?.title}
-                  className={styles.courseImage}
-                />
-                <div className={styles.courseOverlay}>
-                  <span className={styles.courseCategory}>{currentCourse?.category}</span>
-                  <h3 className={styles.courseTitle}>{currentCourse?.title}</h3>
-                  <button 
-                    onClick={() => router.push(`/kursus/${currentCourse?.id}`)}
-                    className={styles.detailButton}
-                  >
-                    Lihat Detail
-                  </button>
-                </div>
-              </div>
+              <RecommendedCourseCard
+                course={{
+                  id: parseInt(currentCourse?.id) || 0,
+                  title: currentCourse?.title,
+                  category: currentCourse?.category,
+                  imageUrl: currentCourse?.imageUrl
+                }}
+                router={router}
+              />
             </div>
             
             <div className={styles.carouselControls}>

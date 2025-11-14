@@ -72,7 +72,7 @@
 
 .equalGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 2rem;
   margin-bottom: 2rem;
 }
@@ -99,12 +99,12 @@
   font-size: 1.25rem;
   font-weight: 600;
   color: white;
-  margin: 0;
+  margin-bottom: 1.35rem;     
 }
 
 .coursesList {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
@@ -116,7 +116,6 @@
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  height: 300px;
 }
 
 .courseImageContainer {
@@ -181,6 +180,7 @@
   align-items: center;
   gap: 1rem;
   margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .carouselButton {
@@ -224,10 +224,30 @@
   transform: scale(1.2);
 }
 
+.linkButton {
+  color: #60a5fa;
+  cursor: pointer;
+  border: 1px solid #60a5fa;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.linkButton:hover {
+  background: #1e40af;
+  color: white;
+}
+
+
 @media (max-width: 1024px) {
   .equalGrid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+
+  .coursesList {
+    grid-template-columns: 1fr;
   }
   
   .quickActions {

@@ -13,10 +13,15 @@
 .courseHeader {
   position: relative;
   width: 100%;
-  height: 120px;
+  padding-bottom: 56.25%; 
+  height: 0;
+  overflow: hidden;
 }
 
 .courseImage {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -26,7 +31,7 @@
   position: absolute;
   top: 0.5rem;
   left: 0.5rem;
-  background: #1e40af;
+  background: rgba(37, 99, 235, 0.9);
   color: white;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -94,6 +99,7 @@
   font-size: 0.875rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  box-sizing: border-box;
 }
 
 .continueButton:hover {
