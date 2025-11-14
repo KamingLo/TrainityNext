@@ -8,55 +8,49 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
-    // 1. Cek Autentikasi Admin
+    // Auth admin
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
     if (session.user.role !== "admin") {
-       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // 2. Ambil Query Parameters (page & limit)
     const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+
+    // pagination params
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "10", 10);
+
     const skip = (page - 1) * limit;
 
-    // 3. Query Database
-    // Mengambil data review + info user + info produk
+    // total data (buat pagination)
+    const total = await Review.countDocuments();
+
+    // query utama
     const reviews = await Review.find()
-      .populate("userId", "name email image") // Ambil info user
-      .populate("productId", "name price")    // Ambil info produk (sesuaikan field productmu)
-      .sort({ createdAt: -1 })                // Urutkan dari yang terbaru
+      .populate("userId", "name")
+      .populate("productId", "name")
+      .select("rating comment createdAt")
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    // Hitung total dokumen untuk info pagination
-    const totalReviews = await Review.countDocuments();
-
-    // 4. Return Response
     return NextResponse.json(
       {
         data: reviews,
-        pagination: {
-          total: totalReviews,
-          page: page,
-          limit: limit,
-          totalPages: Math.ceil(totalReviews / limit),
-        },
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
       },
       { status: 200 }
     );
-  } catch (error: AppError) {
-    if(error instanceof Error){
-        console.error("Get Admin Reviews Error:", error);
-        return NextResponse.json(
-          { error: "Internal Server Error" },
-          { status: 500 }
-        );
-    }
+
+  } catch (error) {
+    console.error("Simple Admin Review Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -64,39 +58,29 @@ export async function DELETE(req: NextRequest) {
   try {
     await connectDB();
 
-    // 1. Cek Autentikasi & Otorisasi
     const session = await getServerSession(authOptions);
-    
-    if (!session) {
+    if (!session || session.user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (session.user.role !== "admin") {
-       return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 });
+    const id = new URL(req.url).searchParams.get("id");
+    if (!id) {
+      return NextResponse.json({ error: "Missing id" }, { status: 400 });
     }
 
-    const { searchParams } = new URL(req.url);
-    const reviewId = searchParams.get("id");
-
-    if (!reviewId) {
-      return NextResponse.json({ error: "Review ID is required" }, { status: 400 });
-    }
-
-    const deletedReview = await Review.findByIdAndDelete(reviewId);
+    const deletedReview = await Review.findByIdAndDelete(id);
 
     if (!deletedReview) {
       return NextResponse.json({ error: "Review not found" }, { status: 404 });
     }
 
     return NextResponse.json(
-      { message: "Review successfully deleted" },
+      { message: "Deleted", id },
       { status: 200 }
     );
 
-  } catch (error: AppError) {
-    if(error instanceof Error){
-        console.error("Delete Review Error:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-    }
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Internal Error" }, { status: 500 });
   }
 }

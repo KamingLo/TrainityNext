@@ -29,9 +29,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Produk tidak ditemukan" }, { status: 404 });
     }
 
-    const productId = targetProduct._id; // Ambil _id dari produk yang ditemukan
+    const productId = targetProduct._id; 
 
-    // 4. SIMPAN REVIEW
     const newReview = await Review.create({
       userId,
       productId,
@@ -59,7 +58,6 @@ export async function GET(req: NextRequest) {
     let reviews;
 
     if (productKey) {
-      // kalau dikirimin productKey → filter berdasarkan produk
       const product = await Product.findOne({ name: productKey });
       if (!product)
         return NextResponse.json({ error: "Product not found" }, { status: 404 });
@@ -71,7 +69,7 @@ export async function GET(req: NextRequest) {
     } else {
       reviews = await Review.find()
         .populate("userId", "name")
-        .populate("productId", "name") // biar tahu review ini buat produk apa
+        .populate("productId", "name")
         .sort({ createdAt: -1 })
         .limit(limit);
     }
