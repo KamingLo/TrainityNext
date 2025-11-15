@@ -1,6 +1,6 @@
 import React from 'react';
 import { Code, Server, Layers } from 'lucide-react';
-import styles from "@/styles/charless.categories.module.css";
+import styles from "@/styles/charless/categories.module.css";
 
 const Categories = () => {
   const categories = [

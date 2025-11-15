@@ -1,6 +1,6 @@
 import React from 'react';
 import { Play, Users } from 'lucide-react';
-import styles from "@/styles/charless.videofeature.module.css"; 
+import styles from "@/styles/charless/videofeature.module.css"; 
 
 const VideoFeature = () => {
   return (

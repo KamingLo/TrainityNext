@@ -1,35 +1,84 @@
-import React from 'react';
-import { Star } from 'lucide-react';
-import styles from "@/styles/charless.featuredcourse.module.css";
+"use client"; 
 
-const featuredCourses = [
-  {
-    id: 1,
-    title: "HTML & CSS Fundamental",
-    description: "Pelajari dasar-dasar web development dari nol hingga mahir",
-    thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500",
-    level: "Pemula",
-    rating: 4.8
-  },
-  {
-    id: 2,
-    title: "JavaScript Modern",
-    description: "Master JavaScript ES6+ untuk pengembangan web modern",
-    thumbnail: "https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?w=500",
-    level: "Menengah",
-    rating: 4.9
-  },
-  {
-    id: 3,
-    title: "React untuk Pemula",
-    description: "Bangun aplikasi web interaktif dengan React.js",
-    thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=500",
-    level: "Menengah",
-    rating: 4.7
-  }
+import React, { useState, useEffect } from 'react'; 
+import styles from "@/styles/charless/featuredcourse.module.css";
+import Link from 'next/link';
+
+interface Product {
+  _id: string;
+  name: string;
+  shortDesc: string;
+  kodePelajaranPertama: string;
+}
+
+const featuredCourseNames = [
+  "HTML",
+  "Css",
+  "Javascript"
 ];
 
 const FeaturedCourses = () => {
+  const [courses, setCourses] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchCourses() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/user/product"); 
+        
+        if (!res.ok) {
+          throw new Error("Gagal mengambil data kursus.");
+        }
+        
+        const allProducts: Product[] = await res.json();
+        const filteredCourses = allProducts.filter(product => 
+          featuredCourseNames.includes(product.name)
+        );
+
+        setCourses(filteredCourses); 
+
+      } catch (err: any) {
+        setError(err.message);
+        setCourses([]); 
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCourses();
+  }, []); 
+
+  if (loading) {
+    return (
+      <section id="kursus" className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <h2 className={styles.title}>Kursus Unggulan</h2>
+          </div>
+          <p style={{ textAlign: 'center', marginTop: '2rem' }}>Memuat kursus...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="kursus" className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <h2 className={styles.title}>Kursus Unggulan</h2>
+          </div>
+          <p style={{ textAlign: 'center', marginTop: '2rem', color: 'red' }}>
+            Error: {error}
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="kursus" className={styles.section}>
       <div className={styles.container}>
@@ -40,15 +89,15 @@ const FeaturedCourses = () => {
         </div>
 
         <div className={styles.grid}>
-          {featuredCourses.map((course) => (
+          {courses.map((course) => (
             <div 
-              key={course.id}
+              key={course._id} 
               className={styles.card}
             >
               <div className={styles.imageWrapper}>
                 <img 
-                  src={course.thumbnail} 
-                  alt={course.title}
+                  src={`https://i.ytimg.com/vi/${course.kodePelajaranPertama}/hq720.jpg`} 
+                  alt={course.name} 
                   className={styles.thumbnail}
                 />
                 <div className={styles.imageOverlay}></div>
@@ -56,28 +105,29 @@ const FeaturedCourses = () => {
               
               <div className={styles.content}>
                 <h3 className={styles.cardTitle}>
-                  {course.title}
+                  {course.name} 
                 </h3>
-                <p className={styles.cardDescription}>{course.description}</p>
-                
-                <div className={styles.footer}>
-                  <span className={styles.levelBadge}>
-                    {course.level}
-                  </span>
-                  <div className={styles.rating}>
-                    <Star className={styles.starIcon} />
-                    <span className={styles.ratingText}>{course.rating}</span>
-                  </div>
-                </div>
+                <p className={styles.cardDescription}>
+                  {course.shortDesc}
+                </p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className={styles.buttonWrapper}>
-          <button className={styles.viewAllButton}>
+        {!loading && courses.length === 0 && (
+          <p style={{ textAlign: 'center', marginTop: '2rem' }}>
+            {error ? 'Gagal memuat kursus.' : 'Tidak ada kursus unggulan yang ditemukan.'}
+          </p>
+        )}
+
+          <div className={styles.buttonWrapper}>
+          <Link 
+            href="/produk" 
+            className={styles.viewAllButton}
+          >
             Lihat Semua Kursus
-          </button>
+          </Link>
         </div>
       </div>
     </section>

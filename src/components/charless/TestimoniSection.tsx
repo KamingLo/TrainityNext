@@ -1,5 +1,7 @@
-import React from 'react';
-import styles from "@/styles/charless.testimoni.module.css";
+"use client"
+
+import React, { useEffect, useRef } from 'react';
+import styles from "@/styles/charless/testimoni.module.css";
 
 const testimonials = [
   {
@@ -30,6 +32,20 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const scroller = scrollContainerRef.current;
+
+    if (scroller && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      scroller.setAttribute("data-animated", "true");
+    }
+  }, []);
+
   return (
     <section className={styles.section}>
       <div className={styles.container}>
@@ -39,7 +55,10 @@ const Testimonials = () => {
       </div>
 
       <div className={styles.scrollWrapper}>
-        <div className={styles.scrollContainer}>
+        <div 
+          className={styles.scrollContainer}
+          ref={scrollContainerRef}
+        >
           {[...testimonials, ...testimonials].map((testimonial, index) => (
             <div 
               key={index}

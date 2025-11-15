@@ -9,12 +9,13 @@
   --color-white-alpha-10: rgba(255, 255, 255, 0.1);
 }
 
+
 @keyframes scroll {
-  from {
+  0% {
     transform: translateX(0);
   }
-  to {
-    transform: translateX(-50%);
+  100% {
+    transform: translateX(calc(-50%));
   }
 }
 
@@ -58,8 +59,12 @@
 
 .scrollContainer {
   display: flex;
-  gap: 1.5rem;
-  animation: scroll 40s linear infinite;
+  gap: 1.5rem;  
+}
+
+.scrollContainer[data-animated="true"] {
+  animation: scroll 10s linear infinite;
+  width: fit-content;
 }
 
 .card {
@@ -69,9 +74,10 @@
   border: 1px solid var(--color-white-alpha-10);
   border-radius: 1rem;
   padding: 1.5rem;
-  & > * + * {
-    margin-top: 1rem;
-  }
+}
+
+.card > * + * {
+  margin-top: 1rem;
 }
 
 .cardHeader {

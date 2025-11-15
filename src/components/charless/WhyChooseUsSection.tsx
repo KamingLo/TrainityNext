@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckCircle, Clock, Users } from 'lucide-react';
-import styles from "@/styles/charless.whychooseus.module.css"; 
+import styles from "@/styles/charless/whychooseus.module.css"; 
 
 const WhyChooseUs = () => {
   const advantages = [

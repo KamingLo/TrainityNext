@@ -1,8 +1,13 @@
+"use client"; 
+
 import React from 'react';
+import { useSession } from 'next-auth/react';
 import { ArrowRight, Terminal } from 'lucide-react';
-import styles from "@/styles/charless.hero.module.css"; 
+import styles from "@/styles/charless/hero.module.css"; 
 
 const HeroSection = () => {
+  const { status } = useSession();
+
   return (
     <section className={styles.heroSection}>
       <div className={styles.heroBgGradient}></div>
@@ -27,11 +32,20 @@ const HeroSection = () => {
             </p>
 
             <div className={styles.heroCtaGroup}>
-              <a href="#kursus" className={`${styles.heroCta} ${styles.heroCtaPrimary}`}>
-                Mulai Belajar Sekarang
-                <ArrowRight className={styles.heroCtaIcon} />
-              </a>
-              <a href="#kursus" className={`${styles.heroCta} ${styles.heroCtaSecondary}`}>
+              {status === "unauthenticated" && (
+                <a href="/auth/register" className={`${styles.heroCta} ${styles.heroCtaPrimary}`}>
+                  Mulai Belajar Sekarang
+                  <ArrowRight className={styles.heroCtaIcon} />
+                </a>
+              )}
+              
+              <a 
+                href="#kursus" 
+                className={`
+                  ${styles.heroCta} 
+                  ${status === "authenticated" ? styles.heroCtaPrimary : styles.heroCtaSecondary}
+                `}
+              >
                 Jelajahi Kursus
               </a>
             </div>

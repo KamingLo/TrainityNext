@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from "@/styles/charless.partnership.module.css"; 
+import styles from "@/styles/charless/partnership.module.css"; 
 
 const PartnershipSection = () => {
   return (
