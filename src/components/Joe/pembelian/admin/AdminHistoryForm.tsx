@@ -18,17 +18,14 @@ export default function AdminHistoryForm() {
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-  // Ref untuk mencegah duplicate fetch
   const isFetchingRef = useRef(false);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fungsi fetch yang tidak depend pada state page
   const fetchData = async (
     currentPage: number,
     search: string,
     reset = false,
   ) => {
-    // Cegah duplicate fetch
     if (isFetchingRef.current) return;
 
     isFetchingRef.current = true;
@@ -38,7 +35,7 @@ export default function AdminHistoryForm() {
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: "20",
-        search: search, // Gunakan parameter langsung, bukan state
+        search: search,
       });
 
       const res = await fetch(`/api/admin/pembayaran?${params}`);
@@ -54,7 +51,6 @@ export default function AdminHistoryForm() {
       setTotal(data.pagination.total);
       setHasMore(data.pagination.hasNext);
 
-      // Update page hanya jika berhasil
       if (!reset) {
         setPage(currentPage + 1);
       }
@@ -67,14 +63,11 @@ export default function AdminHistoryForm() {
     }
   };
 
-  // Effect untuk initial load dan search dengan debounce
   useEffect(() => {
-    // Clear timer sebelumnya
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
 
-    // Set timer baru (debounce 500ms)
     debounceTimerRef.current = setTimeout(() => {
       setItems([]);
       setPage(1);
@@ -82,7 +75,6 @@ export default function AdminHistoryForm() {
       fetchData(1, searchQuery, true);
     }, 500);
 
-    // Cleanup
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
@@ -90,7 +82,6 @@ export default function AdminHistoryForm() {
     };
   }, [searchQuery]);
 
-  // Handler untuk load more button
   const handleLoadMore = () => {
     if (!loading && hasMore && !isFetchingRef.current) {
       fetchData(page, searchQuery);

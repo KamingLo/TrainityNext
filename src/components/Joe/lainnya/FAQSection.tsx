@@ -76,19 +76,16 @@ export default function FAQSection() {
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fungsi toggle FAQ item
   const toggleFAQ = (index: number) => {
     setActiveItem(activeItem === index ? null : index);
   };
 
-  // Filter FAQ berdasarkan search query
   const filteredFAQs = faqData.filter(
     (item) =>
       item.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.answer.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };

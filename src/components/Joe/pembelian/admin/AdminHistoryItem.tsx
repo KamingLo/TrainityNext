@@ -25,7 +25,6 @@ const AdminHistoryItem: React.FC<Props> = ({ item, index }) => {
       className="admin-history-card"
       style={{ animationDelay: `${index * 0.05}s` }}
     >
-      {/* HEADER – Hanya Order ID + Tanggal */}
       <div className="card-header">
         <div className="order-info">
           <span className="order-id">{item.orderId}</span>
@@ -33,7 +32,6 @@ const AdminHistoryItem: React.FC<Props> = ({ item, index }) => {
         <span className="transaction-date">{item.date}</span>
       </div>
 
-      {/* BODY */}
       <div className="card-body">
         <div className="info-row">
           <span className="info-label">Email:</span>
@@ -69,7 +67,6 @@ const AdminHistoryItem: React.FC<Props> = ({ item, index }) => {
         </div>
       </div>
 
-      {/* FOOTER – Status "Berhasil" di pojok kanan bawah */}
       <div className="card-footer">
         <span className="status-badge success">{item.statusText}</span>
       </div>

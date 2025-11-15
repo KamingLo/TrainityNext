@@ -1,4 +1,3 @@
-// app/api/admin/pembayaran/route.ts
 import { connectDB } from "@/lib/db";
 import UserProduct from "@/models/user_product";
 import { NextResponse } from "next/server";
@@ -27,7 +26,6 @@ export async function GET(request: Request) {
 
     const skip = (page - 1) * limit;
 
-    // Filter pencarian
     const filter: any = {};
     if (search) {
       filter.$or = [
@@ -36,7 +34,6 @@ export async function GET(request: Request) {
       ];
     }
 
-    // Aggregation yang BENAR → selalu return ARRAY
     const userProducts = await UserProduct.aggregate([
       {
         $lookup: {
@@ -74,9 +71,8 @@ export async function GET(request: Request) {
 
     const total = await UserProduct.countDocuments(filter);
 
-    // Pastikan userProducts selalu array
     return NextResponse.json({
-      userProducts: userProducts || [], // ← ini yang penting!
+      userProducts: userProducts || [],
       pagination: {
         total,
         page,
