@@ -56,11 +56,11 @@ const HeroSection = () => {
                 <div className={styles.heroStatLabel}>Video Pembelajaran</div>
               </div>
               <div>
-                <div className={styles.heroStatNumber}>50K+</div>
+                <div className={styles.heroStatNumber}>1K+</div>
                 <div className={styles.heroStatLabel}>Siswa Aktif</div>
               </div>
               <div>
-                <div className={styles.heroStatNumber}>4.9</div>
+                <div className={styles.heroStatNumber}>4.8</div>
                 <div className={styles.heroStatLabel}>Rating</div>
               </div>
             </div>

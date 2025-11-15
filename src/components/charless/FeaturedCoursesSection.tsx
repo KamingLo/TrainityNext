@@ -90,8 +90,9 @@ const FeaturedCourses = () => {
 
         <div className={styles.grid}>
           {courses.map((course) => (
-            <div 
+            <Link 
               key={course._id} 
+              href={`/produk/${course.name}`} 
               className={styles.card}
             >
               <div className={styles.imageWrapper}>
@@ -111,7 +112,7 @@ const FeaturedCourses = () => {
                   {course.shortDesc}
                 </p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

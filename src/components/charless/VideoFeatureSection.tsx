@@ -11,15 +11,10 @@ const VideoFeature = () => {
 
             <div className={styles.imageWrapper}>
               <img 
-                src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=600" 
+                src="https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQpEjmPJd3QP69EfYZf4BjyeQ0_iQYeKxXaEU9YQlQIKcPMHIvqm8mwm-nCYc-PWfMyqxYMsMhD1P3cXc6WAcU2IyQQ-6aujzSYPyr9laKaOL9NpKg"
                 alt="Video Learning" 
                 className={styles.image}
               />
-              <div className={styles.overlay}>
-                <div className={styles.playButton}>
-                  <Play className={styles.playIcon} />
-                </div>
-              </div>
             </div>
 
             <div className={styles.content}>

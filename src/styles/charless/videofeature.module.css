@@ -68,44 +68,6 @@
   height: auto;
 }
 
-.overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-black-alpha-30);
-  transition: background-color 0.3s ease;
-  cursor: pointer;
-}
-
-.overlay:hover {
-  background-color: var(--color-black-alpha-40);
-}
-
-.playButton {
-  width: 5rem;
-  height: 5rem;
-  background-color: var(--color-white-alpha-90);
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s ease;
-}
-
-.overlay:hover .playButton {
-  transform: scale(1.1);
-}
-
-.playIcon {
-  width: 2rem;
-  height: 2rem;
-  color: var(--color-blue-600);
-  margin-left: 0.25rem;
-}
-
-
 .content {
   & > * + * {
     margin-top: 1.5rem;

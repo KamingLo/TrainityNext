@@ -18,9 +18,6 @@ const PartnershipSection = () => {
               <p className={styles.description}>
                 Kami bangga dapat bekerja sama dengan Sandhika Galih dari Web Programming UNPAS. Kolaborasi ini memastikan bahwa kurikulum kami relevan, mendalam, dan sesuai dengan standar industri terbaik.
               </p>
-              <button className={styles.button}>
-                Jelajahi Kurikulum
-              </button>
             </div>
 
             <div className={styles.imageColumn}>
