@@ -22,18 +22,10 @@ interface Product {
 
 interface Review {
   _id: string;
-  userId: {
-    _id: string;
-    name: string;
-    image?: string;
-  };
+  userName: string;
   rating: number;
   comment: string;
   createdAt: string;
-  productId?: {
-    _id: string;
-    name: string;
-  };
 }
 
 export default function DetailProdukPage() {
@@ -49,7 +41,6 @@ export default function DetailProdukPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reviewsLoading, setReviewsLoading] = useState(false);
-  const [userReviews, setUserReviews] = useState<Review[]>([]); // State untuk histori review user
 
   useEffect(() => {
     if (!productKey || isAuthLoading) return;
@@ -67,10 +58,8 @@ export default function DetailProdukPage() {
         setProduct(productData);
         // Fetch reviews setelah product didapatkan
         await fetchReviews(productData._id);
-        // Fetch histori review user
-        await fetchUserReviews();
       } catch (err: any) {
-        if (err instanceof Error) setError(err.message);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -79,7 +68,7 @@ export default function DetailProdukPage() {
     fetchProductDetail();
   }, [productKey, isAuthLoading]);
 
-  // Fungsi untuk fetch reviews produk
+  // Fungsi untuk fetch reviews
   const fetchReviews = async (productId: string) => {
     try {
       setReviewsLoading(true);
@@ -88,31 +77,16 @@ export default function DetailProdukPage() {
         const data = await response.json();
         setReviews(data.reviews || []);
       }
-    } catch (err: any) {
-      console.error(err.message);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
     } finally {
       setReviewsLoading(false);
     }
   };
 
-  // Fungsi untuk fetch histori review user
-  const fetchUserReviews = async () => {
-    if (!isLoggedIn) return;
-    
-    try {
-      const response = await fetch(`/api/user/review?productKey=${productKey}`);
-      if (response.ok) {
-        const userReviewsData = await response.json();
-        setUserReviews(userReviewsData);
-      }
-    } catch (err: any) {
-      console.error("Gagal mengambil histori review:", err.message);
-    }
-  };
-
   // Fungsi untuk handle submit review
   const handleSubmitReview = async (reviewData: { rating: number; comment: string }) => {
-    const response = await fetch('/api/user/review', {
+    const response = await fetch('/api/reviews', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -134,51 +108,7 @@ export default function DetailProdukPage() {
     // Refresh reviews setelah submit berhasil
     if (product?._id) {
       await fetchReviews(product._id);
-      await fetchUserReviews(); // Refresh histori review user juga
     }
-  };
-
-  // Komponen untuk menampilkan histori review user
-  const UserReviewHistory = () => {
-    if (!isLoggedIn) {
-      return (
-        <div className={reviewStyles.reviewHistorySection}>
-          <h3 className={reviewStyles.sectionTitle}>Histori Review Anda</h3>
-          <p>Silakan login untuk melihat histori review Anda.</p>
-        </div>
-      );
-    }
-
-    if (userReviews.length === 0) {
-      return (
-        <div className={reviewStyles.reviewHistorySection}>
-          <h3 className={reviewStyles.sectionTitle}>Histori Review Anda</h3>
-          <p>Anda belum memberikan review untuk produk ini.</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className={reviewStyles.reviewHistorySection}>
-        <h3 className={reviewStyles.sectionTitle}>Review Anda</h3>
-        <div className={reviewStyles.userReviewsList}>
-          {userReviews.map((review) => (
-            <div key={review._id} className={reviewStyles.userReviewItem}>
-              <div className={reviewStyles.reviewHeader}>
-                <div className={reviewStyles.rating}>
-                  {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
-                  <span className={reviewStyles.ratingNumber}>({review.rating}/5)</span>
-                </div>
-                <span className={reviewStyles.reviewDate}>
-                  {new Date(review.createdAt).toLocaleDateString('id-ID')}
-                </span>
-              </div>
-              <p className={reviewStyles.reviewComment}>{review.comment}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
   };
 
   const getActionButton = () => {
@@ -195,14 +125,18 @@ export default function DetailProdukPage() {
     if (product?.isOwned) {
       return (
         <Link href={`/user/belajar/${product.name}`} passHref>
-          <button className={styles.actionButton_owned}>Mulai Belajar</button>
+          <button className={styles.actionButton_owned}>
+            Mulai Belajar
+          </button>
         </Link>
       );
     }
 
     return (
       <Link href={`/user/pembelian/checkout/${productKey}`} passHref>
-        <button className={styles.actionButton_primary}>Beli Sekarang</button>
+        <button className={styles.actionButton_primary}>
+          Beli Sekarang
+        </button>
       </Link>
     );
   };
@@ -223,6 +157,7 @@ export default function DetailProdukPage() {
   return (
     <Section className={styles.space}>
       <div className={styles.detailGrid}>
+
         {/* Kolom Kiri: "Kartu" Gambar */}
         <div className={styles.imageWrapper}>
           <Image
@@ -237,6 +172,7 @@ export default function DetailProdukPage() {
 
         {/* Kolom Kanan: "Kartu" Detail */}
         <div className={styles.detailsWrapper}>
+
           <div>
             <h1 className={styles.productTitle}>{product.name}</h1>
             <p className={styles.productDescription}>{product.desc}</p>
@@ -249,18 +185,60 @@ export default function DetailProdukPage() {
               {getActionButton()}
             </div>
           </div>
+
         </div>
       </div>
 
-      {/* Tambahkan bagian histori review di sini */}
-      <UserReviewHistory />
+      {/* Section Review dengan Histori dan Form */}
+      <div className={reviewStyles.reviewContainer}>
+        
+        {/* Histori Review */}
+        <div className={reviewStyles.reviewHistory}>
+          <h2 className={reviewStyles.historyTitle}>Review dari Pengguna</h2>
+          
+          {reviewsLoading ? (
+            <div className={reviewStyles.loadingState}>
+              <p>Memuat review...</p>
+            </div>
+          ) : reviews.length === 0 ? (
+            <div className={reviewStyles.emptyState}>
+              <p>Belum ada review untuk produk ini</p>
+            </div>
+          ) : (
+            <div className={reviewStyles.reviewsList}>
+              {reviews.map((review) => (
+                <div key={review._id} className={reviewStyles.reviewItem}>
+                  <div className={reviewStyles.reviewHeader}>
+                    <div className={reviewStyles.userAvatar}>
+                      <span>{review.userName.charAt(0)}</span>
+                    </div>
+                    <div className={reviewStyles.userInfo}>
+                      <h4 className={reviewStyles.reviewUserName}>{review.userName}</h4>
+                      <div className={reviewStyles.reviewRating}>
+                        <span className={reviewStyles.stars}>
+                          {"⭐".repeat(review.rating)}
+                        </span>
+                        <span className={reviewStyles.ratingText}>({review.rating}/5)</span>
+                      </div>
+                    </div>
+                    <span className={reviewStyles.reviewDate}>
+                      {new Date(review.createdAt).toLocaleDateString('id-ID')}
+                    </span>
+                  </div>
+                  <p className={reviewStyles.reviewComment}>{review.comment}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-      {/* Form review */}
-      <ReviewForm 
-        productKey={productKey}
-        onSubmitReview={handleSubmitReview}
-        userHasReviewed={userReviews.length > 0}
-      />
+        {/* Form Review */}
+        <ReviewForm 
+          productId={product._id}
+          productKey={productKey}
+          onSubmit={handleSubmitReview}
+        />
+      </div>
     </Section>
   );
 }

@@ -18,9 +18,7 @@ export default function Footer() {
 
   const dashboardPath =
     userRole === "admin" ? "/admin/dashboard" : "/user/dashboard";
-  const pembayaranPath =
-    userRole === "admin" ? "/admin/pembayaran" : "/user/pembayaran";
-  const produkPath = userRole === "admin" ? "/admin/produk" : "/produk";
+  const pembelianPath = "/admin/pembelian";
 
   if (isPageForbid) return null;
 
@@ -54,7 +52,7 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href={produkPath} className={styles.footerLink}>
+              <Link href={"/produk"} className={styles.footerLink}>
                 Produk
               </Link>
             </li>
@@ -85,9 +83,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href={pembayaranPath} className={styles.footerLink}>
-                    Pembayaran
+                {userRole === "admin" && (
+                  <Link href={pembelianPath} className={styles.footerLink}>
+                    Pembelian
                   </Link>
+                )}
                 </li>
               </>
             )}

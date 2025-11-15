@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
     // 3. Ambil Produk yang Dimiliki User (3 yang terakhir diakses)
     const owned = await UserProduct.find({ user: userId })
       .sort({ createdAt: -1 }) 
-      .limit(3)
+      .limit(2)
       .populate({
         path: "product",
         model: Product,

@@ -18,35 +18,56 @@ export async function GET(req: NextRequest) {
       .populate({
         path: "product",
         model: Product,
-        select: "name shortDesc video",
+        select: "name video",
         populate: {
-          path: "video", // kalau video adalah array ref
+          path: "video",
           select: "kodePelajaran",
         }
       })
+      .select("lastWatchedVideoId status") // penting untuk progress
       .lean();
 
     const result = owned.map((item) => {
-      const product = item.product;
+      const product = item.product as any;
+      const videos = Array.isArray(product?.video) ? product.video : [];
+      const totalVideos = videos.length;
 
-      // nge-guard biar ga error kalau kosong
-      const kodePertama = Array.isArray(product?.video)
-        ? product.video[0]?.kodePelajaran
-        : null;
+      // default values
+      let progressPercentage = 0;
+      let kodePertama = videos[0]?.kodePelajaran || null;
+
+      if (totalVideos > 0 && item.lastWatchedVideoId) {
+        const lastId = String(item.lastWatchedVideoId).trim();
+
+        // cocokkan baik ID atau kodePelajaran
+        const watchedIndex = videos.findIndex((v: any) => {
+          const byKode = v.kodePelajaran && String(v.kodePelajaran).trim() === lastId;
+          const byId = v._id && String(v._id).trim() === lastId;
+          return byKode || byId;
+        });
+
+        if (watchedIndex !== -1) {
+          const videosCompleted = watchedIndex + 1;
+          progressPercentage = Math.round((videosCompleted / totalVideos) * 100);
+
+          if (progressPercentage > 100) {
+            progressPercentage = 100;
+          }
+        }
+      }
 
       return {
         name: product?.name,
         shortDesc: product?.shortDesc,
-        kodePertama: kodePertama || null
+        kodePertama,
+        progressPercentage,
       };
     });
 
     return NextResponse.json({ data: result }, { status: 200 });
+
   } catch (err) {
     console.log(err);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

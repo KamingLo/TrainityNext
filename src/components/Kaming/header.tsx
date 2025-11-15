@@ -19,7 +19,7 @@ export default function NavigationBar() {
   const dashboardPath =
     userRole === "admin" ? "/admin/dashboard" : "/user/dashboard";
 
-  const produkPath = userRole === "admin" ? "/admin/produk" : "/produk";
+  const produkPath = "/produk"
 
   const pembelianPath = "/admin/pembelian";
 

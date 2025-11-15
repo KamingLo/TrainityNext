@@ -2,11 +2,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/lib/db";
 import UserProduct from "@/models/user_product";
+import Product from "@/models/product";
+import { Types } from "mongoose";
 
-export async function GET(
-  req: Request,
-  { params }: { params: { key: string } }
-) {
+
+export async function GET(req: Request, { params }: { params: { key: string } }) {
   await connectDB();
 
   const session = await getServerSession(authOptions);
@@ -14,16 +14,26 @@ export async function GET(
     return new Response("Unauthorized", { status: 401 });
   }
 
-  // Cari UserProduct yang aktif & populate Product
-  const userProduct = await UserProduct.findOne({
-    user: session.user.id,
-  })
-    .populate({
-      path: "product",
-      match: { name: params.key }, // pastikan key sesuai URL
-    });
+  // 1. Cari product berdasarkan name
+  const product = await Product.findOne({ name: params.key });
+  if (!product) {
+    return new Response(
+      JSON.stringify({ message: "Produk tidak ditemukan." }),
+      { status: 404 }
+    );
+  }
 
-  if (!userProduct || !userProduct.product || userProduct.status !== "aktif") {
+    const userProduct = await UserProduct.findOne({
+    user: new Types.ObjectId(session.user.id),
+    product: product._id
+    }).populate("product");
+
+    console.log(params.key);
+  console.log(session.user.id);
+  console.log(product._id);
+  console.log(userProduct);
+
+  if (!userProduct || userProduct.status !== "aktif") {
     return new Response(
       JSON.stringify({ message: "Kamu belum membeli produk ini." }),
       { status: 403 }
@@ -34,16 +44,13 @@ export async function GET(
     JSON.stringify({
       message: "Akses diberikan.",
       lastWatchedVideoId: userProduct.lastWatchedVideoId,
-      product: userProduct.product, // ini model Product lengkap
+      product: userProduct.product,
     }),
     { status: 200 }
   );
 }
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: { key: string } }
-) {
+export async function PATCH(req: Request, { params }: { params: { key: string } }) {
   await connectDB();
 
   const session = await getServerSession(authOptions);
@@ -61,25 +68,30 @@ export async function PATCH(
     );
   }
 
-  // Cari UserProduct yang sesuai
+  // 1. Cari product berdasarkan name
+  const product = await Product.findOne({ name: params.key });
+  if (!product) {
+    return new Response(
+      JSON.stringify({ message: "Produk tidak ditemukan." }),
+      { status: 404 }
+    );
+  }
+
+  // 2. Cari UserProduct berdasarkan user + product
   const userProduct = await UserProduct.findOne({
     user: session.user.id,
-  }).populate({
-    path: "product",
-    match: { name: params.key },
+    product: product._id,
   });
 
-  if (!userProduct || !userProduct.product) {
+  if (!userProduct) {
     return new Response(
       JSON.stringify({ message: "Produk tidak ditemukan untuk user ini" }),
       { status: 404 }
     );
   }
 
-  // Update status jika diberikan
+  // Update values jika tersedia
   if (status) userProduct.status = status;
-
-  // Update lastWatchedVideoId jika diberikan
   if (lastWatchedVideoId) userProduct.lastWatchedVideoId = lastWatchedVideoId;
 
   await userProduct.save();
