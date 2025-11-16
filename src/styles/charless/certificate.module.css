@@ -45,13 +45,13 @@
   max-width: 1152px;
   margin-left: auto;
   margin-right: auto;
+  position: relative; 
 }
-
 
 .card {
   position: relative;
   width: 100%;
-  background: linear-gradient(to bottom right, var(--color-gray-900), var(--color-gray-800));
+  background: var(--color-gray-900); 
   border-radius: 1rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
   overflow: hidden; 
@@ -59,6 +59,7 @@
 
 
 .bgAnimation {
+  display: none; 
   position: absolute;
   inset: 0;
   opacity: 0.3;
@@ -182,10 +183,10 @@
     h3 {
       font-size: 1.25rem;
       font-weight: 700;
-      background: linear-gradient(to right, var(--color-blue-400), var(--color-blue-300));
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
+      background: none;
+      background-clip: initial;
+      -webkit-background-clip: initial;
+      color: var(--color-blue-400); 
       margin: 0;
       @media (min-width: 768px) { font-size: 1.5rem; }
     }
@@ -473,5 +474,47 @@
       width: 1.25rem;
       height: 1.25rem;
     }
+  }
+}
+
+.loadingWrapper,
+.errorWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  gap: 1rem;
+  color: var(--color-gray-300);
+}
+
+.iconLoading {
+  width: 3rem;
+  height: 3rem;
+  color: var(--color-blue-400);
+  animation: spin 1s linear infinite;
+}
+
+.iconError {
+  width: 3rem;
+  height: 3rem;
+  color: var(--color-blue-400);
+}
+
+.backButton {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(to right, var(--color-blue-600), var(--color-cyan-600));
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(to right, var(--color-blue-500), var(--color-cyan-400));
+    transform: translateY(-2px);
   }
 }

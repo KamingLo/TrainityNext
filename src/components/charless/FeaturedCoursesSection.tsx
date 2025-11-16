@@ -14,8 +14,8 @@ interface Product {
 
 const featuredCourseNames = [
   "HTML",
-  "Css",
-  "Javascript"
+  "NodeJS",
+  "Laravel 8"
 ];
 
 const FeaturedCourses = () => {

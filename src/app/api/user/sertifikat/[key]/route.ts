@@ -6,16 +6,39 @@ import UserProduct from "@/models/user_product";
 import Product from "@/models/product";
 import User from "@/models/user";
 
-interface IVideo {
-  _id: string;
-  kodePelajaran?: string;
-}
+const COURSE_CODE_MAP: { [key: string]: string } = {
+  react: "RCT",
+  "node js": "NODE",
+  laravel: "LVL",
+  golang: "GO",
+  php: "PHP",
+  javascript: "JS",
+  css: "CSS",
+  html: "HTML",
+  web: "WEBV", 
+};
 
-interface IProduct {
-  _id: string;
-  name: string;
-  video?: IVideo[];
-}
+const getCourseCode = (courseName: string): string => {
+  if (!courseName) return "GEN";
+  const name = courseName.toLowerCase();
+
+  for (const key in COURSE_CODE_MAP) {
+    if (name.includes(key)) {
+      return COURSE_CODE_MAP[key];
+    }
+  }
+  
+  return "GEN";
+};
+
+const generateCertificateId = (courseName: string, userProductId: string): string => {
+  const prefix = "TRN";
+  const courseCode = getCourseCode(courseName);
+  
+  const uniqueIdentifier = String(userProductId).slice(-4).toUpperCase();
+
+  return `${prefix}-${courseCode}-${uniqueIdentifier}`;
+};
 
 interface ICertificateData {
   _id: string;
@@ -23,14 +46,25 @@ interface ICertificateData {
   courseName: string;
   completedAt: Date | null;
   progressPercentage: number;
+  certificateId: string;
+}
+
+interface IVideo {
+  _id: string;
+  kodePelajaran: string;
+}
+
+interface IPopulatedProduct {
+  _id: string;
+  name: string;
+  video: IVideo[];
 }
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ key: string }> }
+  { params }: { params: { key: string } }
 ) {
   try {
-    const { key } = await params;
     await connectDB();
 
     const session = await getServerSession(authOptions);
@@ -45,11 +79,11 @@ export async function GET(
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const isAllCertificates = key === "all";
+    const isAllCertificates = params.key === "all";
 
     const userProducts = await UserProduct.find({ 
       user: userId,
-      status: "aktif"
+      status: "aktif" 
     })
       .populate({
         path: "product",
@@ -60,7 +94,8 @@ export async function GET(
 
     const certificates: ICertificateData[] = userProducts
       .map((item) => {
-        const product = item.product as IProduct; // <-- ganti any dengan IProduct
+        const product = item.product as IPopulatedProduct | null; 
+
         const videos = Array.isArray(product?.video) ? product.video : [];
         const totalVideos = videos.length;
 
@@ -69,7 +104,7 @@ export async function GET(
 
         if (totalVideos > 0 && item.lastWatchedVideoId) {
           const lastId = String(item.lastWatchedVideoId).trim();
-          const watchedIndex = videos.findIndex((v) => {
+          const watchedIndex = videos.findIndex((v: IVideo) => {
             const byKode = v.kodePelajaran && String(v.kodePelajaran).trim() === lastId;
             const byId = v._id && String(v._id).trim() === lastId;
             return byKode || byId;
@@ -79,26 +114,33 @@ export async function GET(
             const videosCompleted = watchedIndex + 1;
             progressPercentage = Math.round((videosCompleted / totalVideos) * 100);
 
-            if (progressPercentage > 100) progressPercentage = 100;
+            if (progressPercentage > 100) {
+              progressPercentage = 100;
+            }
             if (progressPercentage === 100) {
-              completedAt = item.updatedAt || item.createdAt;
+              completedAt = item.updatedAt || item.createdAt; 
             }
           }
         }
 
+        const courseName = product?.name || "Unknown Course";
+        
+        const certificateId = generateCertificateId(courseName, String(item._id));
         return {
-          _id: product._id,
+          _id: product?._id || String(item._id), 
           userName: user.name || "User",
-          courseName: product.name || "Unknown Course",
+          courseName: courseName,
           completedAt,
           progressPercentage,
+          certificateId: certificateId,
         };
       })
-      .filter((cert) => cert.progressPercentage === 100);
+      .filter((cert) => cert.progressPercentage === 100); 
 
+  
     if (!isAllCertificates) {
       const specificCert = certificates.find(
-        (cert) => cert.courseName === key
+        (cert) => cert.courseName === decodeURIComponent(params.key)
       );
 
       if (!specificCert) {
@@ -108,22 +150,27 @@ export async function GET(
         );
       }
 
-      return NextResponse.json({ data: specificCert }, { status: 200 });
+      return NextResponse.json(
+        { data: specificCert },
+        { status: 200 }
+      );
     }
-
+    
     certificates.sort((a, b) => {
       if (!a.completedAt) return 1;
       if (!b.completedAt) return -1;
       return new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime();
     });
 
-    return NextResponse.json({ data: certificates }, { status: 200 });
-
-  } catch (err: AppError) {
-    if (err instanceof Error) {
-      console.error("Gagal mengambil data sertifikat:", err.message);
-      return NextResponse.json({ error: "Server error", details: err.message }, { status: 500 });
-    }
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { data: certificates },
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error("Gagal mengambil data sertifikat:", err);
+    return NextResponse.json(
+      { error: "Server error" },
+      { status: 500 }
+    );
   }
 }
