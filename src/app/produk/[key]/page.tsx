@@ -131,9 +131,10 @@ export default function DetailProdukPage() {
 
         setProduct(productData);
         // Fetch reviews setelah product didapatkan
-        await fetchReviews(productData._id);
-      } catch (err: any) {
-        setError(err.message);
+        await fetchReviews();
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : "Terjadi kesalahan";
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
