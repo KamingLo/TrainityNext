@@ -65,7 +65,7 @@ const TestimonialsSection = () => {
                     <p className={styles.userInstitution}>{testimonial.institution}</p>
                   </div>
                   <p className={styles.quote}>
-                    "{testimonial.quote}"
+                    &ldquo;{testimonial.quote}&rdquo;
                   </p>
                 </div>
               </div>

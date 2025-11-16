@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from "@/styles/charless/partnership.module.css"; 
+import Image from 'next/image';
 
 const PartnershipSection = () => {
   return (
@@ -24,10 +25,12 @@ const PartnershipSection = () => {
               <div className={styles.imageWrapper}>
                 <div className={styles.imageBlur}></div>
                 <div className={styles.imageFrame}>
-                  <img 
+                  <Image 
                     src="/homepage/sandhika.png" 
                     alt="Sandhika Galih"
                     className={styles.image}
+                    fill
+                    sizes="16rem" 
                   />
                 </div>
               </div>

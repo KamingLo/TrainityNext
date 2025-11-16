@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'; 
 import styles from "@/styles/charless/featuredcourse.module.css";
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Product {
   _id: string;
@@ -20,12 +21,13 @@ const featuredCourseNames = [
 const FeaturedCourses = () => {
   const [courses, setCourses] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchCourses() {
       setLoading(true);
-      setError(null);
+      setError(null);  
       try {
         const res = await fetch("/api/user/product"); 
         
@@ -40,8 +42,12 @@ const FeaturedCourses = () => {
 
         setCourses(filteredCourses); 
 
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: AppError) {
+        if (err instanceof Error) {
+          setError(err.message); 
+        } else {
+          setError("Terjadi kesalahan yang tidak diketahui."); 
+        }
         setCourses([]); 
       } finally {
         setLoading(false);
@@ -96,11 +102,15 @@ const FeaturedCourses = () => {
               className={styles.card}
             >
               <div className={styles.imageWrapper}>
-                <img 
+                
+                <Image 
                   src={`https://i.ytimg.com/vi/${course.kodePelajaranPertama}/hq720.jpg`} 
                   alt={course.name} 
                   className={styles.thumbnail}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
+                
                 <div className={styles.imageOverlay}></div>
               </div>
               
@@ -112,13 +122,13 @@ const FeaturedCourses = () => {
                   {course.shortDesc}
                 </p>
               </div>
-            </Link>
+            </Link> 
           ))}
         </div>
 
         {!loading && courses.length === 0 && (
           <p style={{ textAlign: 'center', marginTop: '2rem' }}>
-            {error ? 'Gagal memuat kursus.' : 'Tidak ada kursus unggulan yang ditemukan.'}
+            {error ? 'Gagal memuat kursus.' : 'Tidak ada kursus unggulan yang tersedia.'}
           </p>
         )}
 

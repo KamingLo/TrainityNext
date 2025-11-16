@@ -1,6 +1,7 @@
 import React from 'react';
 import { Play, Users } from 'lucide-react';
 import styles from "@/styles/charless/videofeature.module.css"; 
+import Image from 'next/image';
 
 const VideoFeature = () => {
   return (
@@ -10,10 +11,12 @@ const VideoFeature = () => {
           <div className={styles.grid}>
 
             <div className={styles.imageWrapper}>
-              <img 
-                src="https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQpEjmPJd3QP69EfYZf4BjyeQ0_iQYeKxXaEU9YQlQIKcPMHIvqm8mwm-nCYc-PWfMyqxYMsMhD1P3cXc6WAcU2IyQQ-6aujzSYPyr9laKaOL9NpKg"
+              <Image 
+                src="/homepage/videoFeature.png"
                 alt="Video Learning" 
                 className={styles.image}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw" 
               />
             </div>
 

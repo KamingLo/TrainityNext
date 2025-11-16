@@ -4,6 +4,7 @@ import React from 'react';
 import { useSession } from 'next-auth/react';
 import { ArrowRight, Terminal } from 'lucide-react';
 import styles from "@/styles/charless/hero.module.css"; 
+import Image from 'next/image';
 
 const HeroSection = () => {
   const { status } = useSession();
@@ -68,10 +69,13 @@ const HeroSection = () => {
 
           <div className={styles.heroImageWrapper}>
             <div className={styles.heroImageContainer}>
-              <img 
-                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800" 
+              <Image 
+                src="/homepage/hero.png"
                 alt="Coding" 
                 className={styles.heroImage}
+                fill 
+                priority 
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
               <div className={styles.heroImageOverlay}></div>
             </div>
