@@ -1,0 +1,477 @@
+:root {
+  --color-gray-950: #030712;
+  --color-gray-900: #111827;
+  --color-gray-800: #1f2937;
+  --color-gray-700: #374151;
+  --color-gray-500: #6b7280;
+  --color-gray-400: #9ca3af;
+  --color-gray-300: #d1d5db;
+  --color-blue-950: #1e3a8a;
+  --color-blue-600: #2563eb;
+  --color-blue-500: #3b82f6;
+  --color-blue-400: #60a5fa;
+  --color-blue-300: #93c5fd;
+  --color-cyan-600: #0891b2;
+  --color-cyan-500: #06b6d4;
+  --color-cyan-400: #22d3ee;
+  --color-white: #ffffff;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.main {
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(to bottom right, var(--color-gray-950), var(--color-gray-900), var(--color-blue-950));
+  padding-top: 112px; 
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 2rem; 
+
+  @media (min-width: 768px) {
+    padding-top: 128px; 
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 4rem; 
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 1152px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.card {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(to bottom right, var(--color-gray-900), var(--color-gray-800));
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  overflow: hidden; 
+}
+
+
+.bgAnimation {
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+  overflow: hidden;
+  
+  .bgCircle {
+    position: absolute;
+    width: 24rem;
+    height: 24rem;
+    border-radius: 9999px;
+    mix-blend-mode: multiply;
+    filter: blur(72px);
+
+    &.circle1 {
+      top: 0;
+      left: 0;
+      background-color: var(--color-blue-500);
+    }
+    &.circle2 {
+      bottom: 0;
+      right: 0;
+      background-color: var(--color-cyan-500);
+    }
+  }
+}
+
+.cornerDecorator {
+  position: absolute;
+  width: 8rem;
+  height: 8rem;
+  
+  @media (min-width: 768px) {
+    width: 12rem;
+    height: 12rem;
+  }
+
+  &.topLeft { top: 0; left: 0; }
+  &.bottomRight { bottom: 0; right: 0; }
+  
+  .cornerBorder {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+
+  &.topLeft .cornerBorder {
+    top: 1.5rem;
+    left: 1.5rem;
+    border-top: 2px solid;
+    border-left: 2px solid;
+    border-top-left-radius: 1.5rem;
+  }
+  &.bottomRight .cornerBorder {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+    border-bottom-right-radius: 1.5rem;
+  }
+}
+
+
+.content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+
+  @media (min-width: 768px) {
+    padding: 4rem;
+  }
+}
+
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  
+  @media (min-width: 768px) {
+    margin-bottom: 3rem;
+  }
+
+  .logoWrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .logoIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(to bottom right, var(--color-blue-500), var(--color-cyan-400));
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .iconWhite {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--color-white);
+    }
+    
+    @media (min-width: 768px) {
+      width: 3rem;
+      height: 3rem;
+      .iconWhite {
+        width: 1.75rem;
+        height: 1.75rem;
+      }
+    }
+  }
+
+  .logoText {
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(to right, var(--color-blue-400), var(--color-blue-300));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin: 0;
+      @media (min-width: 768px) { font-size: 1.5rem; }
+    }
+    p {
+      font-size: 10px;
+      color: var(--color-gray-400);
+      letter-spacing: 0.1em;
+      margin: 0;
+      @media (min-width: 768px) { font-size: 0.75rem; }
+    }
+  }
+
+  .certIdBadge {
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    background-color: rgba(31, 41, 55, 0.8);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+
+    @media (min-width: 768px) { display: flex; }
+
+    .label {
+      font-size: 10px;
+      color: var(--color-gray-500);
+      letter-spacing: 0.05em;
+    }
+    .value {
+      font-size: 0.875rem;
+      font-family: monospace;
+      color: var(--color-blue-400);
+      font-weight: 600;
+    }
+  }
+}
+
+
+.completionBadgeWrapper {
+  margin-bottom: 1.5rem;
+  @media (min-width: 768px) { margin-bottom: 2rem; }
+
+  .completionBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 9999px;
+
+    .iconBlue {
+      width: 1rem;
+      height: 1rem;
+      color: var(--color-blue-400);
+    }
+    span {
+      font-size: 0.75rem;
+      color: var(--color-blue-300);
+      font-weight: 600;
+      letter-spacing: 0.025em;
+      @media (min-width: 768px) { font-size: 0.875rem; }
+    }
+  }
+}
+
+
+.recipientMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  & > * + * { margin-top: 1rem; }
+  @media (min-width: 768px) { & > * + * { margin-top: 1.5rem; } }
+
+  .recipientLabel {
+    font-size: 0.75rem;
+    color: var(--color-gray-400);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin: 0;
+    @media (min-width: 768px) { font-size: 0.875rem; }
+  }
+
+  .recipientNameWrapper {
+    position: relative;
+  }
+  .recipientName {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--color-white);
+    line-height: 1.25;
+    margin: 0;
+    @media (min-width: 768px) { font-size: 3rem; }
+    @media (min-width: 1024px) { font-size: 3.75rem; }
+  }
+  .nameUnderline {
+    margin-top: 0.75rem;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(to right, transparent, var(--color-blue-500), transparent);
+  }
+}
+
+
+.achievementDetails {
+  padding: 1rem 0;
+  & > * + * { margin-top: 0.5rem; }
+  @media (min-width: 768px) { & > * + * { margin-top: 0.75rem; } }
+
+  .text {
+    font-size: 0.875rem;
+    color: var(--color-gray-300);
+    margin: 0;
+    @media (min-width: 768px) { font-size: 1rem; }
+  }
+  .courseTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-blue-400);
+    line-height: 1.375;
+    margin: 0;
+    @media (min-width: 768px) { font-size: 1.875rem; }
+  }
+}
+
+.courseStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 0.5rem;
+  
+  .statItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .statDot {
+    width: 0.375rem;
+    height: 0.375rem;
+    background-color: var(--color-blue-400);
+    border-radius: 9999px;
+  }
+  .statText {
+    font-size: 0.75rem;
+    color: var(--color-gray-400);
+    @media (min-width: 768px) { font-size: 0.875rem; }
+    
+    .value {
+      color: var(--color-blue-300);
+      font-weight: 600;
+    }
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end; 
+  gap: 1.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(55, 65, 81, 0.5);
+
+  .signatureSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    & > * + * { margin-top: 0.5rem; }
+  }
+  .signatureImageWrapper {
+    width: 8rem;
+    height: 4rem;
+    position: relative;
+    @media (min-width: 768px) { width: 10rem; height: 5rem; }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+  .signatureFallback {
+    display: none;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    
+    div {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-blue-400);
+      font-style: italic;
+      opacity: 0.8;
+      @media (min-width: 768px) { font-size: 1.875rem; }
+    }
+  }
+  .signatureUnderline {
+    height: 1px;
+    width: 8rem;
+    background: linear-gradient(to right, var(--color-blue-500), transparent);
+    @media (min-width: 768px) { width: 10rem; }
+  }
+  .signatureInfo {
+    text-align: center; 
+    & > * + * { margin-top: 0.125rem; }
+    p { margin: 0; }
+    .name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-white);
+      @media (min-width: 768px) { font-size: 1rem; }
+    }
+    .title {
+      font-size: 0.75rem;
+      color: var(--color-gray-400);
+    }
+  }
+}
+
+
+.mobileCertId {
+  margin-top: 1rem;
+  text-align: center;
+  @media (min-width: 768px) { display: none; }
+
+  span:first-child {
+    font-size: 0.75rem;
+    color: var(--color-gray-500);
+  }
+  span:last-child {
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: var(--color-blue-400);
+  }
+}
+
+
+.downloadButtonContainer {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  
+  @media (min-width: 768px) {
+    margin-top: 1.5rem;
+  }
+}
+
+.downloadButton {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(to right, var(--color-blue-600), var(--color-cyan-600));
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  color: var(--color-white);
+  box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39);
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(to right, var(--color-blue-500), var(--color-cyan-400));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .buttonContent {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    
+    .iconLoading {
+      width: 1.25rem;
+      height: 1.5rem;
+      animation: spin 1s linear infinite;
+    }
+    .iconButton {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+}
