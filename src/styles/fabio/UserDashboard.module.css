@@ -84,6 +84,7 @@
   border: 1px solid #374151;
   height: fit-content; 
   align-self: start; 
+  min-height: 450px;
 }
 
 .cardHeader {
@@ -106,6 +107,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  align-items: stretch;
 }
 
 .recommendedCarousel {
@@ -239,6 +241,12 @@
   color: white;
 }
 
+.noRecommendation {
+  text-align: center;
+  padding: 2rem;
+  color: #9ca3af;
+  font-style: italic;
+}
 
 @media (max-width: 1024px) {
   .equalGrid {
@@ -260,6 +268,10 @@
   
   .welcomeTitle {
     font-size: 1.5rem;
+  }
+
+  .equalCard {
+    min-height: 400px;
   }
 }
 
@@ -283,6 +295,6 @@
   }
   
   .carouselSlide {
-    height: 250px;
+    border-radius: 1px;
   }
 }
