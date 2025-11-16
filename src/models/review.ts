@@ -26,8 +26,8 @@ const reviewSchema = new Schema<IReview>(
   { timestamps: true }
 );
 
-// Mencegah user mereview produk yang sama berkali-kali (Opsional, tapi sangat disarankan)
-reviewSchema.index({ userId: 1, productId: 1 }, { unique: true });
+// Index untuk performa query (tidak unique, karena user bisa review 3 kali)
+reviewSchema.index({ userId: 1, productId: 1 });
 
 const Review: Model<IReview> =
   mongoose.models.Review || mongoose.model<IReview>("Review", reviewSchema);

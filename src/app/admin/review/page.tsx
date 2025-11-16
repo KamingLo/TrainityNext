@@ -3,13 +3,11 @@
 import Section from "@/components/sections";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "@/styles/michael/reviewAdmin.module.css";
-
 interface Review {
   _id: string;
   userName: string;
-  userEmail: string;
   productName: string;
   rating: number;
   comment: string;
@@ -17,8 +15,31 @@ interface Review {
   status: string;
 }
 
+interface ApiReview {
+  _id: string;
+  userName?: string;
+  userId?: {
+    username?: string;
+  };
+  productId?: {
+    name?: string;
+  };
+  rating: number;
+  comment: string;
+  createdAt: string;
+  status?: string;
+}
+
+interface ApiResponse {
+  data: ApiReview[];
+  pagination?: {
+    totalPages: number;
+    total: number;
+  };
+}
+
 export default function AdminReview() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const isLoggedIn = status === "authenticated";
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,13 +57,7 @@ export default function AdminReview() {
 
   const itemsPerPage = 10;
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      fetchReviews();
-    }
-  }, [isLoggedIn, currentPage]);
-
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -53,14 +68,13 @@ export default function AdminReview() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const data = await response.json();
+      const data: ApiResponse = await response.json();
       
       if (data.data && Array.isArray(data.data)) {
-        const transformedReviews = data.data.map((review: any) => ({
+        const transformedReviews: Review[] = data.data.map((review: ApiReview) => ({
           _id: review._id,
-          userName: review.userId?.name || 'Unknown User',
-          userEmail: review.userId?.email || 'No Email',
-          productName: review.productId?.name || 'Unknown Product',
+          userName: review.userName || review.userId?.username || 'Pengguna',
+          productName: review.productId?.name || 'Produk Tidak Diketahui',
           rating: review.rating,
           comment: review.comment,
           createdAt: review.createdAt,
@@ -69,22 +83,32 @@ export default function AdminReview() {
         
         setReviews(transformedReviews);
         setTotalPages(data.pagination?.totalPages || 1);
-        setTotalItems(data.pagination?.totalItems || transformedReviews.length);
+        setTotalItems(data.pagination?.total || transformedReviews.length);
       } else {
         console.error("Invalid response format:", data);
         setReviews([]);
         setTotalPages(1);
         setTotalItems(0);
       }
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error fetching reviews:", error.message);
+      } else {
+        console.error("Unknown error fetching reviews:", error);
+      }
       setReviews([]);
       setTotalPages(1);
       setTotalItems(0);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, itemsPerPage]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchReviews();
+    }
+  }, [isLoggedIn, currentPage, fetchReviews]);
 
   const openDeleteModal = (review: Review) => {
     setReviewToDelete(review);
@@ -115,9 +139,14 @@ export default function AdminReview() {
         setErrorMessage(data.error || "Gagal menghapus review");
         setShowErrorModal(true);
       }
-    } catch (error) {
-      console.error("Error deleting review:", error);
-      setErrorMessage("Terjadi kesalahan saat menghapus review");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error deleting review:", error.message);
+        setErrorMessage("Terjadi kesalahan saat menghapus review");
+      } else {
+        console.error("Unknown error deleting review:", error);
+        setErrorMessage("Terjadi kesalahan tidak dikenal saat menghapus review");
+      }
       setShowErrorModal(true);
     } finally {
       setDeleteLoading(false);
@@ -128,12 +157,12 @@ export default function AdminReview() {
     setCurrentPage(newPage);
   };
 
-  const getPageNumbers = () => {
-    const pages = [];
+  const getPageNumbers = (): number[] => {
+    const pages: number[] = [];
     const maxVisiblePages = 5;
     
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
     
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
@@ -172,7 +201,7 @@ export default function AdminReview() {
               </div>
               <div className={styles.previewItem}>
                 <strong>Komentar:</strong> 
-                <p className={styles.previewComment}>"{reviewToDelete.comment}"</p>
+                <p className={styles.previewComment}>&quot;{reviewToDelete.comment}&quot;</p>
               </div>
             </div>
           )}
@@ -293,7 +322,7 @@ export default function AdminReview() {
           </div>
           <div className={styles.actionButtons}>
             <Link href="/admin/dashboard" className={styles.backButton}>
-              ← Back to Dashboard
+              ← Kembali Ke Dashboard
             </Link>
             <button 
               onClick={fetchReviews}
@@ -335,7 +364,7 @@ export default function AdminReview() {
                     </div>
                     <div>
                       <h3 className={styles.userName}>{review.userName}</h3>
-                      <p className={styles.userEmail}>{review.userEmail}</p>
+                      {/* Email dihapus dari sini */}
                     </div>
                   </div>
                   

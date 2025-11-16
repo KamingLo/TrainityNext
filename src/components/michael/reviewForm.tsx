@@ -36,17 +36,17 @@ export default function ReviewForm({ productKey, onSuccess }: ReviewFormProps) {
     setErrorMessage(""); // Reset error message
 
     if (!isLoggedIn) {
-      alert("Silakan login terlebih dahulu untuk memberikan review");
+      setErrorMessage("Silakan login terlebih dahulu untuk memberikan review");
       return;
     }
 
     if (reviewForm.rating === 0) {
-      alert("Silakan berikan rating bintang");
+      setErrorMessage("Silakan berikan rating bintang");
       return;
     }
 
     if (reviewForm.comment.trim() === "") {
-      alert("Silakan tulis komentar review");
+      setErrorMessage("Silakan tulis komentar review");
       return;
     }
 
@@ -70,23 +70,41 @@ export default function ReviewForm({ productKey, onSuccess }: ReviewFormProps) {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Gagal mengirim review");
+        // Handle error dengan pesan yang lebih jelas
+        let errorMsg = data.error || "Gagal mengirim review";
+        
+        // Jika error 403 (forbidden), berarti limit review sudah habis
+        if (res.status === 403) {
+          errorMsg = "Anda sudah melewati batas review 3 kali";
+        }
+        
+        // Set error message tanpa throw error untuk menghindari console error
+        setErrorMessage(errorMsg);
+        setIsSubmittingReview(false);
+        return;
       }
 
       // Jika sukses
-      setReviewSubmitted(true);
       setReviewForm({ rating: 0, comment: "" });
       
-      // Panggil callback parent jika ada (misal untuk reload list review)
+      // Tampilkan pesan sukses yang sesuai
+      const successMsg = data.message || "Review berhasil dikirim!";
+      
+      // Panggil callback parent untuk reload list review
+      // Tambahkan sedikit delay untuk memastikan data sudah tersimpan di database
       if (onSuccess) {
-        onSuccess();
+        // Tunggu lebih lama untuk memastikan data tersimpan dan ter-index di database
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await onSuccess(); // Tunggu sampai fetch selesai
       }
+      
+      // Set reviewSubmitted setelah refresh selesai
+      setReviewSubmitted(true);
 
     } catch (error: any) {
-      console.error("Review Error:", error);
-      setErrorMessage(error.message);
-      alert(error.message); // Tampilkan alert error
-    } finally {
+      // Handle error network atau error lainnya
+      const errorMsg = error.message || "Terjadi kesalahan saat mengirim review";
+      setErrorMessage(errorMsg);
       setIsSubmittingReview(false);
     }
   };
@@ -174,11 +192,11 @@ export default function ReviewForm({ productKey, onSuccess }: ReviewFormProps) {
             />
           </div>
             
-          {/* Error Message Display (Optional) */}
+          {/* Error Message Display */}
           {errorMessage && (
-            <p style={{ color: 'red', fontSize: '0.875rem', marginBottom: '10px' }}>
-                {errorMessage}
-            </p>
+            <div className={styles.errorMessage}>
+              <p>{errorMessage}</p>
+            </div>
           )}
 
           {/* Submit Button */}
