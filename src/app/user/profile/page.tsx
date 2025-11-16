@@ -20,7 +20,7 @@ export default function EditProfilePage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   useEffect(() => {
     fetchUserProfile();
@@ -41,7 +41,7 @@ export default function EditProfilePage() {
         email: userData.email
       });
     } catch (err) {
-      setError("Gagal memuat data profil");
+      setMessage({ type: "error", text: "Gagal memuat data profil" });
       console.error("Error fetching profile:", err);
     } finally {
       setIsFetching(false);
@@ -59,7 +59,7 @@ export default function EditProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+    setMessage({ type: "", text: "" });
 
     try {
       const response = await fetch("/api/user/profile", {
@@ -77,9 +77,9 @@ export default function EditProfilePage() {
 
       const updatedData = await response.json();
       setFormData(updatedData);
-      alert("Profile berhasil diperbarui!");
+      setMessage({ type: "success", text: "Profil berhasil diperbarui!" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan");
+      setMessage({ type: "error", text: err instanceof Error ? err.message : "Terjadi kesalahan" });
     } finally {
       setIsLoading(false);
     }
@@ -112,9 +112,9 @@ export default function EditProfilePage() {
             Kembali ke Dashboard
           </button>
 
-          {error && (
-            <div className={styles.errorMessage}>
-              {error}
+          {message.text && (
+            <div className={message.type === 'success' ? styles.successMessage : styles.errorMessage}>
+              {message.text}
             </div>
           )}
 

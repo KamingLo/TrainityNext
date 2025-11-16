@@ -119,15 +119,21 @@ export default function UserDashboardPage() {
   };
 
   const nextSlide = () => {
-    setCurrentSlide(prev => (prev + 1) % recommendedCourses.length);
+    if (recommendedCourses.length > 0) {
+      setCurrentSlide(prev => (prev + 1) % recommendedCourses.length);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentSlide(prev => (prev - 1 + recommendedCourses.length) % recommendedCourses.length);
+    if (recommendedCourses.length > 0) {
+      setCurrentSlide(prev => (prev - 1 + recommendedCourses.length) % recommendedCourses.length);
+    }
   };
 
   const goToSlide = (index: number) => {
-    setCurrentSlide(index);
+    if (recommendedCourses.length > 0) {
+      setCurrentSlide(index);
+    }
   };
 
   if (loading) {
@@ -199,43 +205,51 @@ export default function UserDashboardPage() {
             <h2 className={styles.cardTitle}>Rekomendasi Untuk Anda</h2>
           </div>
           <div className={styles.recommendedCarousel}>
-            <div className={styles.carouselSlide}>
-              <RecommendedCourseCard
-                course={{
-                  id: parseInt(currentCourse?.id) || 0,
-                  title: currentCourse?.title,
-                  category: currentCourse?.category,
-                  imageUrl: currentCourse?.imageUrl
-                }}
-                router={router}
-              />
-            </div>
-            
-            <div className={styles.carouselControls}>
-              <button 
-                onClick={prevSlide}
-                className={styles.carouselButton}
-              >
-                ‹
-              </button>
-              
-              <div className={styles.carouselDots}>
-                {recommendedCourses.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToSlide(index)}
-                    className={`${styles.carouselDot} ${currentSlide === index ? styles.active : ''}`}
+            {recommendedCourses.length > 0 ? (
+              <>
+                <div className={styles.carouselSlide}>
+                  <RecommendedCourseCard
+                    course={{
+                      id: parseInt(currentCourse.id) || 0,
+                      title: currentCourse.title,
+                      category: currentCourse.category,
+                      imageUrl: currentCourse.imageUrl
+                    }}
+                    router={router}
                   />
-                ))}
+                </div>
+                
+                <div className={styles.carouselControls}>
+                  <button 
+                    onClick={prevSlide}
+                    className={styles.carouselButton}
+                  >
+                    ‹
+                  </button>
+                  
+                  <div className={styles.carouselDots}>
+                    {recommendedCourses.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => goToSlide(index)}
+                        className={`${styles.carouselDot} ${currentSlide === index ? styles.active : ''}`}
+                      />
+                    ))}
+                  </div>
+                  
+                  <button 
+                    onClick={nextSlide}
+                    className={styles.carouselButton}
+                  >
+                    ›
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className={styles.noRecommendation}>
+                <p>Tidak ada rekomendasi kursus saat ini</p>
               </div>
-              
-              <button 
-                onClick={nextSlide}
-                className={styles.carouselButton}
-              >
-                ›
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </div>

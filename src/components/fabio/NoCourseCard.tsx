@@ -18,7 +18,7 @@ export default function NoCourseCard({ router }: NoCourseCardProps) {
       <h3 className={styles.noCourseTitle}>Anda Belum Memulai Kursus</h3>
       <p className={styles.noCourseDescription}>Cari kursus yang Anda minati untuk memulai perjalanan!</p>
       <button
-        onClick={() => router.push("/kursus")}
+        onClick={() => router.push("/produk")}
         className={styles.searchButton}
       >
         Cari Kursus

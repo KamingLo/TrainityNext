@@ -31,8 +31,9 @@ export default function RecommendedCourseCard({
           src={course.imageUrl}
           alt={course.title}
           className={styles.recommendedImage}
-          width={300}
-          height={300}
+          width={400}
+          height={200}
+          priority
         />
         <span className={styles.recommendedCategory}>
           {course.category}
@@ -46,7 +47,7 @@ export default function RecommendedCourseCard({
 
         <button
           onClick={() => router.push(`/produk/${course.title}`)}
-          className={styles.detailButton}
+          className={styles.recommendedButton}
         >
           <BookOpen className={styles.buttonIcon} /> Lihat Detail
         </button>
