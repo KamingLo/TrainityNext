@@ -237,6 +237,7 @@ export default function ModernCertificate() {
         <div className={styles.footer}>
           <div className={styles.signatureSection}>
             <div className={styles.signatureImageWrapper}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={tandaTanganUrl}
                 alt="Signature"

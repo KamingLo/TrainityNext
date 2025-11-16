@@ -62,8 +62,10 @@ interface IPopulatedProduct {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { key: string } }
+  context: { params: Promise<{ key: string }> }
 ) {
+  const params = await context.params;
+  
   try {
     await connectDB();
 
