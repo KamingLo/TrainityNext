@@ -1,11 +1,28 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/lib/db";
 import UserProduct from "@/models/user_product";
 import Product from "@/models/product";
 
-export async function GET(req: NextRequest) {
+interface IVideo {
+  _id: string;
+  kodePelajaran?: string;
+}
+
+interface IProduct {
+  name: string;
+  shortDesc?: string;
+  video?: IVideo[];
+}
+
+interface IUserProduct {
+  product: IProduct;
+  lastWatchedVideoId?: string | null;
+  status: string;
+}
+
+export async function GET() {
   try {
     await connectDB();
 
@@ -18,56 +35,67 @@ export async function GET(req: NextRequest) {
       .populate({
         path: "product",
         model: Product,
-        select: "name video",
+        select: "name shortDesc video",
         populate: {
           path: "video",
           select: "kodePelajaran",
-        }
+        },
       })
       .select("lastWatchedVideoId status")
-      .lean();
+      .lean<IUserProduct[]>();
 
     const result = owned.map((item) => {
-      const product = item.product as any;
-      const videos = Array.isArray(product?.video) ? product.video : [];
+      const product = item.product;
+
+      const videos: IVideo[] = Array.isArray(product?.video)
+        ? product.video
+        : [];
+
       const totalVideos = videos.length;
 
-      // default values
       let progressPercentage = 0;
-      let kodePertama = videos[0]?.kodePelajaran || null;
+      const kodePertama = videos[0]?.kodePelajaran ?? null;
 
       if (totalVideos > 0 && item.lastWatchedVideoId) {
         const lastId = String(item.lastWatchedVideoId).trim();
 
-        // cocokkan baik ID atau kodePelajaran
-        const watchedIndex = videos.findIndex((v: any) => {
-          const byKode = v.kodePelajaran && String(v.kodePelajaran).trim() === lastId;
-          const byId = v._id && String(v._id).trim() === lastId;
+        const watchedIndex = videos.findIndex((v) => {
+          const byKode =
+            v.kodePelajaran &&
+            String(v.kodePelajaran).trim() === lastId;
+
+          const byId =
+            v._id &&
+            String(v._id).trim() === lastId;
+
           return byKode || byId;
         });
 
         if (watchedIndex !== -1) {
           const videosCompleted = watchedIndex + 1;
-          progressPercentage = Math.round((videosCompleted / totalVideos) * 100);
-
-          if (progressPercentage > 100) {
-            progressPercentage = 100;
-          }
+          progressPercentage = Math.round(
+            (videosCompleted / totalVideos) * 100
+          );
+          if (progressPercentage > 100) progressPercentage = 100;
         }
       }
 
       return {
-        name: product?.name,
-        shortDesc: product?.shortDesc,
+        name: product.name,
+        shortDesc: product.shortDesc,
         kodePertama,
         progressPercentage,
       };
     });
 
     return NextResponse.json({ data: result }, { status: 200 });
+  } catch (err: AppError) {
+    if (err instanceof Error) {
+      console.error("Server error:", err.message);
+    } else {
+      console.error("Unknown error:", err);
+    }
 
-  } catch (err) {
-    console.log(err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

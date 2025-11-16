@@ -6,6 +6,17 @@ import UserProduct from "@/models/user_product";
 import Product from "@/models/product";
 import User from "@/models/user";
 
+interface IVideo {
+  _id: string;
+  kodePelajaran?: string;
+}
+
+interface IProduct {
+  _id: string;
+  name: string;
+  video?: IVideo[];
+}
+
 interface ICertificateData {
   _id: string;
   userName: string;
@@ -45,9 +56,10 @@ export async function GET(
         select: "name video",
       })
       .lean();
+
     const certificates: ICertificateData[] = userProducts
       .map((item) => {
-        const product = item.product as any;
+        const product = item.product as IProduct; // <-- ganti any dengan IProduct
         const videos = Array.isArray(product?.video) ? product.video : [];
         const totalVideos = videos.length;
 
@@ -56,7 +68,7 @@ export async function GET(
 
         if (totalVideos > 0 && item.lastWatchedVideoId) {
           const lastId = String(item.lastWatchedVideoId).trim();
-          const watchedIndex = videos.findIndex((v: any) => {
+          const watchedIndex = videos.findIndex((v) => {
             const byKode = v.kodePelajaran && String(v.kodePelajaran).trim() === lastId;
             const byId = v._id && String(v._id).trim() === lastId;
             return byKode || byId;
@@ -66,9 +78,7 @@ export async function GET(
             const videosCompleted = watchedIndex + 1;
             progressPercentage = Math.round((videosCompleted / totalVideos) * 100);
 
-            if (progressPercentage > 100) {
-              progressPercentage = 100;
-            }
+            if (progressPercentage > 100) progressPercentage = 100;
             if (progressPercentage === 100) {
               completedAt = item.updatedAt || item.createdAt;
             }
@@ -76,9 +86,9 @@ export async function GET(
         }
 
         return {
-          _id: product?._id,
+          _id: product._id,
           userName: user.name || "User",
-          courseName: product?.name || "Unknown Course",
+          courseName: product.name || "Unknown Course",
           completedAt,
           progressPercentage,
         };
@@ -97,10 +107,7 @@ export async function GET(
         );
       }
 
-      return NextResponse.json(
-        { data: specificCert },
-        { status: 200 }
-      );
+      return NextResponse.json({ data: specificCert }, { status: 200 });
     }
 
     certificates.sort((a, b) => {
@@ -109,15 +116,13 @@ export async function GET(
       return new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime();
     });
 
-    return NextResponse.json(
-      { data: certificates },
-      { status: 200 }
-    );
-  } catch (err) {
-    console.error("Gagal mengambil data sertifikat:", err);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ data: certificates }, { status: 200 });
+
+  } catch (err: AppError) {
+    if (err instanceof Error) {
+      console.error("Gagal mengambil data sertifikat:", err.message);
+      return NextResponse.json({ error: "Server error", details: err.message }, { status: 500 });
+    }
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

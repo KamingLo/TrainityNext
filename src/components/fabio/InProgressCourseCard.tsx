@@ -30,7 +30,6 @@ interface InProgressCourseCardProps {
 
 export default function InProgressCourseCard({
   course,
-  router,
 }: InProgressCourseCardProps) {
   return (
     <div className={styles.courseCard}>

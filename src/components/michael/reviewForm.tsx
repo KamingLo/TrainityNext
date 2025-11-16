@@ -87,9 +87,6 @@ export default function ReviewForm({ productKey, onSuccess }: ReviewFormProps) {
       // Jika sukses
       setReviewForm({ rating: 0, comment: "" });
       
-      // Tampilkan pesan sukses yang sesuai
-      const successMsg = data.message || "Review berhasil dikirim!";
-      
       // Panggil callback parent untuk reload list review
       // Tambahkan sedikit delay untuk memastikan data sudah tersimpan di database
       if (onSuccess) {
@@ -101,11 +98,13 @@ export default function ReviewForm({ productKey, onSuccess }: ReviewFormProps) {
       // Set reviewSubmitted setelah refresh selesai
       setReviewSubmitted(true);
 
-    } catch (error: any) {
+    } catch (error: AppError) {
+        if(error instanceof Error){
+            const errorMsg = error.message || "Terjadi kesalahan saat mengirim review";
+            setErrorMessage(errorMsg);
+            setIsSubmittingReview(false);
+        }
       // Handle error network atau error lainnya
-      const errorMsg = error.message || "Terjadi kesalahan saat mengirim review";
-      setErrorMessage(errorMsg);
-      setIsSubmittingReview(false);
     }
   };
 

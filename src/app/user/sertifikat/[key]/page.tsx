@@ -5,6 +5,7 @@ import { Download, Loader2, Terminal, CheckCircle2, AlertCircle } from 'lucide-r
 import styles from "@/styles/charless/certificate.module.css";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface ICertificateData {
   _id: string;
@@ -68,9 +69,11 @@ export default function ModernCertificate() {
         if (result.data?.length === 0) {
           setError("Kamu belum menyelesaikan kursus apapun. Selesaikan kursus untuk mendapatkan sertifikat!");
         }
-      } catch (err: any) {
-        console.error("Error fetching certificates:", err);
-        setError(err.message || "Terjadi kesalahan saat mengambil data sertifikat");
+      } catch (err: AppError) {
+        if(err instanceof Error){
+            console.error("Error fetching certificates:", err);
+            setError(err.message || "Terjadi kesalahan saat mengambil data sertifikat");
+        }
       } finally {
         setIsFetching(false);
       }
@@ -241,7 +244,9 @@ export default function ModernCertificate() {
             <div className={styles.footer}>
               <div className={styles.signatureSection}>
                 <div className={styles.signatureImageWrapper}>
-                  <img 
+                  <Image
+                    width = {400}
+                    height = {400}
                     src={tandaTanganUrl}
                     alt="Signature"
                     onError={handleSignatureError}

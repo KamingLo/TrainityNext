@@ -50,8 +50,10 @@ export default function ForgotPasswordPage() {
         setSuccess(null);
         setStep("verify");
       }, 1500);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: AppError) {
+        if (err instanceof Error){
+            setError(err.message);
+        } 
     } finally {
       setLoading(false);
     }
@@ -78,8 +80,10 @@ export default function ForgotPasswordPage() {
         setSuccess(null);
         setStep("change");
       }, 1000);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: AppError) {
+        if(err instanceof Error){
+            setError(err.message);
+        }
     } finally {
       setLoading(false);
     }

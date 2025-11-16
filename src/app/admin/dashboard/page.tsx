@@ -26,7 +26,7 @@ interface DashboardData {
 }
 
 export default function AdminDashboard() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const isLoggedIn = status === "authenticated";
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);

@@ -18,15 +18,14 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const page = Math.max(1, Number(searchParams.get("page")) || 1);
-    const limit = Math.min(
-      50,
-      Math.max(1, Number(searchParams.get("limit")) || 20),
-    );
+    const limit = Math.min(50, Math.max(1, Number(searchParams.get("limit")) || 20));
     const search = (searchParams.get("search") || "").trim();
 
     const skip = (page - 1) * limit;
 
-    const filter: any = {};
+    // Perbaikan: hilangkan any, gunakan tipe aman dan fleksibel
+    const filter: Record<string, unknown> = {};
+
     if (search) {
       filter.$or = [
         { "user.email": { $regex: search, $options: "i" } },
@@ -82,11 +81,15 @@ export async function GET(request: Request) {
         hasPrev: page > 1,
       },
     });
-  } catch (error: any) {
-    console.error("Admin pembayaran error:", error);
-    return NextResponse.json(
-      { error: "Server error", details: error.message },
-      { status: 500 },
-    );
+  } catch (error: AppError) {
+    if (error instanceof Error) {
+      console.error("Admin pembayaran error:", error);
+      return NextResponse.json(
+        { error: "Server error", details: error.message },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json({ error: "Unknown server error" }, { status: 500 });
   }
 }

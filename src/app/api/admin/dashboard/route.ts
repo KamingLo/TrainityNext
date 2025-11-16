@@ -1,13 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/lib/db";
 
 import UserProduct from "@/models/user_product";
-import Product from "@/models/product";
 import Review from "@/models/review"; 
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     await connectDB();
 
@@ -24,7 +23,7 @@ export async function GET(req: NextRequest) {
       .populate({ path: "product", select: "name" }) 
       .lean();
 
-    const latestUserActivity = rawUserActivity.map((item: any) => ({
+    const latestUserActivity = rawUserActivity.map((item) => ({
       userName: item.user?.username || "Pengguna Anonim",
       purchasedAt: item.createdAt, 
       productName: item.product?.name || "Produk Dihapus",
@@ -38,7 +37,7 @@ export async function GET(req: NextRequest) {
       .populate({ path: "productId", select: "name" }) 
       .lean();
 
-    const latestReviews = rawReviews.map((review: any) => ({
+    const latestReviews = rawReviews.map((review) => ({
       productName: review.productId?.name || "Produk Dihapus",
       rating: review.rating,
       comment: review.comment,

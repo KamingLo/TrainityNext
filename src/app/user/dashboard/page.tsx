@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import InProgressCourseCard from "@/components/fabio/InProgressCourseCard";
 import RecommendedCourseCard from "@/components/fabio/RecommendedCourseCard";
@@ -56,66 +56,68 @@ export default function UserDashboardPage() {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchUserData();
-    fetchDashboardData();
-  }, []);
 
-  const fetchUserData = async () => {
-    try {
-      const response = await fetch("/api/user/profile");
-      if (response.ok) {
-        const userData = await response.json();
-        setUser({
-          name: userData.username,
-          username: userData.username,
-          email: userData.email
-        });
-      }
+  
+    const fetchUserData = useCallback(async () => {
+        try {
+            const response = await fetch("/api/user/profile");
+            if (response.ok) {
+                const userData = await response.json();
+            setUser({
+                name: userData.username,
+                username: userData.username,
+                email: userData.email
+            });
+        }
     } catch (error) {
-      console.error("Error fetching user data:", error);
+        console.error("Error fetching user data:", error);
     }
-  };
+    }, []);
 
-  const getCourseImage = (course: DashboardCourse): string => {
+    const fetchDashboardData = useCallback(async () => {
+        try {
+            const response = await fetch("/api/user/dashboard");
+            if (response.ok) {
+            const data: DashboardData = await response.json();
+            
+            const progressCourses: InProgressCourse[] = data.data.ownedProducts.map((course, index) => ({
+                ...course,
+                id: course.id || course._id || `course-${index}`,
+                title: course.name,
+                category: course.name,
+                imageUrl: getCourseImage(course),
+                progress: course.progressPercentage || 0
+            }));
+            
+            const recommended: InProgressCourse[] = data.data.latestProducts.map((course, index) => ({
+                ...course,
+                id: course._id || `recommended-${index}`,
+                title: course.name,
+                category: course.name,
+                imageUrl: getCourseImage(course),
+                progress: 0
+            }));
+            
+            setInProgressCourses(progressCourses);
+            setRecommendedCourses(recommended);
+        }
+    } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+    } finally {
+        setLoading(false);
+    }
+    }, []); 
+
+    useEffect(() => {
+        fetchUserData();
+        fetchDashboardData();
+    }, [fetchUserData, fetchDashboardData]);
+
+const getCourseImage = (course: DashboardCourse): string => {
     const videoCode = course.kodePertama || course.video?.[0]?.kodePelajaran;
     return videoCode 
-      ? `https://i.ytimg.com/vi/${videoCode}/hqdefault.jpg`
-      : 'https://via.placeholder.com/300x200/4F46E5/FFFFFF?text=No+Image';
-  };
-
-  const fetchDashboardData = async () => {
-    try {
-      const response = await fetch("/api/user/dashboard");
-      if (response.ok) {
-        const data: DashboardData = await response.json();
-        
-        const progressCourses: InProgressCourse[] = data.data.ownedProducts.map((course, index) => ({
-          ...course,
-          id: course.id || course._id || `course-${index}`,
-          title: course.name,
-          category: course.name,
-          imageUrl: getCourseImage(course),
-          progress: course.progressPercentage || 0
-        }));
-        
-        const recommended: InProgressCourse[] = data.data.latestProducts.map((course, index) => ({
-          ...course,
-          id: course._id || `recommended-${index}`,
-          title: course.name,
-          category: course.name,
-          imageUrl: getCourseImage(course),
-          progress: 0
-        }));
-
-        setInProgressCourses(progressCourses);
-        setRecommendedCourses(recommended);
-      }
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error);
-    } finally {
-      setLoading(false);
-    }
+    ? `https://i.ytimg.com/vi/${videoCode}/hqdefault.jpg`
+    : 'https://via.placeholder.com/300x200/4F46E5/FFFFFF?text=No+Image';
   };
 
   const nextSlide = () => {

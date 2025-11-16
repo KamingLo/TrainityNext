@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Section from "@/components/sections";
 import styles from "@/styles/kaming/owned.module.css";
+import Image from "next/image";
 
 interface OwnedProduct {
   _id: string;
@@ -56,8 +57,10 @@ export default function OwnedProductPage() {
           {products.map((prod) => (
             <div key={prod.name} className={styles.card}>
               {prod.kodePertama && (
-                <img
-                  src={`https://img.youtube.com/vi/${prod.kodePertama}/hqdefault.jpg`}
+                <Image
+                  height={400}
+                  width={400}
+                  src={`https://i.ytimg.com/vi/${prod.kodePertama}/hqdefault.jpg`}
                   alt={prod.name}
                   className={styles.card_thumbnail}
                 />
@@ -91,16 +94,23 @@ export default function OwnedProductPage() {
                   {prod.progressPercentage}% selesai
                 </p>
 
-                <Link
-                  href={`/user/belajar/${prod.name}`}
-                  className={styles.card_button}
-                >
-                  {prod.progressPercentage === 100
-                    ? "Lihat Detail Kursus"
-                    : prod.progressPercentage > 0
-                    ? "Lanjut Belajar"
-                    : "Mulai Belajar"}
-                </Link>
+                <div style={{ display: 'flex', flexDirection:'row', gap:'1rem', }}>
+                    <Link
+                    href={`/user/belajar/${prod.name}`}
+                    className={styles.card_button}
+                    >
+                    {prod.progressPercentage === 100
+                        ? "Lihat Detail"
+                        : prod.progressPercentage > 0
+                        ? "Lanjut Belajar"
+                        : "Mulai Belajar"}
+                    </Link>
+                    {prod.progressPercentage === 100 && 
+                        <Link href={`/user/sertifikat/${prod.name}`} className={styles.card_button}>
+                            Lihat Sertifikat
+                        </Link>
+                    }
+                </div>
               </div>
             </div>
           ))}
