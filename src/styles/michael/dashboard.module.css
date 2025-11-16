@@ -62,20 +62,20 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 1.25rem 1.5rem;
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(100, 116, 139, 0.3);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #444444;
   border-radius: 0.75rem;
   color: #f1f5f9;
   text-decoration: none;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   text-align: center;
 }
 
 .actionButton:hover {
-  background: rgba(30, 41, 59, 1);
-  border-color: rgba(59, 130, 246, 0.5);
-  transform: translateY(-2px);
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .actionIcon {
@@ -87,22 +87,33 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
+  align-items: start;
 }
 
 @media (min-width: 1024px) {
   .dashboardGrid {
     grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+  
+  .dashboardGrid > .card {
+    height: 100%;
   }
 }
 
 /* Cards */
 .card {
-  background: rgba(30, 41, 59, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(100, 116, 139, 0.3);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #444444;
   border-radius: 0.75rem;
   padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .cardHeader {
@@ -112,6 +123,7 @@
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid rgba(100, 116, 139, 0.3);
+  flex-shrink: 0;
 }
 
 .cardTitle {
@@ -130,25 +142,43 @@
   font-weight: 500;
 }
 
+.nextLink {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nextLink:hover {
+  color: #cbd5e1;
+  text-decoration: none;
+}
+
 /* Activity List */
 .activityList {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
+  flex: 1;
+  min-height: 0;
+  justify-content: flex-start;
 }
 
 .activityItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 1.75rem;
   background: rgba(15, 23, 42, 0.6);
   border-radius: 0.5rem;
   border: 1px solid rgba(100, 116, 139, 0.2);
   transition: all 0.2s ease;
+  min-height: 100px;
 }
 
 .activityItem:hover {
+  background: rgba(15, 23, 42, 0.8);
   border-color: rgba(59, 130, 246, 0.4);
 }
 
@@ -159,8 +189,8 @@
 }
 
 .userAvatar {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
   background: rgba(102, 126, 234, 0.15);
   border: 1px solid rgba(102, 126, 234, 0.3);
   border-radius: 50%;
@@ -169,7 +199,8 @@
   justify-content: center;
   font-weight: 600;
   color: #60a5fa;
-  font-size: 0.875rem;
+  font-size: 1.125rem;
+  flex-shrink: 0;
 }
 
 .userInfo {
@@ -180,17 +211,20 @@
 .userName {
   font-weight: 600;
   color: #f1f5f9;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
 }
 
 .productName {
   color: #60a5fa;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .activityTime {
   color: #94a3b8;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 /* Review List */
@@ -198,6 +232,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  flex: 1;
+  min-height: 0;
 }
 
 .reviewItem {
@@ -209,6 +245,7 @@
 }
 
 .reviewItem:hover {
+  background: rgba(15, 23, 42, 0.8);
   border-color: rgba(59, 130, 246, 0.4);
 }
 
@@ -311,198 +348,4 @@
   .reviewTime {
     align-self: flex-start;
   }
-  /* Tambahkan style ini ke file dashboard.module.css Anda */
-
-.dashboardGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-top: 24px;
-}
-
-.card {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
-  display: flex;
-  flex-direction: column;
-  height: 500px; /* Sesuaikan tinggi agar sama */
-}
-
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #f3f4f6;
-  padding-bottom: 16px;
-}
-
-.cardTitleWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.cardTitle {
-  font-size: 20px;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0;
-}
-
-.cardCount {
-  font-size: 14px;
-  color: #6b7280;
-  background: #f3f4f6;
-  padding: 4px 8px;
-  border-radius: 6px;
-  align-self: flex-start;
-}
-/* Container untuk list agar memiliki tinggi yang konsisten */
-.activityList,
-.reviewList {
-  flex: 1;
-  overflow-y: auto;
-  max-height: 400px;
-}
-
-/* Style untuk scrollbar */
-.activityList::-webkit-scrollbar,
-.reviewList::-webkit-scrollbar {
-  width: 6px;
-}
-
-.activityList::-webkit-scrollbar-track,
-.reviewList::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.activityList::-webkit-scrollbar-thumb,
-.reviewList::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-.activityList::-webkit-scrollbar-thumb:hover,
-.reviewList::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Style untuk item aktivitas dan review */
-.activityItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.activityItem:last-child {
-  border-bottom: none;
-}
-
-.activityUser {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.userAvatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #3b82f6;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.userInfo {
-  display: flex;
-  flex-direction: column;
-}
-
-.userName {
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 2px;
-}
-
-.productName {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-.activityTime {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-/* Style untuk review item */
-.reviewItem {
-  padding: 16px 0;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.reviewItem:last-child {
-  border-bottom: none;
-}
-
-.reviewHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
-}
-
-.reviewUser {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.rating {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 2px;
-}
-
-.ratingText {
-  font-size: 12px;
-  color: #6b7280;
-  margin-left: 4px;
-}
-
-.reviewTime {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.reviewComment {
-  color: #4b5563;
-  margin: 8px 0;
-  line-height: 1.5;
-  font-size: 14px;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .dashboardGrid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .card {
-    height: auto;
-    min-height: 400px;
-  }
-}
 }

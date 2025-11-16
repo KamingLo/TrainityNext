@@ -121,7 +121,7 @@ export default function AdminDashboard() {
           <span className={styles.actionIcon}>📦</span>
           Kelola Produk
         </Link>
-        <Link href="/admin/users" className={styles.actionButton}>
+        <Link href="/user/profile" className={styles.actionButton}>
           <span className={styles.actionIcon}>👥</span>
           Kelola User
         </Link>

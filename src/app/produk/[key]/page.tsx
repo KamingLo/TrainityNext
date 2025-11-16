@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import Section from "@/components/sections";
@@ -28,8 +28,18 @@ interface Review {
   createdAt: string;
 }
 
+interface ApiReview {
+  _id: string;
+  userId?: {
+    username?: string;
+  } | string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
 export default function DetailProdukPage() {
-  const { status: authStatus, data: session } = useSession();
+  const { status: authStatus } = useSession();
   const isLoggedIn = authStatus === "authenticated";
   const isAuthLoading = authStatus === "loading";
 
@@ -41,6 +51,70 @@ export default function DetailProdukPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reviewsLoading, setReviewsLoading] = useState(false);
+
+  // Fungsi untuk fetch reviews
+  const fetchReviews = useCallback(async () => {
+    try {
+      setReviewsLoading(true);
+      // Menggunakan productKey karena API endpoint menerima productKey
+      // Tidak pakai limit untuk fetch semua review, scroll akan menampilkan 3 pertama
+      // Tambahkan timestamp untuk cache-busting
+      const timestamp = Date.now();
+      const response = await fetch(`/api/user/review?productKey=${productKey}&_t=${timestamp}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      });
+      if (response.ok) {
+        const data: ApiReview[] = await response.json();
+        // Transform data dari API format ke Review format
+        const transformedReviews: Review[] = data.map((review: ApiReview) => {
+          // Ambil username dari userId yang di-populate
+          let userName = 'Pengguna';
+          
+          // Handle berbagai format userId dari API
+          if (review.userId) {
+            if (typeof review.userId === 'object' && review.userId !== null && !Array.isArray(review.userId)) {
+              // Jika userId adalah object (sudah di-populate)
+              const userIdObj = review.userId as { username?: string };
+              userName = userIdObj.username || 'Pengguna';
+            } else if (typeof review.userId === 'string') {
+              // Jika userId masih string (belum di-populate), tetap pakai default
+              userName = 'Pengguna';
+            }
+          }
+          
+          return {
+            _id: review._id,
+            userName: userName,
+            rating: review.rating,
+            comment: review.comment,
+            createdAt: review.createdAt
+          };
+        });
+        
+        // Sort berdasarkan createdAt (terbaru di atas, terlama di bawah)
+        // Karena sekarang semua review adalah baru (tidak ada update), gunakan createdAt saja
+        transformedReviews.sort((a, b) => {
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA; // Terbaru di atas (descending)
+        });
+        
+        // Debug: log untuk memastikan semua review ada
+        console.log('Fetched reviews:', transformedReviews.length, 'reviews');
+        console.log('Reviews data:', transformedReviews);
+        
+        setReviews(transformedReviews);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      setReviews([]);
+    } finally {
+      setReviewsLoading(false);
+    }
+  }, [productKey]);
 
   useEffect(() => {
     if (!productKey || isAuthLoading) return;
@@ -56,6 +130,7 @@ export default function DetailProdukPage() {
         if (!productData) throw new Error("Produk tidak ditemukan.");
 
         setProduct(productData);
+        // Fetch reviews setelah product didapatkan
         await fetchReviews(productData._id);
       } catch (err: any) {
         setError(err.message);
@@ -65,50 +140,12 @@ export default function DetailProdukPage() {
     }
 
     fetchProductDetail();
-  }, [productKey, isAuthLoading]);
+  }, [productKey, isAuthLoading, fetchReviews]);
 
-  // Fungsi untuk fetch reviews
-  const fetchReviews = async (productId: string) => {
-    try {
-      setReviewsLoading(true);
-      const response = await fetch(`/api/reviews?productId=${productId}&limit=5`);
-      if (response.ok) {
-        const data = await response.json();
-        setReviews(data.reviews || []);
-      }
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-    } finally {
-      setReviewsLoading(false);
-    }
-  };
-
-  // Fungsi untuk handle submit review
-  const handleSubmitReview = async (reviewData: { rating: number; comment: string }) => {
-    const response = await fetch('/api/reviews', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        productId: product?._id,
-        productKey: productKey,
-        rating: reviewData.rating,
-        comment: reviewData.comment,
-        userId: session?.user?.id,
-        userName: session?.user?.name || 'User'
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Gagal mengirim review");
-    }
-
-    // Refresh reviews setelah submit berhasil
-    if (product?._id) {
-      await fetchReviews(product._id);
-    }
-  };
+  // Callback untuk refresh reviews setelah submit berhasil
+  const handleReviewSuccess = useCallback(async () => {
+    await fetchReviews();
+  }, [fetchReviews]);
 
   const getActionButton = () => {
     if (!isLoggedIn) {
@@ -214,7 +251,11 @@ export default function DetailProdukPage() {
                       </div>
                     </div>
                     <span className={reviewStyles.reviewDate}>
-                      {new Date(review.createdAt).toLocaleDateString('id-ID')}
+                      {new Date(review.createdAt).toLocaleDateString('id-ID', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                      })}
                     </span>
                   </div>
                   <p className={reviewStyles.reviewComment}>{review.comment}</p>
@@ -225,9 +266,8 @@ export default function DetailProdukPage() {
         </div>
 
         <ReviewForm 
-          productId={product._id}
           productKey={productKey}
-          onSubmit={handleSubmitReview}
+          onSuccess={handleReviewSuccess}
         />
       </div>
     </Section>

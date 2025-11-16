@@ -50,9 +50,8 @@
 
 /* Action Bar */
 .actionBar {
-  background: rgba(30, 41, 59, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(100, 116, 139, 0.3);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #444444;
   border-radius: 0.75rem;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
@@ -75,12 +74,12 @@
 .actionTitle {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: white;
   margin-bottom: 0.25rem;
 }
 
 .actionSubtitle {
-  color: #cbd5e1;
+  color: #999;
   font-size: 0.875rem;
 }
 
@@ -90,18 +89,32 @@
 }
 
 .backButton {
-  background: #6b7280;
+  background: transparent;
   color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #666;
+  border-radius: 6px;
   text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.backButton:hover {
-  background: #4b5563;
-  transform: translateY(-1px);
+.backButton:hover:not(:disabled) {
+  border-color: #1369ff;
+  background: rgba(19, 105, 255, 0.1);
+  color: #1369ff;
+  transform: translateY(-2px);
+}
+
+.backButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Review List */
@@ -129,17 +142,17 @@
 
 /* Review Card */
 .reviewCard {
-  background: rgba(30, 41, 59, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(100, 116, 139, 0.3);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #444444;
   border-radius: 0.75rem;
   padding: 1.5rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .reviewCard:hover {
-  border-color: rgba(59, 130, 246, 0.5);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border-color: #1369ff;
+  box-shadow: 0 4px 20px rgba(19, 105, 255, 0.2);
+  transform: translateY(-4px);
 }
 
 /* Review Header */
