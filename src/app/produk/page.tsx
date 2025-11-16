@@ -1,5 +1,3 @@
-// /app/produk/page.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -7,8 +5,6 @@ import { useSession } from "next-auth/react";
 import Section from "@/components/sections";
 import Link from "next/link";
 import Image from "next/image";
-
-// DIUBAH: Impor hook useDebounce
 import { useDebounce } from "@/lib/hooks/useDebounce"; 
 
 import styles from "@/styles/kaming/publicProduk.module.css";
@@ -29,25 +25,18 @@ export default function ProdukPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // BARU: State untuk input teks (real-time)
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // BARU: State untuk nilai yang di-debounce (menunggu 300ms)
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  // DIUBAH: useEffect ini sekarang menangani SEMUA fetch data
-  // (Pencarian dan pemuatan awal)
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
       setError(null);
 
       try {
-        // Endpoint berubah berdasarkan nilai debounce
         const endpoint = debouncedSearchTerm
-          ? `/api/user/product?key=${debouncedSearchTerm}` // API pencarian Anda
-          : "/api/user/product"; // API untuk mengambil semua
+          ? `/api/user/product?key=${debouncedSearchTerm}`
+          : "/api/user/product";
 
         const res = await fetch(endpoint);
         if (!res.ok) throw new Error("Gagal mengambil data produk.");
@@ -56,19 +45,17 @@ export default function ProdukPage() {
         setProducts(data);
       } catch (err: AppError) {
         if (err instanceof Error) setError(err.message);
-        setProducts([]); // Kosongkan produk jika ada error
+        setProducts([]);
       } finally {
         setLoading(false);
       }
     }
 
-    // Hanya jalankan fetch jika auth selesai
     if (!isAuthLoading) {
       fetchProducts();
     }
-  }, [debouncedSearchTerm, isAuthLoading]); // <-- Pemicu utama!
+  }, [debouncedSearchTerm, isAuthLoading]); 
 
-  // Loading auth (dipisah agar data tidak 'flash')
   if (isAuthLoading) {
     return (
       <Section>
@@ -85,7 +72,6 @@ export default function ProdukPage() {
     );
   }
 
-  // Logika Tombol (Tidak berubah)
   const getButton = (product: Product) => {
     if (!isLoggedIn) {
       return (

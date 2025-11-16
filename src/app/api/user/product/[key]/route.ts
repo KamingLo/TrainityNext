@@ -14,13 +14,12 @@ export async function GET(
     return new Response("Unauthorized", { status: 401 });
   }
 
-  // Cari UserProduct yang aktif & populate Product
   const userProduct = await UserProduct.findOne({
     user: session.user.id,
   })
     .populate({
       path: "product",
-      match: { name: params.key }, // pastikan key sesuai URL
+      match: { name: params.key },
     });
 
   if (!userProduct || !userProduct.product || userProduct.status !== "aktif") {
@@ -34,7 +33,7 @@ export async function GET(
     JSON.stringify({
       message: "Akses diberikan.",
       lastWatchedVideoId: userProduct.lastWatchedVideoId,
-      product: userProduct.product, // ini model Product lengkap
+      product: userProduct.product,
     }),
     { status: 200 }
   );
@@ -61,7 +60,6 @@ export async function PATCH(
     );
   }
 
-  // Cari UserProduct yang sesuai
   const userProduct = await UserProduct.findOne({
     user: session.user.id,
   }).populate({
@@ -76,10 +74,8 @@ export async function PATCH(
     );
   }
 
-  // Update status jika diberikan
   if (status) userProduct.status = status;
 
-  // Update lastWatchedVideoId jika diberikan
   if (lastWatchedVideoId) userProduct.lastWatchedVideoId = lastWatchedVideoId;
 
   await userProduct.save();

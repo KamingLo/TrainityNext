@@ -1,8 +1,6 @@
-// src/components/product/ProductList.tsx
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
-// DIUBAH: Impor dari adminProductList.module.css
 import styles from "@/styles/kaming/adminProductList.module.css";
 
 interface Video {

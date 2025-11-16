@@ -1,12 +1,9 @@
-// src/components/product/ProductForm.tsx
 "use client";
 
 import React from "react";
 
-// DIUBAH: Impor dari common.module.css
 import styles from "@/styles/kaming/common.module.css";
 
-// Definisikan tipe untuk data form
 export interface ProductFormData {
   name: string;
   shortDesc: string;
@@ -19,7 +16,7 @@ interface ProductFormProps {
   onSubmit: (e: React.FormEvent) => void;
   submitText: string;
   isLoading?: boolean;
-  children?: React.ReactNode; // Untuk menyisipkan form video
+  children?: React.ReactNode;
 }
 
 export default function ProductForm({
@@ -67,11 +64,10 @@ export default function ProductForm({
         value={formData.desc}
         onChange={handleChange}
         className={styles.formTextarea}
-        rows={5} // Anda mungkin ingin menambahkan ini untuk textarea
+        rows={5}
         required
       />
 
-      {/* Slot untuk komponen lain, seperti form video */}
       {children}
 
       <button

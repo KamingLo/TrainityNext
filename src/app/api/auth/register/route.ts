@@ -44,5 +44,5 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("Register Error:", err);
     return NextResponse.json({ error: "Terjadi kesalahan server." }, { status: 500 });
-  }
+  }
 }

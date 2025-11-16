@@ -12,7 +12,7 @@ declare global {
         userId: mongoose.Types.ObjectId;
         productId: mongoose.Types.ObjectId;
         rating: number;
-        comment?: string; // Opsional: jika user ingin memberi teks ulasan
+        comment?: string;
         createdAt: Date;
         updatedAt: Date;
         code?:string;
@@ -39,13 +39,13 @@ declare global {
     interface CheckOptions {
         model: string;
         resourceId: string;
-        userPath: string; // contoh: "userId" atau "userProduct.userId"
+        userPath: string;
     }
 
     interface Video {
         _id: string;
         namaPelajaran: string;
-        kodePelajaran: string; // Ini HANYA ID YouTube
+        kodePelajaran: string;
     }
 
     interface Product {
@@ -59,21 +59,19 @@ declare global {
     interface ProductData {
         _id: string;
         name: string;
-        desc: string; // Deskripsi kursus
+        desc: string;
         video: Video[];
     }
 
     interface IUserProduct extends Document {
-      user: Schema.Types.ObjectId; // Referensi ke ID User
-      product: Schema.Types.ObjectId; // Referensi ke ID Product
+      user: Schema.Types.ObjectId;
+      product: Schema.Types.ObjectId;
       status: 'pending' | 'aktif';
-      lastWatchedVideoId?: string | null; // ID video terakhir yang ditonton
+      lastWatchedVideoId?: string | null;
     }
 
     type AppError = unknown;
 }
-
-// src/types/types.d.ts
 
 declare module "next-auth" {
   interface User extends DefaultUser {

@@ -10,25 +10,23 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const key = searchParams.get('key'); // bisa undefined
+    const key = searchParams.get('key');
 
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
 
     await connectDB();
 
-    // --- Buat query
     const query: {name?: string} = {};
     if (key) {
-      query.name = key; // filter jika key ada
+      query.name = key;
     }
 
     const products = await Product.find(query)
       .select("name desc shortDesc video")
       .slice("video", 1)
-      .lean<IProduct[]>(); // <-- array produk
+      .lean<IProduct[]>();
 
-    // --- Ambil produk yang dimiliki user
     let ownedProductIds = new Set<string>();
     if (userId) {
       const userProducts = await UserProduct.find({
@@ -41,7 +39,6 @@ export async function GET(request: NextRequest) {
       ownedProductIds = new Set(userProducts.map(p => p.product.toString()));
     }
 
-    // --- Format produk
     const formattedProducts = products.map(product => {
       const firstVideo = product.video?.[0];
       const isOwned = ownedProductIds.has(product._id.toString());

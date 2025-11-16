@@ -1,134 +1,140 @@
-/* =================================
-    --- MODAL REUSABLE (UNTUK SEMUA HALAMAN) ---
-    ================================= */
-
 .modal_backdrop {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.7); /* bg-black/70 */
-    backdrop-filter: blur(4px); /* backdrop-blur-sm */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
-    padding: 1rem; /* p-4 */
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
 }
 
 .modal_content {
-    background-color: rgba(0, 0, 0, 0.6); /* bg-black/60 */
-    backdrop-filter: blur(12px); /* backdrop-blur-md */
-    border: 1px solid #374151; /* border-gray-700 */
-    border-radius: 1rem; /* rounded-2xl */
-    padding: 1.5rem; /* p-6 */
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
-    max-width: 28rem; /* max-w-md */
-    width: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid #374151;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  max-width: 28rem;
+  width: 100%;
 }
 
 .modal_contentDelete {
-    text-align: center;
+  text-align: center;
 }
 
 .modal_title {
-    font-size: 1.25rem; /* text-xl */
-    line-height: 1.75rem;
-    font-weight: 600; /* font-semibold */
-    margin-bottom: 1rem; /* mb-4 */
-    color: #ffffff;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #ffffff;
 }
+
 .modal_titleDelete {
-    composes: modal_title;
-    margin-bottom: 0.75rem; /* mb-3 */
+  composes: modal_title;
+  margin-bottom: 0.75rem;
 }
 
 .modal_input {
-    width: 100%;
-    padding: 0.75rem; /* p-3 */
-    border-radius: 0.75rem; /* rounded-xl */
-    background-color: rgba(0, 0, 0, 0.3); /* bg-black/30 */
-    border: 1px solid #374151; /* border-gray-700 */
-    color: #ffffff;
-    box-sizing: border-box; /* Pastikan padding tidak merusak width */
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid #374151;
+  color: #ffffff;
+  box-sizing: border-box;
 }
+
 .modal_input::placeholder {
-    color: #6b7280; /* placeholder-gray-500 */
+  color: #6b7280;
 }
 
 .modal_inputNama {
-    composes: modal_input;
-    margin-bottom: 0.75rem; /* mb-3 */
+  composes: modal_input;
+  margin-bottom: 0.75rem;
 }
+
 .modal_inputKode {
-    composes: modal_input;
-    margin-bottom: 1rem; /* mb-4 */
+  composes: modal_input;
+  margin-bottom: 1rem;
 }
 
 .modal_text {
-    color: #9ca3af; /* text-gray-400 */
-    margin-bottom: 1.5rem; /* mb-6 */
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
 }
 
 .modal_actions {
-    display: flex;
-    gap: 0.75rem; /* gap-3 */
+  display: flex;
+  gap: 0.75rem;
 }
+
 .modal_actionsEnd {
-    composes: modal_actions;
-    justify-content: flex-end; /* justify-end */
+  composes: modal_actions;
+  justify-content: flex-end;
 }
+
 .modal_actionsCenter {
-    composes: modal_actions;
-    justify-content: center; /* justify-center */
+  composes: modal_actions;
+  justify-content: center;
 }
 
 .modal_buttonSecondary {
-    padding: 0.5rem 1.25rem; /* px-5 py-2 */
-    border-radius: 0.75rem; /* rounded-xl */
-    border: 1px solid #374151; /* border border-gray-700 */
-    transition: background-color 150ms; /* transition */
-    background: none;
-    color: white;
-    cursor: pointer;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid #374151;
+  transition: background-color 150ms;
+  background: none;
+  color: white;
+  cursor: pointer;
 }
+
 .modal_buttonSecondary:hover {
-    background-color: rgba(0, 0, 0, 0.3); /* hover:bg-black/30 */
+  background-color: rgba(0, 0, 0, 0.3);
 }
+
 .modal_buttonSecondary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .modal_buttonPrimary {
-    padding: 0.5rem 1.25rem; /* px-5 py-2 */
-    background-color: #2563eb; /* bg-blue-600 */
-    border-radius: 0.75rem; /* rounded-xl */
-    transition: all 150ms; /* transition */
-    color: white;
-    border: none;
-    cursor: pointer;
+  padding: 0.5rem 1.25rem;
+  background-color: #2563eb;
+  border-radius: 0.75rem;
+  transition: all 150ms;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
+
 .modal_buttonPrimary:hover {
-    background-color: #1d4ed8; /* hover:bg-blue-700 */
+  background-color: #1d4ed8;
 }
+
 .modal_buttonPrimary:disabled {
-    opacity: 0.5; /* disabled:opacity-50 */
-    cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .modal_buttonDanger {
-    padding: 0.5rem 1.25rem; /* px-5 py-2 */
-    background-color: #dc2626; /* bg-red-600 */
-    border-radius: 0.75rem; /* rounded-xl */
-    transition: all 150ms; /* transition */
-    color: white;
-    border: none;
-    cursor: pointer;
+  padding: 0.5rem 1.25rem;
+  background-color: #dc2626;
+  border-radius: 0.75rem;
+  transition: all 150ms;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
+
 .modal_buttonDanger:hover {
-    background-color: #b91c1c; /* hover:bg-red-700 */
+  background-color: #b91c1c;
 }
 
 .modal_buttonDanger:disabled {
-    opacity: 0.5; /* disabled:opacity-50 */
-    cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }

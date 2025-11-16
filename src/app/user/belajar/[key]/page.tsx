@@ -7,7 +7,6 @@ import Link from "next/link";
 import Section from "@/components/sections";
 import BackButton from "@/components/kaming/backbutton";
 
-// Impor gaya halaman
 import styles from "@/styles/kaming/belajar.module.css";
 import commonStyles from "@/styles/kaming/common.module.css"; 
 
@@ -34,38 +33,32 @@ export default function BelajarPage() {
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [loading, setLoading] = useState(true);
   
-  // --- STATE BARU ---
   const [isForbidden, setIsForbidden] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // --- Fetch Product Data (Diperbarui) ---
   useEffect(() => {
     if (!key) return;
 
     async function fetchCourseData() {
       setLoading(true);
-      setIsForbidden(false); // Reset status
-      setError(null);      // Reset status
+      setIsForbidden(false); 
+      setError(null); 
 
       try {
-        // DIPERBAIKI: Path API tidak menggunakan /api jika di App Router
         const res = await fetch(`/api/user/belajar/${key}`); 
         const data = await res.json();
 
         if (!res.ok) {
           if (res.status === 403) {
-            // DIUBAH: Set state 'forbidden', jangan redirect
             setIsForbidden(true);
-            return; // Hentikan eksekusi
+            return;
           }
-          // Tangani error lain
           throw new Error(data.message || "Gagal memuat kursus");
         }
 
         const prod: ProductData = data.product;
         setProduct(prod);
 
-        // Set video terakhir ditonton jika ada
         if (prod.video && prod.video.length > 0) {
           const lastVideo = prod.video.find(v => v._id === data.lastWatchedVideoId);
           setSelectedVideo(lastVideo || prod.video[0]);
@@ -78,15 +71,12 @@ export default function BelajarPage() {
     }
 
     fetchCourseData();
-  }, [key]); // 'router' dihapus dari dependencies, tidak diperlukan
-
-  // --- Handler saat user pilih video (Diperbarui) ---
+  }, [key]); 
   const handleSelectVideo = async (video: Video) => {
     setSelectedVideo(video);
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     try {
-      // DIPERBAIKI: Path API tidak menggunakan /api
       await fetch(`/api/user/belajar/${key}`, { 
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -97,16 +87,13 @@ export default function BelajarPage() {
     }
   };
 
-  // --- Loading & Error State ---
   if (loading) {
     return <Section><div className={styles.belajarPage_loading}>Memuat kursus...</div></Section>;
   }
 
-  // --- BLOK BARU: Menampilkan Pesan "Belum Beli" ---
   if (isForbidden) {
     return (
       <Section>
-        {/* Kita bisa gunakan ulang style dari infoPanel */}
         <div className={styles.belajarPage_infoPanel} style={{ maxWidth: '600px', margin: '2rem auto', textAlign: 'center' }}>
           <h3 className={styles.belajarPage_carouselTitle} style={{ borderBottom: 'none', marginBottom: '1rem', fontSize: '1.5rem' }}>
             Akses Ditolak
@@ -139,7 +126,6 @@ export default function BelajarPage() {
     return <Section><div>Kursus tidak ditemukan.</div></Section>;
   }
 
-  // --- Render Halaman Sukses ---
   return (
     <Section>
       <div className={styles.belajarPage_header}>

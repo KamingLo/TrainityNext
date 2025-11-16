@@ -19,16 +19,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Sesi tidak valid atau kadaluarsa." }, { status: 400 });
     }
 
-    // 2. Hash Password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // 3. Update Password User
     await User.findOneAndUpdate(
       { email },
       { password: hashedPassword }
     );
 
-    // 4. Hapus Token (Agar tidak bisa dipakai lagi)
     await VerificationToken.findOneAndDelete({ email });
 
     return NextResponse.json({ message: "Password berhasil diubah. Silakan login." });

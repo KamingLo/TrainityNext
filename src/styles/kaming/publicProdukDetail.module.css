@@ -1,14 +1,11 @@
-
-
 .detailGrid {
   display: grid;
-  grid-template-columns: 1fr; /* 1 kolom di mobile */
+  grid-template-columns: 1fr;
   gap: 2rem;
   max-width: 1200px;
-  margin: 2rem auto; /* Beri jarak dari atas/bawah */
+  margin: 2rem auto;
 }
 
-/* Desktop: 2 kolom */
 @media (min-width: 768px) {
   .detailGrid {
     grid-template-columns: 3fr 2fr;
@@ -19,20 +16,19 @@
 .imageWrapper {
   width: 100%;
   border-radius: 12px;
-  overflow: hidden; /* Penting untuk memaksa radius di gambar */
-  background-color: #1C1C1E; /* Background jika gambar gagal load */
+  overflow: hidden;
+  background-color: #1C1C1E;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  align-self: start; /* Mencegah kolom ini meregang */
+  align-self: start;
 }
 
 .productImage {
   width: 100%;
   height: auto;
   object-fit: cover;
-  display: block; /* Menghilangkan spasi ekstra di bawah gambar */
+  display: block;
 }
 
-/* Kolom Kanan: "Kartu" Detail */
 .detailsWrapper {
   display: flex;
   flex-direction: column;
@@ -53,25 +49,23 @@
 
 .productDescription {
   font-size: 1.1rem;
-  color: #B0B0B0; /* Warna abu-abu terang untuk deskripsi */
+  color: #B0B0B0;
   line-height: 1.6;
   margin-bottom: 2rem;
 }
 
-/* Box Aksi: "Kartu" di dalam kartu */
 .actionBox {
   border: 1px solid rgb(60, 60, 60);
-  background-color: rgb(10, 10, 10, 0.30);/* Sedikit lebih terang dari card utama */
+  background-color: rgb(10, 10, 10, 0.30);
   border-radius: 8px;
   padding: 1.5rem;
-  margin-top: auto; /* Mendorong box ini ke bawah */
+  margin-top: auto;
 }
 
 .productPrice {
   font-size: 1.8rem;
   font-weight: 700;
-  /* Warna hijau terang untuk "Gratis" agar menonjol */
-  color: #30D158; 
+  color: #30D158;
   display: block;
   margin-bottom: 1.5rem;
 }
@@ -80,7 +74,6 @@
   width: 100%;
 }
 
-/* Styling Tombol (Vibrant Dark Mode) */
 .actionButton_primary,
 .actionButton_owned,
 .actionButton_secondary {
@@ -94,7 +87,6 @@
   transition: all 0.2s ease;
 }
 
-/* Tombol Utama (Beli) - Biru Terang */
 .actionButton_primary {
   background-color: #0A84FF;
   color: white;
@@ -104,7 +96,6 @@
   background-color: #0070e0;
 }
 
-/* Tombol Sudah Dimiliki (Mulai Belajar) - Hijau Terang */
 .actionButton_owned {
   background-color: #30D158;
   color: white;

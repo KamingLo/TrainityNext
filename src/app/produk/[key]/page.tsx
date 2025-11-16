@@ -56,7 +56,6 @@ export default function DetailProdukPage() {
         if (!productData) throw new Error("Produk tidak ditemukan.");
 
         setProduct(productData);
-        // Fetch reviews setelah product didapatkan
         await fetchReviews(productData._id);
       } catch (err: any) {
         setError(err.message);
@@ -153,12 +152,10 @@ export default function DetailProdukPage() {
     return <Section><div>Produk tidak ditemukan.</div></Section>;
   }
 
-  // --- Render Halaman Utama ---
   return (
     <Section className={styles.space}>
       <div className={styles.detailGrid}>
 
-        {/* Kolom Kiri: "Kartu" Gambar */}
         <div className={styles.imageWrapper}>
           <Image
             src={`https://i.ytimg.com/vi/${product.kodePelajaranPertama}/hq720.jpg`}
@@ -170,7 +167,6 @@ export default function DetailProdukPage() {
           />
         </div>
 
-        {/* Kolom Kanan: "Kartu" Detail */}
         <div className={styles.detailsWrapper}>
 
           <div>
@@ -178,7 +174,6 @@ export default function DetailProdukPage() {
             <p className={styles.productDescription}>{product.desc}</p>
           </div>
 
-          {/* Box Aksi: "Kartu" di dalam kartu */}
           <div className={styles.actionBox}>
             <span className={styles.productPrice}>Gratis</span>
             <div className={styles.actionButtonContainer}>
@@ -189,10 +184,7 @@ export default function DetailProdukPage() {
         </div>
       </div>
 
-      {/* Section Review dengan Histori dan Form */}
       <div className={reviewStyles.reviewContainer}>
-        
-        {/* Histori Review */}
         <div className={reviewStyles.reviewHistory}>
           <h2 className={reviewStyles.historyTitle}>Review dari Pengguna</h2>
           
@@ -232,7 +224,6 @@ export default function DetailProdukPage() {
           )}
         </div>
 
-        {/* Form Review */}
         <ReviewForm 
           productId={product._id}
           productKey={productKey}

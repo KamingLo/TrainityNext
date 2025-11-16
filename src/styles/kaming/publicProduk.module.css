@@ -1,8 +1,3 @@
-/* =================================
-    --- Halaman Produk (app/produk) ---
-    (Desain "Card-in-Card" Modern)
-    ================================= */
-
 .produkPage_container {
   color: #ffffff;
 }
@@ -13,19 +8,18 @@
 }
 
 .produkPage_title {
-  font-size: 2.5rem; /* text-4xl */
+  font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
 .produkPage_subtitle {
-  font-size: 1.125rem; /* text-lg */
-  color: #9ca3af; /* text-gray-400 */
+  font-size: 1.125rem;
+  color: #9ca3af;
   max-width: 600px;
   margin: 0 auto;
 }
 
-/* Grid Produk */
 .produkPage_grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -37,41 +31,34 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
 @media (min-width: 1024px) {
   .produkPage_grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-/* --- PERUBAHAN UTAMA DIMULAI DI SINI ---
-*/
-
-/* Card Luar (Outer Card) */
 .produkPage_card {
   background-color: rgba(0, 0, 0, 0.4);
   border: 1px solid #374151;
-  border-radius: 1rem; /* rounded-2xl */
+  border-radius: 1rem;
   display: flex;
   flex-direction: column;
   transition: all 200ms ease-out;
-  
-  /* 1. Tambahkan padding di dalam kartu luar */
-  padding: 1rem; 
+  padding: 1rem;
 }
+
 .produkPage_card:hover {
   border-color: #4b5563;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-/* Card Dalam (Inner Image Card) */
 .produkPage_cardImageWrapper {
   width: 100%;
-  aspect-ratio: 16 / 9; /* 2. Jaga rasio 16:9 */
+  aspect-ratio: 16 / 9;
   position: relative;
-  overflow: hidden; /* 3. Penting untuk border-radius gambar */
-  
-  /* 4. Buat gambar ini menjadi "card" di dalam */
-  border-radius: 0.75rem; 
+  overflow: hidden;
+  border-radius: 0.75rem;
   background-color: #111827;
 }
 
@@ -82,35 +69,32 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 300ms ease-out; /* 5. Efek hover modern */
+  transition: transform 300ms ease-out;
 }
 
-/* 6. Efek hover modern: zoom gambar, bukan card */
 .produkPage_card:hover .produkPage_cardImage {
   transform: scale(1.05);
 }
 
-/* Area Konten Teks */
 .produkPage_cardBody {
-  /* 7. Sesuaikan padding karena card luar sudah punya padding */
-  padding: 1.25rem 0 0 0; 
+  padding: 1.25rem 0 0 0;
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* Membuat body kartu mengisi sisa ruang */
+  flex-grow: 1;
 }
 
 .produkPage_cardTitle {
-  font-size: 1.25rem; /* text-xl */
+  font-size: 1.25rem;
   font-weight: 600;
   color: #ffffff;
   margin: 0 0 0.5rem 0;
 }
 
 .produkPage_cardDesc {
-  font-size: 0.875rem; /* text-sm */
-  color: #9ca3af; /* text-gray-400 */
+  font-size: 0.875rem;
+  color: #9ca3af;
   line-height: 1.6;
-  flex-grow: 1; /* Mendorong footer ke bawah */
+  flex-grow: 1;
   margin: 0;
 }
 
@@ -118,7 +102,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1.5rem; /* Jarak dari deskripsi */
+  margin-top: 1.5rem;
 }
 
 .produkPage_cardPrice {
@@ -126,15 +110,15 @@
   font-weight: 600;
   color: #ffffff;
 }
+
 .produkPage_cardPrice_free {
-  color: #22c55e; /* text-green-500 */
+  color: #22c55e;
 }
 
-/* Tombol Beli */
 .produkPage_buyButton {
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 0.5rem; /* rounded-lg */
+  border-radius: 0.5rem;
   font-weight: 600;
   color: #ffffff;
   background-image: linear-gradient(to right, #2563eb, #3b82f6);
@@ -142,47 +126,49 @@
   transition: all 200ms ease-out;
   font-size: 0.875rem;
 }
+
 .produkPage_buyButton:hover {
   background-image: linear-gradient(to right, #3b82f6, #60a5fa);
   box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
   transform: scale(1.05);
 }
 
-/* Tombol Saat Dibeli */
 .produkPage_buyButton_owned {
   composes: produkPage_buyButton;
   background-image: none;
-  background-color: #16a34a; /* bg-green-600 */
-  cursor: pointer; /* Ubah ke pointer agar bisa diklik (Link) */
+  background-color: #16a34a;
+  cursor: pointer;
 }
+
 .produkPage_buyButton_owned:hover {
-  background-color: #15803d; /* hover:bg-green-700 */
+  background-color: #15803d;
   box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
   transform: scale(1.05);
 }
 
-/* Tombol Saat Login Dulu */
 .produkPage_buyButton_disabled {
   composes: produkPage_buyButton;
   background-image: none;
-  background-color: #374151; /* bg-gray-700 */
+  background-color: #374151;
   color: #9ca3af;
-  cursor: pointer; /* Ubah ke pointer agar bisa diklik (Link) */
+  cursor: pointer;
 }
+
 .produkPage_buyButton_disabled:hover {
   background-image: none;
-  background-color: #4b5563; /* hover:bg-gray-600 */
+  background-color: #4b5563;
   box-shadow: none;
   transform: scale(1.05);
 }
 
-/* State Loading Halaman */
-.produkPage_loading, .produkPage_error {
+.produkPage_loading, 
+.produkPage_error {
   color: #ffffff;
   text-align: center;
   font-size: 1.25rem;
   padding: 4rem 0;
 }
+
 .produkPage_error {
-  color: #ef4444; /* text-red-500 */
+  color: #ef4444;
 }

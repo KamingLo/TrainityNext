@@ -25,7 +25,6 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.footerGrid}>
-        {/* Kiri - Logo dan ucapan */}
         <div>
           <div className={styles.footerLogoContainer}>
             <Image
@@ -42,7 +41,6 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Tengah - Navigasi */}
         <div>
           <h3 className={styles.footerHeading}>Navigasi</h3>
           <ul className={styles.footerNavList}>
@@ -94,7 +92,6 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Kanan - Tentang dan Kontak */}
         <div>
           <h3 className={styles.footerHeading}>Tentang Kami</h3>
           <p className={styles.footerTextAbout}>
@@ -140,7 +137,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bawah - Copyright */}
       <div className={styles.footerCopyright}>
         © {new Date().getFullYear()}{" "}
         <span className={styles.footerCopyrightHighlight}>Trainity</span>. All

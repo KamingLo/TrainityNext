@@ -2,8 +2,6 @@
 
 import { ReactNode } from "react";
 import Providers from "./sessionProviders";
-
-// DIUBAH: Impor dari common.module.css
 import styles from "@/styles/kaming/common.module.css";
 
 export default function Background({ children }: { children: ReactNode }) {

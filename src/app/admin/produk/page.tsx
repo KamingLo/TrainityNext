@@ -1,4 +1,3 @@
-// product/page.tsx (Telah diperbarui)
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,7 +8,6 @@ import AnimatedTabPanel from "@/components/kaming/AnimatedTabPanel";
 import ProductForm, { ProductFormData } from "@/components/kaming/ProductForm";
 import ProductList from "@/components/kaming/ProductList";
 
-// DIUBAH: Impor modul spesifik yang dibutuhkan halaman ini
 import listStyles from "@/styles/kaming/adminProductList.module.css";
 import modalStyles from "@/styles/kaming/modal.module.css";
 
@@ -114,7 +112,6 @@ export default function ProductsPage() {
   ];
 
   return (
-    // Menggunakan 'listStyles' untuk gaya halaman
     <div className={listStyles.listPage_container}>
       <Section id="hero" className={listStyles.listPage_heroSection}>
         <h1 className={listStyles.listPage_title}>Manajemen Kursus</h1>
@@ -186,7 +183,6 @@ export default function ProductsPage() {
         </AnimatePresence>
       </div>
 
-      {/* --- MODAL HAPUS (MENGGUNAKAN 'modalStyles') --- */}
       <AnimatePresence>
         {isModalOpen && productToDelete && (
           <motion.div

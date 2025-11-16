@@ -36,7 +36,6 @@ export default function NavigationBar() {
           />
         </Link>
 
-        {/* Menu utama (desktop) */}
         <div className={styles.menuDesktop}>
           <Link href="/" className={styles.navLink}>
             Home
@@ -69,7 +68,6 @@ export default function NavigationBar() {
           </Link>
         </div>
 
-        {/* Aksi kanan (desktop) */}
         <div className={styles.actionsDesktop}>
           {!isLoggedIn ? (
             <>
@@ -95,7 +93,6 @@ export default function NavigationBar() {
           )}
         </div>
 
-        {/* Tombol menu (mobile) */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={styles.menuToggle}
@@ -104,7 +101,6 @@ export default function NavigationBar() {
         </button>
       </nav>
 
-      {/* Menu mobile dengan animasi */}
       <AnimatePresence>
         {isOpen && (
           <motion.div

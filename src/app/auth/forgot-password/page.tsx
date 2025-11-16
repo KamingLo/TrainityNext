@@ -139,8 +139,6 @@ export default function ForgotPasswordPage() {
       <div className={authStyles.loginContainer}>
         <div className={authStyles.loginForm}>
           <AnimatePresence mode="wait">
-
-            {/* === STEP 1: FORGOT === */}
             {step === "forgot" && (
               <motion.form
                 key="forgot"
@@ -183,7 +181,6 @@ export default function ForgotPasswordPage() {
               </motion.form>
             )}
 
-            {/* === STEP 2: VERIFY === */}
             {step === "verify" && (
               <motion.form
                 key="verify"
@@ -263,7 +260,7 @@ export default function ForgotPasswordPage() {
                         type={showPassword ? "text" : "password"}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="Minimal 6 karakter"
+                        placeholder="Minimal 8 karakter"
                         className={authStyles.loginInput}
                         disabled={loading}
                         required

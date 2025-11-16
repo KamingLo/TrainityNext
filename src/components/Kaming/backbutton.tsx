@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
-// DIUBAH: Impor dari common.module.css karena .backButton ada di sana
 import styles from "@/styles/kaming/common.module.css";
 
 export default function BackButton() {

@@ -1,4 +1,3 @@
-// product/[id]/page.tsx (Telah diperbarui)
 "use client";
 
 import { useState, useEffect } from "react";

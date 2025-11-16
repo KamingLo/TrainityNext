@@ -3,7 +3,6 @@ import Product from "@/models/product";
 import { connectDB } from "@/lib/db";
 import { canAccess } from "@/lib/access";
 
-// CREATE — tambah video baru ke produk
 export async function POST(req: Request, context: { params: Promise<{ id: string }> }) {
 
     const roleCheck = await canAccess(req, ["admin"]);
@@ -23,7 +22,6 @@ export async function POST(req: Request, context: { params: Promise<{ id: string
         return NextResponse.json({ error: "Produk tidak ditemukan" }, { status: 404 });
         }
 
-        // cek duplikat namaPelajaran
         const duplicate = product.video.some((v: Video) => v.namaPelajaran === namaPelajaran);
         if (duplicate) {
         return NextResponse.json(

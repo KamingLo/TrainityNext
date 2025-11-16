@@ -7,100 +7,91 @@ import { Types } from "mongoose";
 
 
 export async function GET(req: Request, { params }: { params: { key: string } }) {
-  await connectDB();
+    await connectDB();
 
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user?.id) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.id) {
+        return new Response("Unauthorized", { status: 401 });
+    }
 
-  // 1. Cari product berdasarkan name
-  const product = await Product.findOne({ name: params.key });
-  if (!product) {
-    return new Response(
-      JSON.stringify({ message: "Produk tidak ditemukan." }),
-      { status: 404 }
-    );
-  }
+    const product = await Product.findOne({ name: params.key });
+    if (!product) {
+        return new Response(
+            JSON.stringify({ message: "Produk tidak ditemukan." }),
+            { status: 404 }
+        );
+    }
 
     const userProduct = await UserProduct.findOne({
-    user: new Types.ObjectId(session.user.id),
-    product: product._id
+        user: new Types.ObjectId(session.user.id),
+        product: product._id
     }).populate("product");
 
-    console.log(params.key);
-  console.log(session.user.id);
-  console.log(product._id);
-  console.log(userProduct);
+    if (!userProduct || userProduct.status !== "aktif") {
+        return new Response(
+            JSON.stringify({ message: "Kamu belum membeli produk ini." }),
+            { status: 403 }
+        );
+    }
 
-  if (!userProduct || userProduct.status !== "aktif") {
     return new Response(
-      JSON.stringify({ message: "Kamu belum membeli produk ini." }),
-      { status: 403 }
+        JSON.stringify({
+            message: "Akses diberikan.",
+            lastWatchedVideoId: userProduct.lastWatchedVideoId,
+            product: userProduct.product,
+        }),
+        { status: 200 }
     );
-  }
-
-  return new Response(
-    JSON.stringify({
-      message: "Akses diberikan.",
-      lastWatchedVideoId: userProduct.lastWatchedVideoId,
-      product: userProduct.product,
-    }),
-    { status: 200 }
-  );
 }
 
 export async function PATCH(req: Request, { params }: { params: { key: string } }) {
-  await connectDB();
+    await connectDB();
 
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user?.id) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.id) {
+        return new Response("Unauthorized", { status: 401 });
+    }
 
-  const body = await req.json();
-  const { status, lastWatchedVideoId } = body;
+    const body = await req.json();
+    const { status, lastWatchedVideoId } = body;
 
-  if (!status && !lastWatchedVideoId) {
+    if (!status && !lastWatchedVideoId) {
+        return new Response(
+            JSON.stringify({ message: "Tidak ada data untuk diupdate" }),
+            { status: 400 }
+        );
+    }
+
+    const product = await Product.findOne({ name: params.key });
+    if (!product) {
+        return new Response(
+            JSON.stringify({ message: "Produk tidak ditemukan." }),
+            { status: 404 }
+        );
+    }
+
+    const userProduct = await UserProduct.findOne({
+        user: session.user.id,
+        product: product._id,
+    });
+
+    if (!userProduct) {
+        return new Response(
+            JSON.stringify({ message: "Produk tidak ditemukan untuk user ini" }),
+            { status: 404 }
+        );
+    }
+
+    if (status) userProduct.status = status;
+    if (lastWatchedVideoId) userProduct.lastWatchedVideoId = lastWatchedVideoId;
+
+    await userProduct.save();
+
     return new Response(
-      JSON.stringify({ message: "Tidak ada data untuk diupdate" }),
-      { status: 400 }
+        JSON.stringify({
+            message: "UserProduct berhasil diupdate",
+            userProduct,
+        }),
+        { status: 200 }
     );
-  }
-
-  // 1. Cari product berdasarkan name
-  const product = await Product.findOne({ name: params.key });
-  if (!product) {
-    return new Response(
-      JSON.stringify({ message: "Produk tidak ditemukan." }),
-      { status: 404 }
-    );
-  }
-
-  // 2. Cari UserProduct berdasarkan user + product
-  const userProduct = await UserProduct.findOne({
-    user: session.user.id,
-    product: product._id,
-  });
-
-  if (!userProduct) {
-    return new Response(
-      JSON.stringify({ message: "Produk tidak ditemukan untuk user ini" }),
-      { status: 404 }
-    );
-  }
-
-  // Update values jika tersedia
-  if (status) userProduct.status = status;
-  if (lastWatchedVideoId) userProduct.lastWatchedVideoId = lastWatchedVideoId;
-
-  await userProduct.save();
-
-  return new Response(
-    JSON.stringify({
-      message: "UserProduct berhasil diupdate",
-      userProduct,
-    }),
-    { status: 200 }
-  );
 }

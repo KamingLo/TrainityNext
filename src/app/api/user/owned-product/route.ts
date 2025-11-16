@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
           select: "kodePelajaran",
         }
       })
-      .select("lastWatchedVideoId status") // penting untuk progress
+      .select("lastWatchedVideoId status")
       .lean();
 
     const result = owned.map((item) => {

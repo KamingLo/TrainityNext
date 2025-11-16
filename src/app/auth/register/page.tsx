@@ -14,7 +14,6 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // --- NEW: show/hide password ---
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -49,7 +48,6 @@ export default function RegisterPage() {
           <h2 className={styles.loginTitle}>Sign Up</h2>
 
           <div className={styles.formInputsContainer}>
-            {/* Username */}
             <div>
               <label className={styles.formLabel}>Username</label>
               <input
@@ -61,7 +59,6 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Email */}
             <div>
               <label className={styles.formLabel}>Email</label>
               <input
@@ -73,7 +70,6 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Password */}
             <div className={styles.passwordWrapper}>
               <label className={styles.formLabel}>Password</label>
               <input
@@ -90,7 +86,6 @@ export default function RegisterPage() {
               ></i>
             </div>
 
-            {/* Confirm Password */}
             <div className={styles.passwordWrapper}>
               <label className={styles.formLabel}>Konfirmasi Password</label>
               <input

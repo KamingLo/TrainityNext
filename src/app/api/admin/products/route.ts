@@ -3,9 +3,7 @@ import Product from "@/models/product";
 import { connectDB } from "@/lib/db";
 import { canAccess } from "@/lib/access"; 
 
-// CREATE
 export async function POST(req: Request) {
-
     const roleCheck = await canAccess(req, ["admin"]);
     if (roleCheck) return roleCheck;
 
@@ -48,7 +46,6 @@ export async function POST(req: Request) {
     }
 }
 
-// GET ALL
 export async function GET(req: Request) {
     try {
         await connectDB();
@@ -56,17 +53,15 @@ export async function GET(req: Request) {
         const { searchParams } = new URL(req.url);
         const limitParam = searchParams.get("limit");
 
-        // Default: tanpa limit (semua data)
         let limit = 0;
 
-        // Jika user set ?limit=2 atau angka lain
         if (limitParam && !isNaN(Number(limitParam))) {
         limit = Number(limitParam);
         }
 
         const products = await Product.find()
         .sort({ createdAt: -1 })
-        .limit(limit); // jika limit = 0 => tidak dibatasi
+        .limit(limit);
 
         return NextResponse.json(products);
     } catch (error: AppError) {

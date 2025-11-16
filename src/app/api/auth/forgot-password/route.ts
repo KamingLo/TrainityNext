@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { connectDB }from "@/lib/db"; // Pastikan path ini benar
+import { connectDB }from "@/lib/db";
 import VerificationToken from "@/models/verificationToken";
-import User from "@/models/user"; // Pastikan path ini benar
+import User from "@/models/user";
 import { sendEmail } from "@/lib/email";
 import { getVerificationEmailTemplate } from "@/lib/template/email-template";
 
@@ -10,14 +10,11 @@ export async function POST(req: Request) {
     await connectDB();
     const { email } = await req.json();
 
-    // 1. Validasi User Ada
     const user = await User.findOne({ email });
     if (!user) {
-      // Return 404 atau 200 (fake success) tergantung kebijakan security
       return NextResponse.json({ message: "Email tidak terdaftar." }, { status: 404 });
     }
 
-    // 2. Cek Rate Limit (1 Menit)
     const existingToken = await VerificationToken.findOne({ email });
     
     if (existingToken) {
@@ -35,11 +32,9 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Generate Token (6 Digit)
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 menit dari sekarang
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    // 4. Simpan ke DB (Upsert)
     await VerificationToken.findOneAndUpdate(
       { email },
       { 
