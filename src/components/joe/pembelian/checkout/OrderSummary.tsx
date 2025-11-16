@@ -75,7 +75,11 @@ export default function OrderSummary({
         </label>
       </div>
 
-      <button id="place-order" disabled={isDisabled} onClick={onPlaceOrder}>
+      <button
+        className="button_checkout"
+        disabled={isDisabled}
+        onClick={onPlaceOrder}
+      >
         Place Order
       </button>
     </div>

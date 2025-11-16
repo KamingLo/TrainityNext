@@ -60,6 +60,100 @@
     background: #cccccc;
 }
 
+.mobile-payment-selector {
+    display: none;
+}
+
+.desktop-only {
+    display: block;
+}
+
+.mobile-only {
+    display: none;
+}
+
+.bottom-sheet-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    animation: fadeIn 0.3s ease;
+}
+
+.bottom-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #1e1e1e;
+    border-radius: 20px 20px 0 0;
+    z-index: 999;
+    transition: height 0.3s ease;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+}
+
+.drag-handle {
+    width: 40px;
+    height: 4px;
+    background: #666;
+    border-radius: 2px;
+    margin: 12px auto;
+    cursor: grab;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.bottom-sheet-content {
+    padding: 0 1rem 1rem;
+    overflow-y: auto;
+    height: calc(100% - 28px);
+}
+
+.bottom-sheet-content h2 {
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    border: none;
+}
+
+.payment-section-title {
+    color: #999 !important;
+    font-size: 0.9rem !important;
+    margin: 1.5rem 0 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.payment-section-title:first-of-type {
+    margin-top: 0 !important;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 h1 {
     margin-bottom: 1rem;
     color: #333333;
@@ -254,7 +348,7 @@ h3 {
     }
 }
 
-button {
+.button_checkout {
     width: 100%;
     padding: 0.8rem;
     font-size: medium;
@@ -267,12 +361,12 @@ button {
     transition: 0.3s;
 }
 
-button:disabled {
+.button_checkout:disabled {
     background: #aaa;
     cursor: not-allowed;
 }
 
-button:hover:not(:disabled) {
+.button_checkout:hover:not(:disabled) {
     background: #a8a8a8;
 }
 
@@ -353,14 +447,84 @@ button:hover:not(:disabled) {
 }
 
 @media (max-width: 768px) {
-    .checkout-container {
-        padding: 30px;
-        justify-content: flex-start;
-        margin-top: 7rem;
+    .desktop-only {
+        display: none !important;
     }
 
-    .checkout-left {
-        height: 500px;
+    .mobile-only {
+        display: block !important;
+    }
+
+    .checkout-container {
+        padding: 1rem;
+        justify-content: flex-start;
+        margin-top: 0rem;
+    }
+
+    .checkout-box {
+        flex-direction: column;
+    }
+
+    .checkout-right {
+        order: 1;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+
+    .mobile-payment-selector {
+        display: block;
+        order: 2;
+        width: 100%;
+        border: 1px solid #444;
+        border-radius: 10px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .mobile-payment-selector:active {
+        transform: scale(0.98);
+    }
+
+    .payment-selector-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .payment-label {
+        color: #999;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .payment-selected {
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .payment-selected-icon {
+        width: 40px !important;
+        height: 28px;
+        background: white;
+        border-radius: 6px;
+        padding: 2px;
+        margin: 0 !important;
+        border: 1px solid #ccc !important;
+    }
+
+    .payment-arrow {
+        color: #1369ff;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .bottom-sheet-content .payment-method {
+        margin-bottom: 0.75rem;
     }
 
     .payment-header {
@@ -369,7 +533,7 @@ button:hover:not(:disabled) {
     }
 
     .payment-header img {
-        width: 45px;
+        width: 50px !important;
         margin-right: 8px;
     }
 
@@ -386,6 +550,15 @@ button:hover:not(:disabled) {
 
     .order-details {
         font-size: 14px;
+    }
+
+    .order-agree {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 20px;
+        padding: 10px;
+        font-size: 11px;
+        color: white;
     }
 }
 
@@ -413,5 +586,10 @@ button:hover:not(:disabled) {
     button {
         font-size: 0.9rem;
         padding: 0.7rem;
+    }
+
+    .payment-selected-icon {
+        width: 35px !important;
+        height: 25px;
     }
 }

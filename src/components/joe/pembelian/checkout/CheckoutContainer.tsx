@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import PaymentMethod from "./PaymentMethod";
@@ -131,6 +132,12 @@ export default function CheckoutContainer() {
   const [popupContent, setPopupContent] = useState<PopupContent | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [sheetHeight, setSheetHeight] = useState(0);
+  const [startY, setStartY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const sheetRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (status === "loading") return;
 
@@ -139,7 +146,7 @@ export default function CheckoutContainer() {
         setTimeout(() => {
           setIsLoading(false);
           setPopupContent({
-            icon: "âš ï¸",
+            icon: "⚠️",
             color: "orange",
             title: "Akses Ditolak!",
             message: "Silakan pilih kursus terlebih dahulu",
@@ -160,7 +167,7 @@ export default function CheckoutContainer() {
 
         if (productData.isOwned) {
           setPopupContent({
-            icon: "âš ï¸",
+            icon: "⚠️",
             color: "orange",
             title: "Oops!",
             message: "Anda sudah membeli produk ini",
@@ -174,7 +181,7 @@ export default function CheckoutContainer() {
       } catch (error) {
         console.error("Error loading product:", error);
         setPopupContent({
-          icon: "âŒ",
+          icon: "❌",
           color: "red",
           title: "Terjadi Kesalahan",
           message: "Gagal memuat data produk",
@@ -191,9 +198,49 @@ export default function CheckoutContainer() {
     loadProductData();
   }, [productKey, status]);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartY(e.touches[0].clientY);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - startY;
+
+    if (diff > 0) {
+      e.preventDefault();
+      setSheetHeight(Math.max(0, 70 - (diff / window.innerHeight) * 100));
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+
+    if (sheetHeight < 50) {
+      closeBottomSheet();
+    } else {
+      setSheetHeight(70);
+    }
+  };
+
+  const openBottomSheet = () => {
+    setIsBottomSheetOpen(true);
+    setSheetHeight(70);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeBottomSheet = () => {
+    setIsBottomSheetOpen(false);
+    setSheetHeight(0);
+    document.body.style.overflow = "unset";
+  };
+
   const handleCheckboxChange = (id: string) => {
     if (id === "voucher") return;
     setActiveMethod(activeMethod === id ? "" : id);
+    closeBottomSheet();
   };
 
   const handleInputChange = (id: string, value: string) => {
@@ -217,7 +264,7 @@ export default function CheckoutContainer() {
 
     if (status !== "authenticated") {
       setPopupContent({
-        icon: "ðŸ”’",
+        icon: "🔒",
         color: "orange",
         title: "Login Required",
         message: "Silakan login terlebih dahulu untuk melanjutkan",
@@ -248,7 +295,7 @@ export default function CheckoutContainer() {
       console.error("Error processing order:", error);
       setIsProcessing(false);
       setPopupContent({
-        icon: "âŒ",
+        icon: "❌",
         color: "red",
         title: "Terjadi Kesalahan",
         message: "Gagal memproses pesanan. Silakan coba lagi",
@@ -260,6 +307,7 @@ export default function CheckoutContainer() {
 
   const voucherMethod = PAYMENT_METHODS.find((m) => m.isVoucher);
   const otherMethods = PAYMENT_METHODS.filter((m) => !m.isVoucher);
+  const selectedMethod = PAYMENT_METHODS.find((m) => m.id === activeMethod);
 
   return (
     <>
@@ -275,7 +323,7 @@ export default function CheckoutContainer() {
           }}
         >
           <div className="checkout-box">
-            <div className="checkout-left">
+            <div className="checkout-left desktop-only">
               <h1>CHECKOUT</h1>
 
               <h2>VOUCHER</h2>
@@ -315,9 +363,79 @@ export default function CheckoutContainer() {
                 isDisabled={!isFormValid()}
               />
             )}
+
+            <div
+              className="mobile-payment-selector mobile-only"
+              onClick={openBottomSheet}
+            >
+              <div className="payment-selector-content">
+                <div>
+                  <div className="payment-label">Payment Method:</div>
+                  <div className="payment-selected">
+                    {selectedMethod?.image && (
+                      <Image
+                        src={selectedMethod.image}
+                        alt={selectedMethod.alt || "Payment Method"}
+                        width={40}
+                        height={28}
+                        className="payment-selected-icon"
+                      />
+                    )}
+                    {selectedMethod?.name}
+                  </div>
+                </div>
+                <div className="payment-arrow">›</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
+      {isBottomSheetOpen && (
+        <div className="bottom-sheet-overlay" onClick={closeBottomSheet} />
+      )}
+
+      {isBottomSheetOpen && (
+        <div
+          ref={sheetRef}
+          className="bottom-sheet"
+          style={{ height: `${sheetHeight}vh` }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="drag-handle" />
+
+          <div className="bottom-sheet-content">
+            <h2>Select Payment Method</h2>
+
+            <h3 className="payment-section-title">VOUCHER</h3>
+            {voucherMethod && (
+              <PaymentMethod
+                method={voucherMethod}
+                isActive={activeMethod === voucherMethod.id}
+                isDisabled={false}
+                inputValue=""
+                onCheckboxChange={handleCheckboxChange}
+                onInputChange={handleInputChange}
+              />
+            )}
+
+            <h3 className="payment-section-title">OTHER PAYMENT METHODS</h3>
+            {otherMethods.map((method) => (
+              <PaymentMethod
+                key={method.id}
+                method={method}
+                isActive={activeMethod === method.id}
+                isDisabled={activeMethod === "voucher"}
+                inputValue={inputValues[method.id] || ""}
+                onCheckboxChange={handleCheckboxChange}
+                onInputChange={handleInputChange}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }
