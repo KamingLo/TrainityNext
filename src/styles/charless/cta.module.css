@@ -72,7 +72,6 @@
 .subtitle {
   font-size: 1.25rem; 
   color: var(--color-white-alpha-80);
-  max-width: 42rem; 
   margin-left: auto;
   margin-right: auto;
 }
