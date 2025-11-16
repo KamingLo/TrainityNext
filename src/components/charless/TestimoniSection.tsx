@@ -1,13 +1,13 @@
-"use client"
+"use client"; 
 
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import styles from "@/styles/charless/testimoni.module.css";
 
 const testimonials = [
   {
     name: "Fabio",
     institution: "Universitas Indonesia",
-    quote: "Trainity menawarkan pengalaman belajar mendalam tanpa biaya. Pengetahuan dari sini memperkuat ilmu fundamental saya dan sangat berkontribusi pada portofolio profesional yang tengah saya bangun untuk karier di dunia teknologi."
+    quote: "Trainity menawarkan pengalaman belajar mendalam tanpa biaya. Pengetahuan dari sini memperkuat ilmu fundamental saya dan sangat berkontribusi pada portofolio saya."
   },
   {
     name: "Joe",
@@ -17,69 +17,64 @@ const testimonials = [
   {
     name: "Michael",
     institution: "Universitas Trisakti",
-    quote: "Skills yang saya peroleh dari Trainity membuat saya berani melamar ke salah satu startup ternama. Akhirnya, saya berhasil diterima sebagai Junior Web Developer!"
+    quote: "Skills yang saya peroleh dari Trainity membuat saya berani melamar ke salah satu perusahaan. Akhirnya, saya berhasil diterima untuk magang menjadi Web Developer!"
   },
   {
     name: "Kaming",
     institution: "Universitas Tarumanagara",
-    quote: "Platform ini sangat membantu profesional berpengalaman seperti saya untuk memperbarui keterampilan dengan teknologi dan framework web terbaru."
+    quote: "Platform ini sangat membantu orang seperti saya untuk memperbarui keterampilan dengan teknologi dan framework web terbaru."
   },
   {
     name: "Charless",
     institution: "Institut Teknologi Surabaya",
-    quote: "Konsep-konsep pemrograman di Trainity sangat mudah dipahami dan terapkan. Sulit menemukan penjelasan sebagus ini di tempat lain, bahkan di kampus sekalipun."
+    quote: "Konsep-konsep pemrograman di Trainity sangat mudah dipahami dan terapkan. Sulit menemukan penjelasan sebagus ini di tempat lain."
   }
 ];
 
-const Testimonials = () => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    const scroller = scrollContainerRef.current;
-
-    if (scroller && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      scroller.setAttribute("data-animated", "true");
-    }
-  }, []);
-
+const TestimonialsSection = () => {
   return (
     <section className={styles.section}>
       <div className={styles.container}>
-        <h2 className={styles.title}>
-          Kata Mereka yang Belajar Bersama Kami
-        </h2>
-      </div>
+        <div className={styles.header}>
+          <h2 className={styles.title}>
+            Apa Kata Mereka Tentang Kami
+          </h2>
+          <p className={styles.subtitle}>
+            Dengarkan pengalaman nyata dari para pengguna.
+          </p>
+        </div>
 
-      <div className={styles.scrollWrapper}>
         <div 
-          className={styles.scrollContainer}
-          ref={scrollContainerRef}
+          className={styles.slider}
+          style={{
+            '--width': '420px',
+            '--height': '320px',
+            '--quantity': testimonials.length
+          } as React.CSSProperties}
         >
-          {[...testimonials, ...testimonials].map((testimonial, index) => (
-            <div 
-              key={index}
-              className={styles.card}
-            >
-              <div className={styles.cardHeader}>
-                <div className={styles.avatar}>
-                  {testimonial.name[0]}
-                </div>
-                <div>
-                  <div className={styles.name}>{testimonial.name}</div>
-                  <div className={styles.institution}>{testimonial.institution}</div>
+          <div className={styles.list}>
+            {testimonials.map((testimonial, index) => (
+              <div 
+                key={`${testimonial.name}-${index}`}
+                className={styles.item}
+                style={{ '--position': index + 1 } as React.CSSProperties}
+              >
+                <div className={styles.testimonialCard}>
+                  <div className={styles.userInfo}>
+                    <h3 className={styles.userName}>{testimonial.name}</h3>
+                    <p className={styles.userInstitution}>{testimonial.institution}</p>
+                  </div>
+                  <p className={styles.quote}>
+                    "{testimonial.quote}"
+                  </p>
                 </div>
               </div>
-              <p className={styles.quote}>{testimonial.quote}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
 };
 
-export default Testimonials;
+export default TestimonialsSection;
