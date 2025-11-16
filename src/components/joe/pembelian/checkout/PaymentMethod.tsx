@@ -1,6 +1,5 @@
 "use client";
 
-import { PaymentMethodType } from "@/types";
 import Image from "next/image";
 
 interface PaymentMethodProps {

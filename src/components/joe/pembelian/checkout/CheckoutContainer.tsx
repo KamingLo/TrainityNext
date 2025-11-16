@@ -7,7 +7,6 @@ import PaymentMethod from "./PaymentMethod";
 import OrderSummary from "./OrderSummary";
 import OrderPopup from "./OrderPopup";
 import LoadingScreen from "../LoadingScreen";
-import { PaymentMethodType, PopupContent } from "@/types";
 
 interface Product {
   _id: string;

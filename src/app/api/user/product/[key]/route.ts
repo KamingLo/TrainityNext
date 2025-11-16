@@ -5,9 +5,10 @@ import UserProduct from "@/models/user_product";
 
 export async function GET(
   req: Request,
-  { params }: { params: { key: string } }
+  { params }: { params: Promise<{ key: string }> }
 ) {
-  await connectDB();
+    const { key } = await params;
+    await connectDB();
 
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.id) {
@@ -19,7 +20,7 @@ export async function GET(
   })
     .populate({
       path: "product",
-      match: { name: params.key },
+      match: { name: key },
     });
 
   if (!userProduct || !userProduct.product || userProduct.status !== "aktif") {
@@ -41,8 +42,9 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { key: string } }
+  { params }: { params: Promise<{ key: string }> }
 ) {
+    const key = await params;
   await connectDB();
 
   const session = await getServerSession(authOptions);
@@ -64,7 +66,7 @@ export async function PATCH(
     user: session.user.id,
   }).populate({
     path: "product",
-    match: { name: params.key },
+    match: { key },
   });
 
   if (!userProduct || !userProduct.product) {

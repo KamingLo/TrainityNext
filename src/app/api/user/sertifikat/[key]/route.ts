@@ -27,9 +27,10 @@ interface ICertificateData {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { key: string } }
+  { params }: { params: Promise<{ key: string }> }
 ) {
   try {
+    const { key } = await params;
     await connectDB();
 
     const session = await getServerSession(authOptions);
@@ -44,7 +45,7 @@ export async function GET(
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const isAllCertificates = params.key === "all";
+    const isAllCertificates = key === "all";
 
     const userProducts = await UserProduct.find({ 
       user: userId,
@@ -97,7 +98,7 @@ export async function GET(
 
     if (!isAllCertificates) {
       const specificCert = certificates.find(
-        (cert) => cert.courseName === params.key
+        (cert) => cert.courseName === key
       );
 
       if (!specificCert) {

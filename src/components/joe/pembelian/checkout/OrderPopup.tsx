@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { PopupContent } from "@/types";
 
 interface OrderPopupProps {
   content: PopupContent | null;
