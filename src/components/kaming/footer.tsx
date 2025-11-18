@@ -5,7 +5,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-// DIUBAH: Impor dari common.module.css
 import styles from "@/styles/kaming/common.module.css";
 
 export default function Footer() {

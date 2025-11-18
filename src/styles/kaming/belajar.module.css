@@ -62,42 +62,48 @@
 }
 
 .belajarPage_carouselContainer {
-  width: 100%;
+    width: 100%;
 }
 
+.belajarPage_infoTitle{
+    padding: 0;
+    margin: 0 0 1rem 0;
+    
+}
 .belajarPage_carouselTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #ffffff;
-  margin-top: 0;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #374151;
-  padding-bottom: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #374151;
+    padding-bottom: 0.75rem;
 }
 
 .belajarPage_carouselScroller {
-  display: flex;
-  overflow-x: auto;
-  gap: 1.25rem;
-  padding: 0.5rem 0.25rem 1.5rem 0.25rem;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+    display: flex;
+    overflow-x: auto;
+    gap: 1.25rem;
+    padding: 0.5rem 0.25rem 1.5rem 0.25rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .belajarPage_carouselScroller::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 .belajarPage_thumbnailCard {
-  flex: 0 0 320px;
-  border-radius: 0.75rem;
-  border: 1px solid #374151;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 200ms ease-out;
-  position: relative;
-  scroll-snap-align: start;
+    flex: 0 0 320px;
+    border-radius: 0.75rem;
+    border: 1px solid #374151;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 200ms ease-out;
+    position: relative;
+    scroll-snap-align: start;
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .belajarPage_thumbnailCard:hover {
@@ -108,8 +114,7 @@
 
 .belajarPage_thumbnailCard_active {
   border-color: #3b82f6;
-  transform: scale(1.03);
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  transform: scale(1.0);
 }
 
 .belajarPage_thumbnailCard::after {
@@ -143,11 +148,13 @@
   background-color: rgba(59, 130, 246, 0.8);
 }
 
-.belajarPage_thumbnailImage {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  transition: opacity 200ms ease-out;
+.belajarPage_Image {
+    width: 90%;
+    box-sizing: border-box;
+    height: auto;
+    border-radius: 0.5rem;
+    transition: opacity 200ms ease-out;
+    margin: 1rem;
 }
 
 .belajarPage_thumbnailCard:hover .belajarPage_thumbnailImage {

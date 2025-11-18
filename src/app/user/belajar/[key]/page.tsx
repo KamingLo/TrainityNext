@@ -10,6 +10,7 @@ import BackButton from "@/components/kaming/backbutton";
 import styles from "@/styles/kaming/belajar.module.css";
 import commonStyles from "@/styles/kaming/common.module.css"; 
 
+
 interface Video {
   _id: string;
   namaPelajaran: string;
@@ -130,25 +131,24 @@ export default function BelajarPage() {
     <Section>
       <div className={styles.belajarPage_header}>
         <BackButton />
-        <h1>{product.name}</h1>
-        {product.price && <p>Harga: Rp{product.price.toLocaleString()}</p>}
       </div>
 
       <div className={styles.belajarPage_playerWrapper}>
         {selectedVideo ? (
-          <iframe
+            <iframe
             key={selectedVideo._id}
             src={`https://www.youtube.com/embed/${selectedVideo.kodePelajaran}?autoplay=1&modestbranding=1&rel=0`}
             title={selectedVideo.namaPelajaran}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-          />
+            />
         ) : (
-          <div className={styles.belajarPage_noVideo}>Pilih video untuk diputar</div>
+            <div className={styles.belajarPage_noVideo}>Pilih video untuk diputar</div>
         )}
       </div>
 
       <div className={styles.belajarPage_infoPanel}>
+        <h1 className={styles.belajarPage_infoTitle}>{product.name} - { selectedVideo && selectedVideo.namaPelajaran}</h1>
         <p className={styles.belajarPage_courseDesc}>{product.desc}</p>
       </div>
 
@@ -164,14 +164,16 @@ export default function BelajarPage() {
                 }`}
                 onClick={() => handleSelectVideo(video)}
               >
-                <Image
-                  src={`https://i.ytimg.com/vi/${video.kodePelajaran}/hq720.jpg`}
-                  alt={video.namaPelajaran}
-                  width={1280}
-                  height={720}
-                  className={styles.belajarPage_thumbnailImage}
-                  loading="lazy"
-                />
+                <div className={styles.belajarPage_thumbnailImage}>
+                    <Image
+                    src={`https://i.ytimg.com/vi/${video.kodePelajaran}/hq720.jpg`}
+                    alt={video.namaPelajaran}
+                    width={1280}
+                    height={720}
+                    className={styles.belajarPage_Image}
+                    loading="lazy"
+                    />
+                </div>
                 <h4 className={styles.belajarPage_thumbnailTitle}>{video.namaPelajaran}</h4>
               </div>
             ))
