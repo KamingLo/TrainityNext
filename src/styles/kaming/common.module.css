@@ -159,6 +159,7 @@
     border-radius: 0.5rem;
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .buttonPrimary:hover {
     background-color: #3b82f6;
 }
@@ -436,6 +437,18 @@
     margin-top: 1rem;
 }
 
+.formText{
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid #374151;
+    color: white;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    resize: none;
+}
+
 .formTitle {
     font-size: 1.5rem;
     line-height: 2rem;
@@ -452,4 +465,21 @@
     background-color: rgba(0, 0, 0, 0.3);
     border: 1px solid #374151;
     color: white;
+}
+
+.buttonSubmit{
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid white;
+    border-radius: 0.5rem;
+    border: 1px solid #374151;
+    background-color:#1d4ed8 ;
+    color: white; 
+    font-size: medium;
+    transition: all 0.3s ease;
+}
+.buttonSubmit:hover{
+    scale: calc(1.01);
+    cursor: pointer;
+    background-color:#0e3398 ;
 }

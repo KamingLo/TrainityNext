@@ -115,14 +115,18 @@
 }
 
 .loginRedirectLink {
+  border: none;
+  background-color: rgba(0, 0, 0, 0.0);
   color: #60a5fa;
   font-weight: 500;
   transition: color 150ms;
   text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .loginRedirectLink:hover {
-  color: #93c5fd;
+  cursor: pointer;
+  color: #1962bc;
 }
 
 @media (min-width: 1024px) {

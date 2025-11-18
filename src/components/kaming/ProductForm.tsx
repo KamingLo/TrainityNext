@@ -63,7 +63,7 @@ export default function ProductForm({
         placeholder="Deskripsi Lengkap"
         value={formData.desc}
         onChange={handleChange}
-        className={styles.formTextarea}
+        className={styles.formText}
         rows={5}
         required
       />
@@ -73,7 +73,7 @@ export default function ProductForm({
       <button
         type="submit"
         disabled={isLoading}
-        className={styles.submitButton}
+        className={styles.buttonSubmit}
       >
         {isLoading ? "Memproses..." : submitText}
       </button>

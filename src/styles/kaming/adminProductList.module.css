@@ -40,6 +40,11 @@
   border: 1px solid #374151;
 }
 
+.listPage_videoFormContainer ul{
+    padding: 0;
+    margin: 1rem 0.5rem;
+}
+
 .listPage_videoFormTitle {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -75,17 +80,20 @@
 }
 
 .listPage_addButton {
-  background-color: #2563eb;
+  background-color: rgba(37, 99, 235, 0.1);
+  font-size: medium;
+  color: #2563eb;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  border: none;
-  color: white;
+  border: 1px solid #374151;
   cursor: pointer;
-  transition: background-color 150ms;
+  transition: all 0.3s ease;
 }
 
 .listPage_addButton:hover {
-  background-color: #1d4ed8;
+    transition: all 0.3s ease;
+    scale: calc(1.01);
+    background-color: rgba(37, 99, 235, 0.3);
 }
 
 .listPage_videoList {
