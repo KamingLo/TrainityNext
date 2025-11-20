@@ -1,7 +1,7 @@
 # Name: `Trainity`
 ## A learning platform built with Next.js and TypeScript.
 
-### Check the web on: [trainitynext.vercel.app]
+### Check the web on: [trainitynext.vercel.app](https://trainitynext.vercel.app)
 
 **Short description:** Frontend (Next.js) for a training/learning website with user and admin areas, authentication, course/product pages, and integrations for email and PDF/sertifikat generation.
 
