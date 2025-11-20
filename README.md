@@ -1,12 +1,12 @@
 $Content = @'
 **Project**
 
-- **Name:** `trainity` — a learning platform built with Next.js and TypeScript.
+- **Name:** `Trainity` — a learning platform built with Next.js and TypeScript.
 - **Short description:** Frontend (Next.js) for a training/learning website with user and admin areas, authentication, course/product pages, and integrations for email and PDF/sertifikat generation.
 
 **Quick Start**
 
-- **Clone:** `git clone <repo-url>`
+- **Clone:** `git clone https://github.com/KamingLo/TrainityNext.git`
 - **Install:** `npm install`
 - **Run development server:** `npm run dev`
 - **Build:** `npm run build`
@@ -90,7 +90,6 @@ Major feature areas include user dashboards, course/product pages, admin panels 
 
 **License & Contact**
 
-- This repository does not include a license file. Add a `LICENSE` if you plan to open-source the project.
 - For questions, open an issue in the repository or contact the maintainers.
 
 ---
@@ -100,6 +99,3 @@ If you'd like, I can also:
 - add a sample `.env.example` listing required environment variables,
 - create a CONTRIBUTING.md or templates for issues/PRs, or
 - run a small static check (lint) and include any immediate suggestions.
-
-Files edited: `README.md`
-'@; Set-Content -Path 'd:\CodeKuliah\Kuliah\Semester 3\FrontEnd\trainity\README.md' -Value $Content -Encoding utf8 -Force; Write-Output 'WROTE README'
