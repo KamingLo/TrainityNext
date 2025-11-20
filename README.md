@@ -1,5 +1,7 @@
-- **Name:** `Trainity` — a learning platform built with Next.js and TypeScript.
-- **Short description:** Frontend (Next.js) for a training/learning website with user and admin areas, authentication, course/product pages, and integrations for email and PDF/sertifikat generation.
+# Name: `Trainity`
+## a learning platform built with Next.js and TypeScript.
+
+**Short description:** Frontend (Next.js) for a training/learning website with user and admin areas, authentication, course/product pages, and integrations for email and PDF/sertifikat generation.
 
 **Quick Start**
 
