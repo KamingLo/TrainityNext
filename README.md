@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+$Content = @'
+**Project**
 
-## Getting Started
+- **Name:** `trainity` — a learning platform built with Next.js and TypeScript.
+- **Short description:** Frontend (Next.js) for a training/learning website with user and admin areas, authentication, course/product pages, and integrations for email and PDF/sertifikat generation.
 
-First, run the development server:
+**Quick Start**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Clone:** `git clone <repo-url>`
+- **Install:** `npm install`
+- **Run development server:** `npm run dev`
+- **Build:** `npm run build`
+- **Start (production):** `npm start`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` in your browser after starting the dev server.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Environment variables**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` (ignored by git) and provide at least the following variables used by the app and API routes:
 
-## Learn More
+- **`MONGODB_URI`**: MongoDB connection string used by `lib/db.ts`.
+- **`NEXTAUTH_SECRET`**: Secret for NextAuth sessions.
+- **`NEXTAUTH_URL`**: Application base URL (e.g. `http://localhost:3000`).
+- **SMTP / Email settings (for nodemailer):** `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`, etc.
 
-To learn more about Next.js, take a look at the following resources:
+Add any other keys referenced in your `src/lib` and `src/api` code (for example keys for PDF generation or external services).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Scripts**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `npm run dev` : Runs Next.js in development mode (uses Turbopack per `package.json`).
+- `npm run build`: Builds the Next.js app for production.
+- `npm start`   : Starts the Next.js production server.
+- `npm run lint` : Runs ESLint.
 
-## Deploy on Vercel
+**Tech Stack & Key Dependencies**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Framework:** `next` (Next.js 15) with the App Router.
+- **Language:** `TypeScript`.
+- **React:** `react` 19.
+- **Auth:** `next-auth`.
+- **DB:** `mongoose` (MongoDB).
+- **Email:** `nodemailer` + `@types/nodemailer`.
+- **Styling:** CSS Modules (`src/styles/...`).
+- **Other libs:** `bcryptjs`, `html2canvas`, `jspdf`, `framer-motion`, `lucide-react`, `boxicons`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Project Structure (high level)**
+
+- `src/app/` : Next.js App Router entry; pages and layouts.
+- `src/components/` : UI components grouped by author folders (`charless`, `fabio`, `kaming`, etc.).
+- `src/lib/` : Utilities and helpers (`db.ts`, `access.ts`, `email.ts`, hooks, templates).
+- `src/models/` : Mongoose models (`user.ts`, `product.ts`, `review.ts`, ...).
+- `src/styles/` : CSS modules organized per component/feature.
+- `src/api/` : API route handlers (server-side endpoints under `src/app/api` or `src/api` depending on implementation).
+- `src/auth/` : Authentication UI (`login`, `register`, `forgot-password`).
+
+Major feature areas include user dashboards, course/product pages, admin panels (`src/app/admin/*`), and certificate generation.
+
+**Development Notes**
+
+- The project uses Next.js with Turbopack flags in `package.json` for `dev` and `build`.
+- TypeScript types are present (`tsconfig.json`, `types/types.d.ts`), so keep code typed when adding features.
+- Authentication uses `next-auth` with session providers in `src/components/kaming/sessionProviders.tsx`.
+- Database connection is handled in `src/lib/db.ts` (Mongoose). Ensure `MONGODB_URI` is set before running server.
+- PDF / certificate generation uses `html2canvas` + `jspdf` (see UI components and `src/components` that reference `sertifikat` or certificate styles).
+
+**Running & Debugging**
+
+- Use `npm run dev` and open `http://localhost:3000`.
+- Server logs will show in the terminal; check the console for Next.js build errors.
+- If you change server-side code (API routes, models), restart the dev server when needed.
+
+**Linting & Formatting**
+
+- ESLint is available via `npm run lint` and configured with `eslint-config-next`.
+
+**Deployment**
+
+- Vercel is the simplest deployment target for Next.js. Ensure environment variables are set in your deployment provider.
+- Alternatively, build with `npm run build` and host on a Node.js server with `npm start`.
+
+**Contributing**
+
+- Fork the repo, create a feature branch, and open a pull request with a clear description and any migration or environment steps.
+
+**Where to look next**
+
+- Authentication: `src/auth/*` and `src/components/kaming/sessionProviders.tsx`.
+- Database models: `src/models/*`.
+- API routes: `src/app/api/*` or `src/api`.
+
+**License & Contact**
+
+- This repository does not include a license file. Add a `LICENSE` if you plan to open-source the project.
+- For questions, open an issue in the repository or contact the maintainers.
+
+---
+
+If you'd like, I can also:
+
+- add a sample `.env.example` listing required environment variables,
+- create a CONTRIBUTING.md or templates for issues/PRs, or
+- run a small static check (lint) and include any immediate suggestions.
+
+Files edited: `README.md`
+'@; Set-Content -Path 'd:\CodeKuliah\Kuliah\Semester 3\FrontEnd\trainity\README.md' -Value $Content -Encoding utf8 -Force; Write-Output 'WROTE README'
