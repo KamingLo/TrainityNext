@@ -8,14 +8,13 @@ import User from "@/models/user";
 
 const COURSE_CODE_MAP: { [key: string]: string } = {
   react: "RCT",
-  "node js": "NODE",
+  nodejs: "NODE",
   laravel: "LVL",
   golang: "GO",
   php: "PHP",
   javascript: "JS",
   css: "CSS",
-  html: "HTML",
-  web: "WEBV", 
+  html: "HTML", 
 };
 
 const getCourseCode = (courseName: string): string => {
