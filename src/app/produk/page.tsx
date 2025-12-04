@@ -73,15 +73,6 @@ export default function ProdukPage() {
   }
 
   const getButton = (product: Product) => {
-    if (!isLoggedIn) {
-      return (
-        <Link href="/auth/login" passHref>
-          <button className={styles.produkPage_buyButton_disabled}>
-            Login untuk Lihat
-          </button>
-        </Link>
-      );
-    }
     return (
       <Link href={`/produk/${product.name}`} passHref>
         <button className={styles.produkPage_buyButton}>Cek Produk</button>
