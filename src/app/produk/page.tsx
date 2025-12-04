@@ -19,7 +19,6 @@ interface Product {
 
 export default function ProdukPage() {
   const { status: authStatus } = useSession();
-  const isLoggedIn = authStatus === "authenticated";
   const isAuthLoading = authStatus === "loading";
 
   const [products, setProducts] = useState<Product[]>([]);

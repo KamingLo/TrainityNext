@@ -1,11 +1,11 @@
 import { connectDB } from "@/lib/db";
-import Product from "@/models/product"; 
-import UserProduct from "@/models/user_product"; 
+import Product from "@/models/product";
+import UserProduct from "@/models/user_product";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextResponse, NextRequest } from "next/server";
 
-export const dynamic = 'force-dynamic'; 
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,9 +17,19 @@ export async function GET(request: NextRequest) {
 
     await connectDB();
 
-    const query: {name?: string} = {};
+    // Modifikasi pada objek query untuk menggunakan $or
+    const query: { $or?: Array<{ name: RegExp } | { desc: RegExp } | { shortDesc: RegExp }> } = {};
+
     if (key) {
-      query.name = key;
+      // Membuat ekspresi reguler case-insensitive untuk pencarian
+      const regex = new RegExp(key, 'i');
+
+      // Menggunakan operator $or untuk mencari di name, desc, atau shortDesc
+      query.$or = [
+        { name: regex },
+        { desc: regex },
+        { shortDesc: regex }
+      ];
     }
 
     const products = await Product.find(query)
